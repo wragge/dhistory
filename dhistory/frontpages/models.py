@@ -30,3 +30,4 @@ class Total(models.Model):
     category = models.CharField(max_length=50, blank=True)
     total_type = models.CharField(max_length=50, blank=True)
     value = models.IntegerField(default=0)
+    average = models.FloatField(default=0)
