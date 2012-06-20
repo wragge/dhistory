@@ -1,6 +1,7 @@
 # Create your views here.
 import json
 from django.shortcuts import render_to_response
+from django.template import RequestContext
 from dhistory.frontpages.models import *
 
 def show_years_words(request):
@@ -12,5 +13,5 @@ def show_years_words(request):
             data.append({ 'n': total.newspaper_id, 'x': total.year, 'y': total.average })
     for newspaper in Newspaper.objects.all():
         newspapers[newspaper.newspaper_id] = newspaper.newspaper_title
-    return render_to_response('scatter.html', {'data': json.dumps(data), 'newspapers': json.dumps(newspapers)})
+    return render_to_response('scatter.html', {'data': json.dumps(data), 'newspapers': json.dumps(newspapers)}, context_instance=RequestContext(request))
     

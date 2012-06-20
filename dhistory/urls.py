@@ -17,3 +17,6 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
     url(r'^frontpages/$', show_years_words),
 )
+urlpatterns += patterns('django.views.generic.simple',
+    url(r'^$', 'direct_to_template', {'template': 'home.html'}, name='home'),
+)
