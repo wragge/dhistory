@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
     url(r'^frontpages/$', show_years_words),
+    url(r'^frontpages/(?P<newspaper_id>\d+)/(?P<total_type>(total|words))/$', show_newspaper),
 )
 urlpatterns += patterns('django.views.generic.simple',
     url(r'^$', 'direct_to_template', {'template': 'home.html'}, name='home'),
