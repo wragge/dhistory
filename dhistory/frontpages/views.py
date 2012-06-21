@@ -3,7 +3,9 @@ import json
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from dhistory.frontpages.models import *
+from django.views.decorators.cache import cache_page
 
+@cache_page(60 * 15)
 def show_years_words(request):
     data = []
     newspapers = {}
