@@ -1,6 +1,5 @@
 $(function () {
     var chart;
-    alert(year);
     chart = new Highcharts.Chart({
         chart: {
             renderTo: 'container',
@@ -28,7 +27,7 @@ $(function () {
             categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             title: {
                 enabled: true,
-                text: month_label + " " + year
+                text: year
             }
         },
         yAxis: {
