@@ -1,5 +1,6 @@
 $(function () {
     var chart;
+    alert(year);
     chart = new Highcharts.Chart({
         chart: {
             renderTo: 'container',
@@ -16,7 +17,7 @@ $(function () {
                 point: {
                     events: {
                         click: function() {
-                            url = "/frontpages/" + newspaper_id + "/" + this.x + "/" + total_type + "/";
+                            url = "/frontpages/" + newspaper_id + "/" + year + "/" + (this.x + 1) + "/" + total_type + "/";
                             window.location.href = url;
                         }
                     }
@@ -24,14 +25,10 @@ $(function () {
             }
         },
         xAxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             title: {
                 enabled: true,
-                text: 'Year'
-            },
-            labels: {
-                formatter: function() {
-                    return Highcharts.numberFormat(this.value, 0, '', '');
-                }
+                text: month_label + " " + year
             }
         },
         yAxis: {

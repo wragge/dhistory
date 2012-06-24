@@ -1,4 +1,16 @@
 $(function () {
+    function prepare_series(series) {
+        var new_series = [];
+        $.each(series, function(index, cat) {
+           var name = cat['name'];
+           var data = [];
+           $.each(cat['data'], function(index, values) {
+                data.push([Date.UTC(year, month-1, values[0]), values[1]]);
+           })
+           new_series.push({'name': name, 'data': data});
+        });
+        return new_series;
+    }
     var chart;
     chart = new Highcharts.Chart({
         chart: {
@@ -16,7 +28,7 @@ $(function () {
                 point: {
                     events: {
                         click: function() {
-                            url = "/frontpages/" + newspaper_id + "/" + this.x + "/" + total_type + "/";
+                            url = "/frontpages/" + newspaper_id + "/" + year + "/" + month + "/" + Highcharts.dateFormat("%e", this.x) + "/";
                             window.location.href = url;
                         }
                     }
@@ -26,12 +38,11 @@ $(function () {
         xAxis: {
             title: {
                 enabled: true,
-                text: 'Year'
+                text: month_label + " " + year
             },
-            labels: {
-                formatter: function() {
-                    return Highcharts.numberFormat(this.value, 0, '', '');
-                }
+            type: 'datetime',
+            dateTimeLabelFormats: {
+                day: '%e %b'   
             }
         },
         yAxis: {
@@ -43,11 +54,11 @@ $(function () {
         },
         tooltip: {
             formatter: function() {
-                return this.x +': '+ Highcharts.numberFormat(this.y, 2);
+                return Highcharts.dateFormat("%e %b %Y", this.x) +': '+ Highcharts.numberFormat(this.y, 2);
             },
             useHTML: true
         },
-        series: series
+        series: prepare_series(series)
     });
     $("#show").click(function() {
         newspaper_id = $("#newspaper").val();

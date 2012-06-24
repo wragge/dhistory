@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block extra_scripts %}
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+<script src="{{ STATIC_URL }}js/frontpages_newspaper.js"></script>
+<script>
+    var series = {{ series|safe }};
+    var newspaper_id = {{ newspaper.newspaper_id }};
+    {% if total_type == 'words' %}
+        var y_label = 'Average words per issue';
+        var y_min = -200;
+    {% elif total_type == 'number' %}
+        var y_label = 'Average articles per issue';
+        var y_min = -1;
+    {% endif %}
+</script>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span2">
+          <div class="well">
+            <label>Newspaper</label>
+            <select id="newspaper" class="span12">
+                {% for news in newspapers %}
+                    <option value="{{ news.0 }}">{{ news.1 }}</option>
+                {% endfor %}
+            </select>
+            <label>Categories</label>
+            <label class="checkbox">
+              <input type="checkbox" value="article"> News article</input>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" value="advertising"> Advertising</input>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" value="lists"> Detailed lists, results, guides</input>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" value="family"> Family Notices</input>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" value="literature"> Literature</input>
+            </label>
+            <span class="help-block">(Leave unchecked for all.)</span>
+            <button class="btn" id="show">Show</button>
+          </div>
+        </div><!--/span-->
+        <div class="span9">
+            <ul class="breadcrumb">
+                <li>
+                  <a href="/frontpages/">Front pages</a> <span class="divider">/</span>
+                </li>
+                <li>
+                  <a href="/frontpages/{{ newspaper.newspaper_id }}/">{{ newspaper.newspaper_title|truncatechars:30 }}</a> <span class="divider">/</span>
+                </li>
+                <li class="active">
+                  {{ year }}
+                </li>
+            </ul>
+            <h1>{{ newspaper.newspaper_title }}</h1>
+            <p>
+            <ul class="nav nav-pills">
+                <li class="active">
+                  <a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}">Table</a>
+                </li>
+                <li><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/words/">Word count</a></li>
+                <li><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/number/">Number of articles</a></li>
+            </ul>
+            </p>
+            <table class="table table-bordered">
+                <thead>
+                    <tr><th rowspan="2">Month</th><th rowspan="2">Issues</th><th colspan="2">Advertising</th><th colspan="2">Articles</th><th colspan="2">Detailed lists, results, guides</th><th colspan="2">Family Notices</th><th colspan="2">Literature</th></tr>
+                    <tr><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th></tr>
+                </thead>
+                <tbody>
+                {% for m, month  in months.items %}
+                    <tr>
+                        <td>{% if m != 0%}<a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{ m }}/">{{ month.label }}</a>{% else %}{{ year }}{% endif %}</td>
+                        <td>{{ month.issues}}</td>
+                        <td>{% if month.advertising.total.value %}{{ month.advertising.total.value }} ({{ month.advertising.total.average|floatformat:"-2" }}){% endif %}</td>
+                        <td>{% if month.advertising.words.value %}{{ month.advertising.words.value }} ({{ month.advertising.words.average|floatformat:"-2" }}){% endif %}</td>
+                        <td>{% if month.article.total.value %}{{ month.article.total.value }} ({{ month.article.total.average|floatformat:"-2" }}){% endif %}</td>
+                        <td>{% if month.article.words.value %}{{ month.article.words.value }} ({{ month.article.words.average|floatformat:"-2" }}){% endif %}</td>
+                        <td>{% if month.lists.total.value %}{{ month.lists.total.value }} ({{ month.lists.total.average|floatformat:"-2" }}){% endif %}</td>
+                        <td>{% if month.lists.words.value %}{{ month.lists.words.value }} ({{ month.lists.words.average|floatformat:"-2" }}){% endif %}</td>
+                        <td>{% if month.family.total.value %}{{ month.family.total.value }} ({{ month.family.total.average|floatformat:"-2" }}){% endif %}</td>
+                        <td>{% if month.family.words.value %}{{ month.family.words.value }} ({{ month.family.words.average|floatformat:"-2" }}){% endif %}</td>
+                        <td>{% if month.literature.total.value %}{{ month.literature.total.value }} ({{ month.literature.total.average|floatformat:"-2" }}){% endif %}</td>
+                        <td>{% if month.literature.words.value %}{{ month.literature.words.value }} ({{ month.literature.words.average|floatformat:"-2" }}){% endif %}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+{% endblock %}

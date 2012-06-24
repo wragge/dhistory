@@ -5,6 +5,7 @@
 <script src="{{ STATIC_URL }}js/frontpages_newspaper.js"></script>
 <script>
     var series = {{ series|safe }};
+    var newspaper_id = {{ newspaper.newspaper_id }};
     {% if total_type == 'words' %}
         var y_label = 'Average words per issue';
         var y_min = -200;
@@ -51,39 +52,44 @@
                   <a href="/frontpages/">Front pages</a> <span class="divider">/</span>
                 </li>
                 <li>
-                  {{ newspaper.newspaper_title|truncatechars:30 }}
+                  <a href="/frontpages/{{ newspaper.newspaper_id }}/">{{ newspaper.newspaper_title|truncatechars:30 }}</a> <span class="divider">/</span>
+                </li>
+                <li>
+                  <a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/">{{ year }}</a> <span class="divider">/</span>
+                </li>
+                <li class="active">
+                  {{ month_label }}
                 </li>
             </ul>
             <h1>{{ newspaper.newspaper_title }}</h1>
             <p>
             <ul class="nav nav-pills">
                 <li class="active">
-                  <a href="/frontpages/{{ newspaper.newspaper_id }}/">Table</a>
+                  <a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{ month }}/">Table</a>
                 </li>
-                <li><a href="/frontpages/{{ newspaper.newspaper_id }}/words/">Word count</a></li>
-                <li><a href="/frontpages/{{ newspaper.newspaper_id }}/number/">Number of articles</a></li>
+                <li><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{ month }}/words/">Word count</a></li>
+                <li><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{month }}/number/">Number of articles</a></li>
             </ul>
             </p>
             <table class="table table-bordered">
                 <thead>
-                    <tr><th rowspan="2">Year</th><th rowspan="2">Issues</th><th colspan="2">Advertising</th><th colspan="2">Articles</th><th colspan="2">Detailed lists, results, guides</th><th colspan="2">Family Notices</th><th colspan="2">Literature</th></tr>
+                    <tr><th rowspan="2">Issue</th><th colspan="2">Advertising</th><th colspan="2">Articles</th><th colspan="2">Detailed lists, results, guides</th><th colspan="2">Family Notices</th><th colspan="2">Literature</th></tr>
                     <tr><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th></tr>
                 </thead>
                 <tbody>
-                {% for y, year  in years.items %}
+                {% for issue  in issues %}
                     <tr>
-                        <td><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ y }}/">{{ y }}</a></td>
-                        <td>{{ year.issues}}</td>
-                        <td>{% if year.advertising.total.value %}{{ year.advertising.total.value }} ({{ year.advertising.total.average|floatformat:"-2" }}){% endif %}</td>
-                        <td>{% if year.advertising.words.value %}{{ year.advertising.words.value }} ({{ year.advertising.words.average|floatformat:"-2" }}){% endif %}</td>
-                        <td>{% if year.article.total.value %}{{ year.article.total.value }} ({{ year.article.total.average|floatformat:"-2" }}){% endif %}</td>
-                        <td>{% if year.article.words.value %}{{ year.article.words.value }} ({{ year.article.words.average|floatformat:"-2" }}){% endif %}</td>
-                        <td>{% if year.lists.total.value %}{{ year.lists.total.value }} ({{ year.lists.total.average|floatformat:"-2" }}){% endif %}</td>
-                        <td>{% if year.lists.words.value %}{{ year.lists.words.value }} ({{ year.lists.words.average|floatformat:"-2" }}){% endif %}</td>
-                        <td>{% if year.family.total.value %}{{ year.family.total.value }} ({{ year.family.total.average|floatformat:"-2" }}){% endif %}</td>
-                        <td>{% if year.family.words.value %}{{ year.family.words.value }} ({{ year.family.words.average|floatformat:"-2" }}){% endif %}</td>
-                        <td>{% if year.literature.total.value %}{{ year.literature.total.value }} ({{ year.literature.total.average|floatformat:"-2" }}){% endif %}</td>
-                        <td>{% if year.literature.words.value %}{{ year.literature.words.value }} ({{ year.literature.words.average|floatformat:"-2" }}){% endif %}</td>
+                        <td><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year}}/{{ month }}/{{ issue.0.day }}/">{{ issue.0|date:"j N Y" }}</a></td>
+                        <td>{% if issue.1.advertising.total %}{{ issue.1.advertising.total }}{% endif %}</td>
+                        <td>{% if issue.1.advertising.words %}{{ issue.1.advertising.words }}{% endif %}</td>
+                        <td>{% if issue.1.article.total %}{{ issue.1.article.total }}{% endif %}</td>
+                        <td>{% if issue.1.article.words %}{{ issue.1.article.words }}{% endif %}</td>
+                        <td>{% if issue.1.lists.total %}{{ issue.1.lists.total }}{% endif %}</td>
+                        <td>{% if issue.1.lists.words %}{{ issue.1.lists.words }}{% endif %}</td>
+                        <td>{% if issue.1.family.total %}{{ issue.1.family.total }}{% endif %}</td>
+                        <td>{% if issue.1.family.words %}{{ issue.1.family.words }}{% endif %}</td>
+                        <td>{% if issue.1.literature.total %}{{ issue.1.literature.total }}{% endif %}</td>
+                        <td>{% if issue.1.literature.words %}{{ issue.1.literature.words }}{% endif %}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
