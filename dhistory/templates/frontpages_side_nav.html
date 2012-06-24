@@ -1,3 +1,5 @@
+{% load cache %}
+{% cache 3600 sidenav %}
         <div class="well">
             <form>
             <select id="newspaper" class="span12">
@@ -50,3 +52,4 @@
             <button class="btn btn-primary" id="show">Show</button>
             </form>
         </div>
+{% endcache %}

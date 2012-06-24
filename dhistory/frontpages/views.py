@@ -126,7 +126,7 @@ def show_newspaper_year_line(request, newspaper_id, year, total_type='words'):
     if not categories: categories = CATEGORIES.keys()
     for category in categories:
         data = totals.filter(category=CATEGORIES[category]).values_list('month', 'average').order_by('year')
-        data = [average for month, average in data]
+        data = [[month-1, average] for month, average in data]
         series.append({'name': CATEGORIES[category], 'data': data})
     if total_type == 'total': total_type = 'number'
     return render_to_response('newspaper_year_line.html', {'series': json.dumps(series),
