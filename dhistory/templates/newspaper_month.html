@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 {% block extra_scripts %}
-<script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="http://code.highcharts.com/modules/exporting.js"></script>
-<script src="{{ STATIC_URL }}js/frontpages_newspaper.js"></script>
+<script src="{{ STATIC_URL }}js/frontpages_nav.js"></script>
 <script>
     var series = {{ series|safe }};
     var newspaper_id = {{ newspaper.newspaper_id }};
@@ -19,32 +17,7 @@
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span2">
-          <div class="well">
-            <label>Newspaper</label>
-            <select id="newspaper" class="span12">
-                {% for news in newspapers %}
-                    <option value="{{ news.0 }}">{{ news.1 }}</option>
-                {% endfor %}
-            </select>
-            <label>Categories</label>
-            <label class="checkbox">
-              <input type="checkbox" value="article"> News article</input>
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" value="advertising"> Advertising</input>
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" value="lists"> Detailed lists, results, guides</input>
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" value="family"> Family Notices</input>
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" value="literature"> Literature</input>
-            </label>
-            <span class="help-block">(Leave unchecked for all.)</span>
-            <button class="btn" id="show">Show</button>
-          </div>
+          {% include 'frontpages_side_nav.html' %}
         </div><!--/span-->
         <div class="span9">
             <ul class="breadcrumb">
@@ -62,38 +35,43 @@
                 </li>
             </ul>
             <h1>{{ newspaper.newspaper_title }}</h1>
-            <p>
-            <ul class="nav nav-pills">
-                <li class="active">
-                  <a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{ month }}/">Table</a>
-                </li>
-                <li><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{ month }}/words/">Word count</a></li>
-                <li><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{month }}/number/">Number of articles</a></li>
-            </ul>
-            </p>
-            <table class="table table-bordered">
-                <thead>
-                    <tr><th rowspan="2">Issue</th><th colspan="2">Advertising</th><th colspan="2">Articles</th><th colspan="2">Detailed lists, results, guides</th><th colspan="2">Family Notices</th><th colspan="2">Literature</th></tr>
-                    <tr><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th></tr>
-                </thead>
-                <tbody>
-                {% for issue  in issues %}
-                    <tr>
-                        <td><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year}}/{{ month }}/{{ issue.0.day }}/">{{ issue.0|date:"j N Y" }}</a></td>
-                        <td>{% if issue.1.advertising.total %}{{ issue.1.advertising.total }}{% endif %}</td>
-                        <td>{% if issue.1.advertising.words %}{{ issue.1.advertising.words }}{% endif %}</td>
-                        <td>{% if issue.1.article.total %}{{ issue.1.article.total }}{% endif %}</td>
-                        <td>{% if issue.1.article.words %}{{ issue.1.article.words }}{% endif %}</td>
-                        <td>{% if issue.1.lists.total %}{{ issue.1.lists.total }}{% endif %}</td>
-                        <td>{% if issue.1.lists.words %}{{ issue.1.lists.words }}{% endif %}</td>
-                        <td>{% if issue.1.family.total %}{{ issue.1.family.total }}{% endif %}</td>
-                        <td>{% if issue.1.family.words %}{{ issue.1.family.words }}{% endif %}</td>
-                        <td>{% if issue.1.literature.total %}{{ issue.1.literature.total }}{% endif %}</td>
-                        <td>{% if issue.1.literature.words %}{{ issue.1.literature.words }}{% endif %}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            <h2>{{ month_label }} {{ year }}</h2>
+            {% if issues %}
+                <p>
+                <ul class="nav nav-pills">
+                    <li class="active">
+                      <a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{ month }}/">Table</a>
+                    </li>
+                    <li><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{ month }}/words/">Word count</a></li>
+                    <li><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{month }}/number/">Number of articles</a></li>
+                </ul>
+                </p>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr><th rowspan="2">Issue</th><th colspan="2">Advertising</th><th colspan="2">Articles</th><th colspan="2">Detailed lists, results, guides</th><th colspan="2">Family Notices</th><th colspan="2">Literature</th></tr>
+                        <tr><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th></tr>
+                    </thead>
+                    <tbody>
+                    {% for issue  in issues %}
+                        <tr>
+                            <td><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year}}/{{ month }}/{{ issue.0.day }}/">{{ issue.0|date:"j N Y" }}</a></td>
+                            <td>{% if issue.1.advertising.total %}{{ issue.1.advertising.total }}{% endif %}</td>
+                            <td>{% if issue.1.advertising.words %}{{ issue.1.advertising.words }}{% endif %}</td>
+                            <td>{% if issue.1.article.total %}{{ issue.1.article.total }}{% endif %}</td>
+                            <td>{% if issue.1.article.words %}{{ issue.1.article.words }}{% endif %}</td>
+                            <td>{% if issue.1.lists.total %}{{ issue.1.lists.total }}{% endif %}</td>
+                            <td>{% if issue.1.lists.words %}{{ issue.1.lists.words }}{% endif %}</td>
+                            <td>{% if issue.1.family.total %}{{ issue.1.family.total }}{% endif %}</td>
+                            <td>{% if issue.1.family.words %}{{ issue.1.family.words }}{% endif %}</td>
+                            <td>{% if issue.1.literature.total %}{{ issue.1.literature.total }}{% endif %}</td>
+                            <td>{% if issue.1.literature.words %}{{ issue.1.literature.words }}{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No issues are available for this month.</p>
+            {% endif %}
         </div>
       </div>
     </div>

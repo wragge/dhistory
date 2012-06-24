@@ -1,0 +1,26 @@
+        <div class="well">
+            <label>Newspaper</label>
+            <select id="newspaper" class="span12">
+                {% for news in newspapers %}
+                    <option value="{{ news.0 }}">{{ news.1 }}</option>
+                {% endfor %}
+            </select>
+            <label>Categories</label>
+            <label class="checkbox">
+              <input type="checkbox" value="article"> News article</input>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" value="advertising"> Advertising</input>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" value="lists"> Detailed lists, results, guides</input>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" value="family"> Family Notices</input>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" value="literature"> Literature</input>
+            </label>
+            <span class="help-block">(Leave unchecked for all.)</span>
+            <button class="btn" id="show">Show</button>
+        </div>

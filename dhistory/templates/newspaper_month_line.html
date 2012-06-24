@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block extra_scripts %}
-<script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="http://code.highcharts.com/modules/exporting.js"></script>
+<script src="{{ STATIC_URL }}js/highcharts.js"></script>
+<script src="{{ STATIC_URL }}js/highcharts/exporting.js"></script>
+<script src="{{ STATIC_URL }}js/frontpages_nav.js"></script>
 <script src="{{ STATIC_URL }}js/frontpages_newspaper_month.js"></script>
 <script>
     var series = {{ series|safe }};
@@ -23,32 +24,7 @@
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span2">
-          <div class="well">
-            <label>Newspaper</label>
-            <select id="newspaper" class="span12">
-                {% for news in newspapers %}
-                    <option value="{{ news.0 }}">{{ news.1 }}</option>
-                {% endfor %}
-            </select>
-            <label>Categories</label>
-            <label class="checkbox">
-              <input type="checkbox" value="article"> News article</input>
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" value="advertising"> Advertising</input>
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" value="lists"> Detailed lists, results, guides</input>
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" value="family"> Family Notices</input>
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" value="literature"> Literature</input>
-            </label>
-            <span class="help-block">(Leave unchecked for all.)</span>
-            <button class="btn" id="show">Show</button>
-          </div>
+          {% include 'frontpages_side_nav.html' %}
         </div><!--/span-->
         <div class="span9">
             <ul class="breadcrumb">
@@ -66,16 +42,21 @@
                 </li>
             </ul>
             <h1>{{ newspaper.newspaper_title }}</h1>
-            <p>
-            <ul class="nav nav-pills">
-                <li>
-                  <a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{ month }}/">Table</a>
-                </li>
-                <li {% if total_type == 'words' %}class="active"{% endif %}><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{ month }}/words/">Word count</a></li>
-                <li {% if total_type == 'number' %}class="active"{% endif %}><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{ month }}/number/">Number of articles</a></li>
-            </ul>
-            </p>
-            <div id="container" style="min-width: 400px; height: 700px; margin: 0 auto"></div>
+            <h2>{{ month_label }} {{ year }}</h2>
+            {% if series != "[]" %}
+                <p>
+                <ul class="nav nav-pills">
+                    <li>
+                      <a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{ month }}/">Table</a>
+                    </li>
+                    <li {% if total_type == 'words' %}class="active"{% endif %}><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{ month }}/words/">Word count</a></li>
+                    <li {% if total_type == 'number' %}class="active"{% endif %}><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{ month }}/number/">Number of articles</a></li>
+                </ul>
+                </p>
+                <div id="container" style="min-width: 400px; height: 600px; margin: 0 auto"></div>
+            {% else %}
+                <p>No issues are available for this month.</p>
+            {% endif %}
         </div>
       </div>
     </div>

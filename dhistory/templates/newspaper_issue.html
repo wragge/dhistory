@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block extra_scripts %}
+<script src="{{ STATIC_URL }}js/highcharts.js"></script>
+<script src="{{ STATIC_URL }}js/highcharts/exporting.js"></script>
+<script src="{{ STATIC_URL }}js/frontpages_nav.js"></script>
+<script src="{{ STATIC_URL }}js/frontpages_newspaper_issue.js"></script>
+<script>
+    var series = {{ series|safe }};
+    var newspaper_id = {{ newspaper.newspaper_id }};
+    {% if total_type == 'words' %}
+        var y_label = 'Average words per issue';
+        var y_min = -200;
+    {% elif total_type == 'number' %}
+        var y_label = 'Average articles per issue';
+        var y_min = -1;
+    {% endif %}
+</script>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span2">
+          {% include 'frontpages_side_nav.html' %}
+        </div><!--/span-->
+        <div class="span9">
+            <ul class="breadcrumb">
+                <li>
+                  <a href="/frontpages/">Front pages</a> <span class="divider">/</span>
+                </li>
+                <li>
+                  <a href="/frontpages/{{ newspaper.newspaper_id }}/">{{ newspaper.newspaper_title|truncatechars:30 }}</a> <span class="divider">/</span>
+                </li>
+                <li>
+                  <a href="/frontpages/{{ newspaper.newspaper_id }}/{{ issue_date.year }}/">{{ issue_date.year }}</a> <span class="divider">/</span>
+                </li>
+                <li>
+                  <a href="/frontpages/{{ newspaper.newspaper_id }}/{{ issue_date.year }}/{{ issue_date.month }}/">{{ issue_date|date:"F" }}</a> <span class="divider">/</span>
+                </li>
+                <li class="active">
+                    {{ issue_date.day }}
+                </li>
+            </ul>
+            <h1>{{ newspaper.newspaper_title }}</h1>
+            <h2>{{ issue_date|date:"l, j F Y"}}</h2>
+            {% if articles %}
+                <div class="row-fluid">
+                    <div class="span7">
+                        <div id="container" style="min-width: 300px; height: 300px; margin: 0 auto"></div>
+                    </div>
+                    <div class="span5">
+                        <a href="{{ page_url }}" class="thumbnail">
+                            <img src="http://trove.nla.gov.au/ndp/imageservice/nla.news-page{{ page_id }}">
+                        </a>
+                    </div>
+                </div>
+                <div class="row-fluid section">
+                    <div class="span7">
+                        {% regroup articles by category as articles_list %}
+                        {% for article in articles_list %}
+                            <h3>{{ article.grouper }}</h3>
+                            {% for art in article.list %}
+                                <p><a href="{{ art.url }}" class="article_title">{{ art.title }}</a> ({{ art.word_count }} words)</p>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                    <div class="span5">
+                        <div id="article">
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="row-fluid">
+                    <div class="span12"><p>No issue is available for this date.</p></div>
+                </div>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+{% endblock %}

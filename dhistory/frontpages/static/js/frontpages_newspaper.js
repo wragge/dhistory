@@ -49,17 +49,4 @@ $(function () {
         },
         series: series
     });
-    $("#show").click(function() {
-        newspaper_id = $("#newspaper").val();
-        url = "/frontpages/" + newspaper_id + "/words/";
-        categories = []
-        $('input:checkbox:checked').each(function() {
-            categories.push($(this).val());
-        })
-        if (categories.length > 0) {
-            url += "?category=" + categories.join('&category=')
-        }
-        window.location.href = url;
-        return false;
-    });
 });

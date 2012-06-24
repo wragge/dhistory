@@ -15,10 +15,12 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
-    url(r'^frontpages/$', show_years_words),
+    url(r'^frontpages/$', show_home),
+    url(r'^frontpages/all/$', show_years_words),
     url(r'^frontpages/(?P<newspaper_id>\d+)/$', show_newspaper),
     url(r'^frontpages/(?P<newspaper_id>\d+)/(?P<year>\d{4})/$', show_newspaper_year),
     url(r'^frontpages/(?P<newspaper_id>\d+)/(?P<year>\d{4})/(?P<month>\d{1,2})/$', show_newspaper_month),
+    url(r'^frontpages/(?P<newspaper_id>\d+)/(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<day>\d{1,2})/$', show_newspaper_issue),
     url(r'^frontpages/(?P<newspaper_id>\d+)/(?P<total_type>(number|words))/$', show_newspaper_line),
     url(r'^frontpages/(?P<newspaper_id>\d+)/(?P<year>\d{4})/(?P<total_type>(number|words))/$', show_newspaper_year_line),
     url(r'^frontpages/(?P<newspaper_id>\d+)/(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<total_type>(number|words))/$', show_newspaper_month_line),
