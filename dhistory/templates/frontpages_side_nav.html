@@ -3,27 +3,15 @@
         <div class="well">
             <form>
             <select id="newspaper" class="span12">
-                {% for news in newspapers %}
-                    <option value="{{ news.0 }}">{{ news.1 }}</option>
-                {% endfor %}
             </select>
             <select id="year" class="span8">
                 <option value="">Year</option>
-                {% for year in years_list %}
-                    <option value="{{ year }}">{{ year }}</option>
-                {% endfor %}
             </select>
             <select id="month" class="span8">
                 <option value="">Month</option>
-                {% for month in months_list %}
-                    {% if month != "Year" %}<option value="{{ forloop.counter0 }}">{{ month }}</option>{% endif %}
-                {% endfor %}
             </select>
             <select id="day" class="span8">
                 <option value="">Day</option>
-                {% for day in days_list %}
-                    <option value="{{ day }}">{{ day }}</option>
-                {% endfor %}
             </select>
             <label>Categories:</label>
             <span class="help-block">Leave unchecked for all</span>
@@ -45,7 +33,7 @@
             <label>View:</label>
             <select id="view" class="span8">
                 <option value="">Table</option>
-                <option value="words">Words</option>
+                <option value="words" selected="selected">Words</option>
                 <option value="number">Number</option>
             </select>
             

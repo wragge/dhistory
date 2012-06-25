@@ -32,7 +32,7 @@ def show_years_words(request, category='article', total_type='words'):
     totals = Total.objects.filter(category=category_long).filter(month=0).filter(total_type=total_type).exclude(newspaper__newspaper_id=112).order_by('year', 'newspaper')
     for total in totals:
         if total.average < 10000:
-            data.append({ 'n': total.newspaper_id, 'x': total.year, 'y': total.average })
+            data.append({ 'n': total.newspaper.newspaper_id, 'x': total.year, 'y': total.average })
     for newspaper in Newspaper.objects.all():
         newspapers[newspaper.newspaper_id] = newspaper.newspaper_title
     if total_type == 'total': total_type = 'number'

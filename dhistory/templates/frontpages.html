@@ -1,73 +1,41 @@
 {% extends "base.html" %}
 {% block extra_scripts %}
-<script src="{{ STATIC_URL }}js/frontpages_nav.js"></script>
+<script src="{{ STATIC_URL }}js/frontpages_simple_nav.js"></script>
 {% endblock %}
 {% block content %}
     <div class="container-fluid">
         <div class="hero-unit">
-            <h1>Front pages</h1>
-            <p>Exploring the front pages of Australian newspapers...</p>
+            <h1>The front page</h1>
+            <p>The front page of the newspaper is where the &lsquo;big&rsquo; stories are printed. But this hasn't always been the case.
+            The design and function of the front page has changed greatly over time. 
+            Here you explore this change...<p>
         </div>
       <div class="row-fluid">
         <div class="span1"></div>
         <div class="span4 offset1">
-            <h2>Choose a newspaper</h2>
+            <h2>Newspapers</h2>
             <a class="thumbnail" href="/frontpages/53/words/"><img src="{{ STATIC_URL }}images/words.png"></a>
             <form>
-            
             <select id="newspaper" class="span12">
-                {% for news in newspapers %}
-                    <option value="{{ news.0 }}">{{ news.1 }}</option>
-                {% endfor %}
             </select>
-            <div style="display: none;">
-            <select id="year" class="span8">
-                <option value="">Year</option>
-                {% for year in years_list %}
-                    <option value="{{ year }}">{{ year }}</option>
-                {% endfor %}
-            </select>
-            <select id="month" class="span8">
-                <option value="">Month</option>
-                {% for month in months_list %}
-                    {% if month != "Year" %}<option value="{{ forloop.counter0 }}">{{ month }}</option>{% endif %}
-                {% endfor %}
-            </select>
-            <select id="day" class="span8">
-                <option value="">Day</option>
-                {% for day in days_list %}
-                    <option value="{{ day }}">{{ day }}</option>
-                {% endfor %}
-            </select>
-            <label>Categories:</label>
-            <span class="help-block">Leave unchecked for all</span>
-            <label class="checkbox">
-              <input type="checkbox" value="article"> News article</input>
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" value="advertising"> Advertising</input>
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" value="lists"> Detailed lists, results, guides</input>
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" value="family"> Family Notices</input>
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" value="literature"> Literature</input>
-            </label>
-            <label>View:</label>
-            <select id="view" class="span8">
-                <option value="">Table</option>
-                <option value="words" selected="selected">Words</option>
-                <option value="number">Number</option>
-            </select>
-            </div>
-            
             <button class="btn btn-primary" id="show">Show</button>
             </form>
         </div>
-        <div class="span6">
+        <div class="span1"></div>
+        <div class="span4">
+            <h2>Categories</h2>
+            <a class="thumbnail" href="/frontpages/all/article/"><img src="{{ STATIC_URL }}images/scatter.png"></a>
+            <form>
+            <select id="category" class="span12">
+                <option value="">Choose a category</option>
+                <option value="article">Article (news)</option>
+                <option value="advertising">Advertising</option>
+                <option value="lists">Detailed lists, results, guides</option>
+                <option value="family">Family notices</option>
+                <option value="literature">Literature</option>
+            </select>
+            <button class="btn btn-primary" id="show_scatter">Show</button>
+            </form>
         </div>
       </div>
     </div>
