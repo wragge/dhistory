@@ -58,6 +58,7 @@ $(function () {
         },
         series: [{
             name: 'Female',
+            cursor: 'pointer',
             point: {
                 events: {
                     click: function() {
