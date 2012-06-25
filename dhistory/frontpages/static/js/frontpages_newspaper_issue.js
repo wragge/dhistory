@@ -6,7 +6,7 @@ $(function () {
             url: url,
             dataType: 'jsonp',
             success: function(data) {
-                $("#article").html("<h3>" + data.article.heading + "</h3><p><a class='btn' href='" + data.article.troveUrl + "'>View in Trove</a>" + data.article.articleText);  
+                $("#article").html("<h3>" + data.article.heading + "</h3><p><a class='btn' href='" + data.article.troveUrl + "'>View in Trove &raquo;</a>" + data.article.articleText);  
             }
         });
     }
