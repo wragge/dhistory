@@ -24,17 +24,23 @@ def show_home(request):
                                                  'days_list': DAYS}, context_instance=RequestContext(request))
 
 @cache_page(60 * 15)
-def show_years_words(request):
+def show_years_words(request, category='article', total_type='words'):
+    if total_type == 'number': total_type = 'total'
+    category_long = CATEGORIES[category]
     data = []
     newspapers = {}
-    totals = Total.objects.filter(category='Article').filter(month=0).filter(total_type='words').exclude(newspaper__newspaper_id=112).order_by('year', 'newspaper')
+    totals = Total.objects.filter(category=category_long).filter(month=0).filter(total_type=total_type).exclude(newspaper__newspaper_id=112).order_by('year', 'newspaper')
     for total in totals:
         if total.average < 10000:
             data.append({ 'n': total.newspaper_id, 'x': total.year, 'y': total.average })
     for newspaper in Newspaper.objects.all():
         newspapers[newspaper.newspaper_id] = newspaper.newspaper_title
+    if total_type == 'total': total_type = 'number'
     return render_to_response('scatter.html', {'data': json.dumps(data),
-                                               'newspapers': json.dumps(newspapers)},context_instance=RequestContext(request))
+                                               'newspapers': json.dumps(newspapers),
+                                               'category': category,
+                                               'category_long': category_long,
+                                               'total_type': total_type},context_instance=RequestContext(request))
     
 def show_newspaper(request, newspaper_id):
     newspaper = Newspaper.objects.get(newspaper_id=newspaper_id)
@@ -222,6 +228,14 @@ def show_newspaper_issue(request, newspaper_id, year, month, day):
         articles = []
     else:
         articles = Article.objects.filter(newspaper_id=newspaper_id, article_date=issue_date, page_text='1').order_by('category', 'title')
+    try:
+        previous_date = Article.objects.values_list('article_date', flat=True).filter(newspaper_id=newspaper_id, page_text='1').filter(article_date__lt=issue_date).order_by('-article_date')[0]
+    except IndexError:
+        previous_date = None
+    try:
+        next_date = Article.objects.values_list('article_date', flat=True).filter(newspaper_id=newspaper_id, page_text='1').filter(article_date__gt=issue_date).order_by('article_date')[0]
+    except IndexError:
+        next_date = None
     issue = {}
     issue['words'] = 0
     issue['total'] = 0
@@ -266,5 +280,7 @@ def show_newspaper_issue(request, newspaper_id, year, month, day):
                                                        'issue_date': issue_date,
                                                        'years_list': YEARS,
                                                        'months_list': MONTHS,
+                                                       'previous_date': previous_date,
+                                                       'next_date': next_date,
                                                        'days_list': DAYS}, context_instance=RequestContext(request))
             

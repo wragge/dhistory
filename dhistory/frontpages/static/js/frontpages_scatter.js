@@ -8,7 +8,7 @@ $(function () {
                 zoomType: 'xy'
             },
             title: {
-                text: 'Front pages'
+                text: ''
             },
             legend: {
                 enabled: false  
@@ -26,9 +26,9 @@ $(function () {
             },
             yAxis: {
                 title: {
-                    text: 'Average number of words in front page articles'
+                    text: y_text
                 },
-                min: -200,
+                min: y_min,
                 startOnTick: false
             },
             tooltip: {

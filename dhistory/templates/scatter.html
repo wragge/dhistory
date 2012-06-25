@@ -6,8 +6,54 @@
 <script>
     var newspapers = {{ newspapers|safe }};
     var data = {{ data|safe }};
+    {% if total_type == 'number' %}
+        var y_min = 0;
+        var y_text = "Number of items per issue";
+    {% elif total_type == 'words' %}
+        var y_min = -200;
+        var y_text = "Number of words per issue";
+    {% endif %}
 </script>
 {% endblock %}
 {% block content %}
-<div id="container" style="min-width: 400px; height: 800px; margin: 0 auto"></div>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span2">
+        <div class="well">
+            <form>
+            <select id="category" class="span12">
+                <option value="article">Article (news)</option>
+                <option value="advertising">Advertising</option>
+                <option value="lists">Detailed lists, results, guides</option>
+                <option value="family">Family notices</option>
+                <option value="literature">Literature</option>
+            </select>
+            <label>View:</label>
+            <select id="view" class="span8">
+                <option value="words">Words</option>
+                <option value="number">Number</option>
+            </select>
+            </form>
+        </div>
+        </div><!--/span-->
+        <div class="span10">
+            <ul class="breadcrumb">
+                <li>
+                  <a href="/frontpages/">Front pages</a> <span class="divider">/</span>
+                </li>
+                <li class="active">
+                  {{ category }}
+                </li>
+            </ul>
+            <h1>{{ category_long }}</h1>
+                        <p>
+            <ul class="nav nav-pills">
+                <li {% if total_type == 'words' %}class="active"{% endif %}><a href="/frontpages/all/{{ category }}/words/">Word count</a></li>
+                <li {% if total_type == 'number' %}class="active"{% endif %}><a href="/frontpages/all/{{ category }}/number/">Number of articles</a></li>
+            </ul>
+            </p>
+            <div id="container" style="min-width: 400px; height: 600px; margin: 0 auto"></div>
+        </div>
+      </div>
+    </div>
 {% endblock %}

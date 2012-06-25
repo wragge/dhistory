@@ -42,6 +42,10 @@
             </ul>
             <h1>{{ newspaper.newspaper_title }}</h1>
             <h2>{{ issue_date|date:"l, j F Y"}}</h2>
+            <ul class="btn-group">
+                {% if previous_date %}<li class="btn"><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ previous_date.year }}/{{ previous_date.month }}/{{ previous_date.day}}">&laquo; {{ previous_date|date:"j F Y" }}</a></li>{% endif %}
+                {% if next_date %}<li class="btn"><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ next_date.year }}/{{ next_date.month }}/{{ next_date.day}}">{{ next_date|date:"j F Y" }} &raquo;</a></li>{% endif %}
+            </ul>
             {% if articles %}
                 <div class="row-fluid">
                     <div class="span7">
