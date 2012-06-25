@@ -13,17 +13,12 @@ CATEGORIES = {'article': 'Article', 'advertising': 'Advertising', 'lists': 'Deta
 CATEGORIES_REV = {'Article':'article', 'Advertising': 'advertising', 'Detailed lists, results, guides': 'lists', 'Family Notices': 'family', 'Literature': 'literature'}
 COLOURS = {'article': 'Article', 'advertising': 'Advertising', 'lists': 'Detailed lists, results, guides', 'family': 'Family Notices', 'literature': 'Literature'}
 MONTHS = ['Year', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-YEARS = range(1803, 1955)
-DAYS = range(1, 31)
 
+@cache_page(60 * 60)
 def show_home(request):
-    newspapers = Newspaper.objects.values_list('newspaper_id', 'newspaper_title').order_by('newspaper_title')
-    return render_to_response('frontpages.html', {'newspapers': newspapers,
-                                                 'years_list': YEARS,
-                                                 'months_list': MONTHS,
-                                                 'days_list': DAYS}, context_instance=RequestContext(request))
+    return render_to_response('frontpages.html', {}, context_instance=RequestContext(request))
 
-@cache_page(60 * 15)
+@cache_page(60 * 60)
 def show_years_words(request, category='article', total_type='words'):
     if total_type == 'number': total_type = 'total'
     category_long = CATEGORIES[category]
@@ -41,10 +36,9 @@ def show_years_words(request, category='article', total_type='words'):
                                                'category': category,
                                                'category_long': category_long,
                                                'total_type': total_type},context_instance=RequestContext(request))
-    
+@cache_page(60 * 60)  
 def show_newspaper(request, newspaper_id):
     newspaper = Newspaper.objects.get(newspaper_id=newspaper_id)
-    newspapers = Newspaper.objects.values_list('newspaper_id', 'newspaper_title').order_by('newspaper_title')
     totals = Total.objects.filter(newspaper=newspaper).filter(month=0).order_by('year', 'total_type')
     years = {}
     for total in totals:
@@ -62,13 +56,9 @@ def show_newspaper(request, newspaper_id):
                 years[total.year][CATEGORIES_REV[total.category]]['words']['value'] = total.value
                 years[total.year][CATEGORIES_REV[total.category]]['words']['average'] = total.average
     return render_to_response('newspaper.html', {'newspaper': newspaper,
-                                                 'newspapers': newspapers,
                                                  'years': years,
-                                                 'totals': totals,
-                                                 'years_list': YEARS,
-                                                 'months_list': MONTHS,
-                                                 'days_list': DAYS}, context_instance=RequestContext(request))
-        
+                                                 'totals': totals}, context_instance=RequestContext(request))
+@cache_page(60 * 60)       
 def show_newspaper_line(request, newspaper_id, total_type='words'):
     series = []
     if total_type == 'number': total_type = 'total'
@@ -86,12 +76,8 @@ def show_newspaper_line(request, newspaper_id, total_type='words'):
     if total_type == 'total': total_type = 'number'
     return render_to_response('newspaper_line.html', {'series': json.dumps(series),
                                                       'newspaper': newspaper,
-                                                      'newspapers': newspapers,
-                                                      'total_type': total_type,
-                                                      'years_list': YEARS,
-                                                      'months_list': MONTHS,
-                                                      'days_list': DAYS}, context_instance=RequestContext(request))
-        
+                                                      'total_type': total_type}, context_instance=RequestContext(request))
+@cache_page(60 * 60)       
 def show_newspaper_year(request, newspaper_id, year):
     newspaper = Newspaper.objects.get(newspaper_id=newspaper_id)
     newspapers = Newspaper.objects.values_list('newspaper_id', 'newspaper_title').order_by('newspaper_title')
@@ -113,13 +99,9 @@ def show_newspaper_year(request, newspaper_id, year):
                 months[total.month][CATEGORIES_REV[total.category]]['words']['value'] = total.value
                 months[total.month][CATEGORIES_REV[total.category]]['words']['average'] = total.average
     return render_to_response('newspaper_year.html', {'newspaper': newspaper,
-                                                      'newspapers': newspapers,
                                                       'months': months,
-                                                      'year': year,
-                                                      'years_list': YEARS,
-                                                      'months_list': MONTHS,
-                                                      'days_list': DAYS}, context_instance=RequestContext(request))
-
+                                                      'year': year}, context_instance=RequestContext(request))
+@cache_page(60 * 60)
 def show_newspaper_year_line(request, newspaper_id, year, total_type='words'):
     series = []
     if total_type == 'number': total_type = 'total'
@@ -137,13 +119,9 @@ def show_newspaper_year_line(request, newspaper_id, year, total_type='words'):
     if total_type == 'total': total_type = 'number'
     return render_to_response('newspaper_year_line.html', {'series': json.dumps(series),
                                                            'newspaper': newspaper,
-                                                           'newspapers': newspapers,
                                                            'total_type': total_type,
-                                                           'year': year,
-                                                           'years_list': YEARS,
-                                                           'months_list': MONTHS,
-                                                           'days_list': DAYS}, context_instance=RequestContext(request))
-
+                                                           'year': year}, context_instance=RequestContext(request))
+@cache_page(60 * 60)
 def show_newspaper_month(request, newspaper_id, year, month):
     newspaper = Newspaper.objects.get(newspaper_id=newspaper_id)
     newspapers = Newspaper.objects.values_list('newspaper_id', 'newspaper_title').order_by('newspaper_title')
@@ -166,15 +144,11 @@ def show_newspaper_month(request, newspaper_id, year, month):
                 issues[article.article_date][CATEGORIES_REV[article.category]]['words'] = article.word_count
     issues = [ [date, issues[date]] for date in sorted(issues.keys()) ]
     return render_to_response('newspaper_month.html', {'newspaper': newspaper,
-                                                       'newspapers': newspapers,
                                                        'issues': issues,
                                                        'year': year,
                                                        'month': month,
-                                                       'month_label': MONTHS[int(month)],
-                                                       'years_list': YEARS,
-                                                       'months_list': MONTHS,
-                                                       'days_list': DAYS}, context_instance=RequestContext(request))
-
+                                                       'month_label': MONTHS[int(month)]}, context_instance=RequestContext(request))
+@cache_page(60 * 60)
 def show_newspaper_month_line(request, newspaper_id, year, month, total_type='words'):
     series = []
     if total_type == 'number': total_type = 'total'
@@ -209,16 +183,12 @@ def show_newspaper_month_line(request, newspaper_id, year, month, total_type='wo
             series.append({'name': CATEGORIES[category], 'data': sorted(data, key=itemgetter(0))})
     if total_type == 'total': total_type = 'number'
     return render_to_response('newspaper_month_line.html', {'newspaper': newspaper,
-                                                            'newspapers': newspapers,
                                                             'series': json.dumps(series),
                                                             'year': year,
                                                             'month': month,
                                                             'month_label': MONTHS[int(month)],
-                                                            'total_type': total_type,
-                                                            'years_list': YEARS,
-                                                            'months_list': MONTHS,
-                                                            'days_list': DAYS}, context_instance=RequestContext(request))
-      
+                                                            'total_type': total_type}, context_instance=RequestContext(request))
+@cache_page(60 * 60)      
 def show_newspaper_issue(request, newspaper_id, year, month, day):
     newspaper = Newspaper.objects.get(newspaper_id=newspaper_id)
     newspapers = Newspaper.objects.values_list('newspaper_id', 'newspaper_title').order_by('newspaper_title')
@@ -271,16 +241,12 @@ def show_newspaper_issue(request, newspaper_id, year, month, day):
             pass
     series = {'total': data_total, 'words': data_words}       
     return render_to_response('newspaper_issue.html', {'newspaper': newspaper,
-                                                       'newspapers': newspapers,
                                                        'articles': articles,
                                                        'series': json.dumps(series),
                                                        'issue': issue,
                                                        'page_id': page_id,
                                                        'page_url': page_url,
                                                        'issue_date': issue_date,
-                                                       'years_list': YEARS,
-                                                       'months_list': MONTHS,
                                                        'previous_date': previous_date,
-                                                       'next_date': next_date,
-                                                       'days_list': DAYS}, context_instance=RequestContext(request))
+                                                       'next_date': next_date}, context_instance=RequestContext(request))
             

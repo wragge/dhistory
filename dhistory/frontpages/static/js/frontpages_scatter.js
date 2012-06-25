@@ -61,7 +61,7 @@ $(function () {
             point: {
                 events: {
                     click: function() {
-                        url = '/frontpages/' + this.options.n + '/' + this.x + '/words/'
+                        url = '/frontpages/' + this.options.n + '/' + this.x + '/' + total_type + '/' 
                         window.location.href = url;
                     }
                 }

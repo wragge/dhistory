@@ -2,6 +2,7 @@
 {% block extra_scripts %}
 <script src="{{ STATIC_URL }}js/frontpages_simple_nav.js"></script>
 {% endblock %}
+{% block page_title %}:: The front page{% endblock %}
 {% block content %}
     <div class="container-fluid">
         <div class="hero-unit">
@@ -9,12 +10,14 @@
             <p>The front page of the newspaper is where the &lsquo;big&rsquo; stories are printed. But this hasn't always been the case.
             The design and function of the front page has changed greatly over time. 
             Here you explore this change...<p>
+            
         </div>
       <div class="row-fluid">
         <div class="span1"></div>
         <div class="span4 offset1">
             <h2>Newspapers</h2>
             <a class="thumbnail" href="/frontpages/53/words/"><img src="{{ STATIC_URL }}images/words.png"></a>
+            <p>Follow changes in the design of specific newspapers.<p>
             <form>
             <select id="newspaper" class="span12">
             </select>
@@ -25,6 +28,7 @@
         <div class="span4">
             <h2>Categories</h2>
             <a class="thumbnail" href="/frontpages/all/article/"><img src="{{ STATIC_URL }}images/scatter.png"></a>
+            <p>Explore the changing frequency of different types of article.</p>
             <form>
             <select id="category" class="span12">
                 <option value="">Choose a category</option>
