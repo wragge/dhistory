@@ -17,7 +17,11 @@ $(function () {
     });
     $("#show_scatter").click(function() {
         category = $("#category").val();
-        url = "/frontpages/all/" + category + "/words/";
+        if (category == 'illustrated') {
+            url = "/frontpages/all/illustrated/";
+        } else {
+            url = "/frontpages/all/" + category + "/words/";
+        }
         window.location.href = url;
         return false;
     });

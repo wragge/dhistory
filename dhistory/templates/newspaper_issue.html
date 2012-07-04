@@ -52,6 +52,12 @@
                 <div class="row-fluid">
                     <div class="span7">
                         <div id="container" style="min-width: 300px; height: 300px; margin: 0 auto"></div>
+                        <p>
+                            <ul class="nav nav-pills">
+                                <li class="active"><a class="pie_type" id="words" href="#">Words</a></li>
+                                <li><a class="pie_type" id="total" href="#">Number of articles</a></li>
+                            </ul>
+                        </p>
                     </div>
                     <div class="span5">
                         <a href="{{ page_url }}" class="thumbnail">
@@ -65,7 +71,7 @@
                         {% for article in articles_list %}
                             <h3>{{ article.grouper }}</h3>
                             {% for art in article.list %}
-                                <p><a href="{{ art.url }}" class="article_title">{{ art.title }}</a> ({{ art.word_count }} words)</p>
+                                <p><a href="{{ art.url }}" class="article_title">{{ art.title }}</a> ({{ art.word_count }} words){% if art.illustrated %} [illustrated]{% endif %}</p>
                             {% endfor %}
                         {% endfor %}
                     </div>

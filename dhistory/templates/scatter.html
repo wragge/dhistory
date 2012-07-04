@@ -7,7 +7,7 @@
     var newspapers = {{ newspapers|safe }};
     var data = {{ data|safe }};
     var total_type = "{{ total_type }}";
-    {% if total_type == 'number' %}
+    {% if total_type == 'number' or total_type == 'illustrated' %}
         var y_min = 0;
         var y_text = "Number of items per issue";
     {% elif total_type == 'words' %}
@@ -30,9 +30,11 @@
                 <option value="lists">Detailed lists, results, guides</option>
                 <option value="family">Family notices</option>
                 <option value="literature">Literature</option>
+                <option value="illustrated">Illustrated article</option>
             </select>
             <label>View:</label>
             <select id="view" class="span8">
+                <option value="">---</option>
                 <option value="words" selected="selected">Words</option>
                 <option value="number">Number</option>
             </select>
@@ -50,11 +52,13 @@
                 </li>
             </ul>
             <h1>{{ category_long }}</h1>
-                        <p>
+            <p>
+            {% if total_type != "illustrated" %}
             <ul class="nav nav-pills">
                 <li {% if total_type == 'words' %}class="active"{% endif %}><a href="/frontpages/all/{{ category }}/words/">Word count</a></li>
                 <li {% if total_type == 'number' %}class="active"{% endif %}><a href="/frontpages/all/{{ category }}/number/">Number of articles</a></li>
             </ul>
+            {% endif %}
             </p>
             <div id="container" style="min-width: 400px; height: 600px; margin: 0 auto"></div>
             {% include 'social.html' %}

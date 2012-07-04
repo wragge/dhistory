@@ -11,38 +11,40 @@ $(function () {
         });
     }
     var chart;
-    chart = new Highcharts.Chart({
-        chart: {
-            renderTo: 'container',
-            type: 'pie'
-        },
-        title: {
-            text: ''
-        },
-        tooltip: {
-                formatter: function() {
-                    return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.percentage, 2) +' %';
-                }
+    function make_chart(type) {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container',
+                type: 'pie'
             },
-        plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        color: '#000000',
-                        connectorColor: '#000000',
-                        formatter: function() {
-                            return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.percentage, 2) +' %';
+            title: {
+                text: ''
+            },
+            tooltip: {
+                    formatter: function() {
+                        return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.percentage, 2) +' %';
+                    }
+                },
+            plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            color: '#000000',
+                            connectorColor: '#000000',
+                            formatter: function() {
+                                return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.percentage, 2) +' %';
+                            }
                         }
                     }
-                }
-            },
-        series: [{
-                    data: series['words'],
-                    type: 'pie'
-                }]
-    });
+                },
+            series: [{
+                        data: series[type],
+                        type: 'pie'
+                    }]
+        });
+    }
     $("#show").click(function() {
         newspaper_id = $("#newspaper").val();
         url = "/frontpages/" + newspaper_id + "/words/";
@@ -65,4 +67,11 @@ $(function () {
             return false;
         })
     });
+    $(".pie_type").click(function() {
+       type = $(this).prop("id");
+       make_chart(type);
+       $("li.active").removeClass("active");
+       $(this).parent().addClass("active");
+    });
+    make_chart('words');
 });

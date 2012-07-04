@@ -46,11 +46,12 @@
                     </li>
                     <li><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{ month }}/words/">Word count</a></li>
                     <li><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{month }}/number/">Number of articles</a></li>
+                    <li><a href="/frontpages/{{ newspaper.newspaper_id }}/{{ year }}/{{month }}/illustrated/">Illustrated articles</a></li>
                 </ul>
                 </p>
                 <table class="table table-bordered">
                     <thead>
-                        <tr><th rowspan="2">Issue</th><th colspan="2">Advertising</th><th colspan="2">Articles</th><th colspan="2">Detailed lists, results, guides</th><th colspan="2">Family Notices</th><th colspan="2">Literature</th></tr>
+                        <tr><th rowspan="2">Issue</th><th colspan="2">Advertising</th><th colspan="2">Articles</th><th colspan="2">Detailed lists, results, guides</th><th colspan="2">Family Notices</th><th colspan="2">Literature</th><th rowspan="2">Illustrated</th></tr>
                         <tr><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th></tr>
                     </thead>
                     <tbody>
@@ -67,6 +68,7 @@
                             <td>{% if issue.1.family.words %}{{ issue.1.family.words }}{% endif %}</td>
                             <td>{% if issue.1.literature.total %}{{ issue.1.literature.total }}{% endif %}</td>
                             <td>{% if issue.1.literature.words %}{{ issue.1.literature.words }}{% endif %}</td>
+                            <td>{% if issue.1.illustrated %}{{ issue.1.illustrated }}{% endif %}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

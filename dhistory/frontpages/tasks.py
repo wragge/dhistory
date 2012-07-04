@@ -135,6 +135,10 @@ def generate_totals():
     for newspaper in Newspaper.objects.all():
         get_newspaper_totals2(newspaper)
         
+def generate_totals_illustrated():
+    for newspaper in Newspaper.objects.all():
+        get_newspaper_totals_illustrated(newspaper)
+        
 def get_newspaper_totals(newspaper):
     print 'Processing: %s' % newspaper.newspaper_title
     id = newspaper.newspaper_id
@@ -235,3 +239,35 @@ def get_newspaper_totals2(newspaper):
                         average = float(total) / month_issues[month]
                         all_totals.append(Total(newspaper=newspaper, year=year, month=month, total_type='words', category=category, value=total, average=average))
         Total.objects.bulk_create(all_totals)
+        
+def get_newspaper_totals_illustrated(newspaper):
+    print 'Processing: %s' % newspaper.newspaper_title
+    id = newspaper.newspaper_id
+    dates = list(Article.objects.filter(newspaper_id=id).values_list('article_date', flat=True).distinct().order_by('article_date'))
+    start_year = dates[0].year
+    end_year = dates[-1].year
+    for year in range(start_year, end_year+1):
+        all_totals = []
+        year_ill = 0
+        month_ill = {}
+        for m in range(1,13):
+            month_ill[m] = 0
+        print 'Year: %s' % year
+        articles = Article.objects.filter(page_text='1').filter(article_date__year=year,newspaper_id=id,illustrated=True).order_by('article_date')
+        for article in articles.iterator():
+            year_ill += 1
+            month_ill[article.article_date.month] += 1
+        print 'Total: %s' % year_ill
+        if year_ill > 0:
+            all_totals.append(Total(newspaper=newspaper, year=year, month=0, total_type='illustrated', value=year_ill))
+            for month, value in month_ill.items():
+                if value > 0:
+                    all_totals.append(Total(newspaper=newspaper, year=year, month=month, total_type='illustrated', value=value))
+            Total.objects.bulk_create(all_totals)
+            
+def update_averages():
+    totals = Total.objects.filter(total_type='illustrated')
+    for total in totals.iterator():
+        issues = Total.objects.get(newspaper=total.newspaper, total_type='issues', year=total.year, month=total.month)
+        total.average = float(total.value) / issues.value
+        total.save()

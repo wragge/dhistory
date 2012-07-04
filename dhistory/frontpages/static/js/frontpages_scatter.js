@@ -75,8 +75,12 @@ $(function () {
     });
     $("#show_scatter").click(function() {
         var category = $("#category").val();
-        var view = $("#view").val();
-        var url = "/frontpages/all/" + category + "/" + view + "/";
+        if (category == "illustrated") {
+            var url = "/frontpages/all/illustrated/";
+        } else {
+            var view = $("#view").val();
+            var url = "/frontpages/all/" + category + "/" + view + "/";
+        }
         window.location.href = url;
         return false;
     });

@@ -14,7 +14,7 @@ class Article(models.Model):
     corrections = models.IntegerField(default=0, blank=True)
     category = models.CharField(max_length=100, blank=True, db_index=True)
     word_count = models.IntegerField(blank=True, null=True)
-    illustrated = models.BooleanField(default=False)
+    illustrated = models.BooleanField(default=False, db_index=True)
     status = models.CharField(max_length=5, default='yes', choices=(('yes', 'yes'),('no', 'no'),('maybe','maybe')))
     harvested = models.DateTimeField(auto_now=True)
     page_text = models.CharField(max_length=20, blank=True, null=True, db_index=True)

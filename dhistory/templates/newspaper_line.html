@@ -15,6 +15,9 @@
     {% elif total_type == 'number' %}
         var y_label = 'Average articles per issue';
         var y_min = -1;
+    {% elif total_type == 'illustrated' %}
+        var y_label = 'Average illustrated articles per issue';
+        var y_min = 0;
     {% endif %}
 </script>
 {% endblock %}
@@ -42,6 +45,7 @@
                 </li>
                 <li {% if total_type == 'words' %}class="active"{% endif %}><a href="/frontpages/{{ newspaper.newspaper_id }}/words/">Word count</a></li>
                 <li {% if total_type == 'number' %}class="active"{% endif %}><a href="/frontpages/{{ newspaper.newspaper_id }}/number/">Number of articles</a></li>
+                <li {% if total_type == 'illustrated' %}class="active"{% endif %}><a href="/frontpages/{{ newspaper.newspaper_id }}/illustrated/">Illustrated articles</a></li>
             </ul>
             </p>
             <div id="container" style="min-width: 400px; height: 600px; margin: 0 auto"></div>

@@ -37,11 +37,12 @@
                 </li>
                 <li><a href="/frontpages/{{ newspaper.newspaper_id }}/words/">Word count</a></li>
                 <li><a href="/frontpages/{{ newspaper.newspaper_id }}/number/">Number of articles</a></li>
+                <li><a href="/frontpages/{{ newspaper.newspaper_id }}/illustrated/">Illustrated articles</a></li>
             </ul>
             </p>
             <table class="table table-bordered">
                 <thead>
-                    <tr><th rowspan="2">Year</th><th rowspan="2">Issues</th><th colspan="2">Advertising</th><th colspan="2">Articles</th><th colspan="2">Detailed lists, results, guides</th><th colspan="2">Family Notices</th><th colspan="2">Literature</th></tr>
+                    <tr><th rowspan="2">Year</th><th rowspan="2">Issues</th><th colspan="2">Advertising</th><th colspan="2">Articles</th><th colspan="2">Detailed lists, results, guides</th><th colspan="2">Family Notices</th><th colspan="2">Literature</th><th rowspan="2">Illustrated</th></tr>
                     <tr><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th><th>Number</th><th>Words</th></tr>
                 </thead>
                 <tbody>
@@ -59,6 +60,7 @@
                         <td>{% if year.family.words.value %}{{ year.family.words.value }} ({{ year.family.words.average|floatformat:"-2" }}){% endif %}</td>
                         <td>{% if year.literature.total.value %}{{ year.literature.total.value }} ({{ year.literature.total.average|floatformat:"-2" }}){% endif %}</td>
                         <td>{% if year.literature.words.value %}{{ year.literature.words.value }} ({{ year.literature.words.average|floatformat:"-2" }}){% endif %}</td>
+                        <td>{% if year.illustrated.value %}{{ year.illustrated.value }} ({{ year.illustrated.average|floatformat:"-2" }}){% endif %}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
