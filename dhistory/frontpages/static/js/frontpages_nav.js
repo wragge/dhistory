@@ -14,15 +14,15 @@ $(function () {
     }
     function clear_years() {
         $("#year").empty();
-        $("#year").append('<option value="">Year</option>'); 
+        $("#year").append('<option value="0">Year</option>'); 
     }
     function clear_months() {
         $("#month").empty();
-        $("#month").append('<option value="">Month</option>'); 
+        $("#month").append('<option value="0">Month</option>'); 
     }
     function clear_days() {
         $("#day").empty();
-        $("#day").append('<option value="">Day</option>');
+        $("#day").append('<option value="0">Day</option>');
     }
     $("#show").click(function() {
         newspaper_id = $("#newspaper").val();
@@ -31,10 +31,10 @@ $(function () {
         day = $("#day").val();
         view = $("#view").val();
         url = "/frontpages/" + newspaper_id + "/";
-        if (year) { url += year + "/";}
-        if (year && month) { url += month + "/";}
-        if (year && month && day) { url += day + "/";}
-        if (!day && view) { url += view + "/";}
+        if (year > 0) { url += year + "/";}
+        if (year > 0 && month > 0) { url += month + "/";}
+        if (year > 0 && month > 0 && day > 0) { url += day + "/";}
+        if (day == 0 && view) { url += view + "/";}
         categories = []
         $('input:checkbox:checked').each(function() {
             categories.push($(this).val());
@@ -51,7 +51,7 @@ $(function () {
         url = "/frontpages/autocomplete/" + newspaper_id + "/";
         $.getJSON(url, function(data) {
             $("#year").empty();
-            $("#year").append('<option value="">Year</option>');
+            $("#year").append('<option value="0">Year</option>');
             $.each(data, function(index, year) {
                 $("#year").append('<option value="' + year + '">' + year + '</option>')
             });
@@ -68,7 +68,7 @@ $(function () {
             url = "/frontpages/autocomplete/" + newspaper_id + "/" + year + "/";
             $.getJSON(url, function(data) {
                 $("#month").empty();
-                $("#month").append('<option value="">Month</option>');
+                $("#month").append('<option value="0">Month</option>');
                 $.each(data, function(index, month) {
                     $("#month").append('<option value="' + month + '">' + months[month-1] + '</option>')
                 });
@@ -88,7 +88,7 @@ $(function () {
             url = "/frontpages/autocomplete/" + newspaper_id + "/" + year + "/" + month + "/";
             $.getJSON(url, function(data) {
                 $("#day").empty();
-                $("#day").append('<option value="">Day</option>');
+                $("#day").append('<option value="0">Day</option>');
                 $.each(data, function(index, day) {
                     $("#day").append('<option value="' + day + '">' + day + '</option>')
                 });
