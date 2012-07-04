@@ -68,6 +68,7 @@ $(function () {
         })
     });
     $(".pie_type").click(function() {
+        event.preventDefault();
        type = $(this).prop("id");
        make_chart(type);
        $("li.active").removeClass("active");
