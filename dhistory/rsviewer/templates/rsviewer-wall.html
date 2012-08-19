@@ -31,7 +31,7 @@
           <h4 id="title">{{ details.title }}</h4>
           <div id="wall">
           {% for image in images %}
-            <a class="element fancybox" rel="wall" data-page-id="{{ image }}" href="http://localhost:8000/archives/naa/images/{{ barcode }}/{{ image }}/" title="Page {{ image }}"><img src="/archives/naa/images/{{ barcode }}/{{ image }}/?width=200&height=200"></a>
+            <a class="element fancybox" rel="wall" data-page-id="{{ image }}" href="/archives/naa/images/{{ barcode }}/{{ image }}/" title="Page {{ image }}"><img src="/archives/naa/images/{{ barcode }}/{{ image }}/?width=200&height=200"></a>
           {% endfor %}
           </div>
           <div id="page_nav"><a href="/archives/naa/items/{{ barcode }}/wall/?page={{ page }}">Next</a></div>
