@@ -22,7 +22,7 @@ CACHE_TIMEOUT = 60 * 60
 def show_naa_home(request):
     return render_to_response('rsviewer-home.html', {}, context_instance=RequestContext(request))
 
-def show_naa_page(request, barcode, page):
+def show_naa_page(request, barcode, page=1):
     page = int(page)
     details = cache.get('%s-details' % barcode)
     if details is None:
@@ -88,7 +88,10 @@ def get_total_pages(barcode):
     print url
     response = get_url(url)
     soup = BeautifulSoup(response.read())
-    num_pages = soup.find('input', id='Hidden3')['value']
+    try:
+        num_pages = soup.find('input', id='Hidden3')['value']
+    except TypeError:
+        raise Http404
     print num_pages
     return int(num_pages)
 
@@ -108,9 +111,12 @@ def get_item_details(barcode):
     br.form['NAASessionID'] = '{%s}' % session_id
     response2 = br.submit()
     soup = BeautifulSoup(response2.read())
-    series = unicode(soup.find('div', text='Series number').parent.next_sibling.next_sibling.a.string)
-    control = unicode(soup.find('div', text='Control symbol').parent.next_sibling.next_sibling.string)
-    title = unicode(soup.find('div', text='Title').parent.next_sibling.next_sibling.string)
+    try:
+        series = unicode(soup.find('div', text='Series number').parent.next_sibling.next_sibling.a.string)
+        control = unicode(soup.find('div', text='Control symbol').parent.next_sibling.next_sibling.string)
+        title = unicode(soup.find('div', text='Title').parent.next_sibling.next_sibling.string)
+    except AttributeError:
+        raise Http404
     return {'series': series, 'control': control, 'title': title}
 
 def get_naa_image(request, barcode, page):

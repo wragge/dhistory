@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load utilities %}
 {% block extra_scripts %}
-    <script src="{{ STATIC_URL }}js/archives-item-script.js"></script>
+    <script src="{{ STATIC_URL }}js/archives-home-script.js"></script>
 {% endblock %}
 {% block extra_styles %}
     <link href="{{ STATIC_URL }}css/archives-wall-style.css" rel="stylesheet">
@@ -16,8 +16,8 @@
         <div class="row-fluid home-info">
             <div class="span6">
                 <form class="inline-search">
-                   <input id="find-barcode" type="text" placeholder="item barcode">
-                   <button class="btn btn-primary btn-large">Show</button>
+                   <input id="barcode" type="text" placeholder="item barcode">
+                   <button id="get-barcode" class="btn btn-primary btn-large">Show</button>
                 </form>
                 <h4>Features include:</h4>
                 <ul>
