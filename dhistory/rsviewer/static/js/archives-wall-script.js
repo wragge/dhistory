@@ -2,6 +2,7 @@ $(function () {
     var el, barcode = $("#details").data('barcode');
     var $container = $('#wall');
     $container.imagesLoaded( function(){
+        $("#loading-message").remove();
         $container.isotope({
             layoutMode: 'fitRows',
             itemSelector : '.element',
@@ -11,10 +12,12 @@ $(function () {
         navSelector  : '#page_nav',    // selector for the paged navigation 
         nextSelector : '#page_nav a',  // selector for the NEXT link (to page 2)
         itemSelector : '.element',     // selector for all items you'll retrieve
-        loading: {
-            finishedMsg: 'No more pages to load.',
-            img: 'http://i.imgur.com/qkKy8.gif'
-          }
+        loading : {
+			selector: '#wall',
+			msgText: 'loading more pages...',
+			img: 'http://i.imgur.com/qkKy8.gif',
+			finishedMsg: 'no more pages...'
+		}
         },
         // call Isotope as a callback
         function( newElements ) {

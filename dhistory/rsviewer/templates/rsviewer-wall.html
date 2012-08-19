@@ -29,12 +29,13 @@
         </div>
           <h2 id="details" data-barcode="{{ barcode }}" data-reference="{{ details.series }}, {{ details.control }}">National Archives of Australia: {{ details.series }}, {{ details.control }}</h2>
           <h4 id="title">{{ details.title }}</h4>
+          <div id="loading-message">loading images...</div>
           <div id="wall">
           {% for image in images %}
             <a class="element fancybox" rel="wall" data-page-id="{{ image }}" href="/archives/naa/images/{{ barcode }}/{{ image }}/" title="Page {{ image }}"><img src="/archives/naa/images/{{ barcode }}/{{ image }}/?width=200&height=200"></a>
           {% endfor %}
           </div>
-          <div id="page_nav"><a href="/archives/naa/items/{{ barcode }}/wall/?page={{ page }}">Next</a></div>
+          <div id="page_nav" class="hidden"><a href="/archives/naa/items/{{ barcode }}/wall/?page={{ page }}">Next</a></div>
           <p><a class="btn btn-primary" href="http://www.naa.gov.au/cgi-bin/Search?O=I&Number={{ barcode }}">View in RecordSearch</a></p>
       </div>
     </div>
