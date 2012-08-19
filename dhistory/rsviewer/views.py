@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.shortcuts import redirect
 from django.core.cache import cache
+from django.views.decorators.cache import cache_page
 from bs4 import BeautifulSoup
 import mechanize
 import urllib2
@@ -19,9 +20,11 @@ from django.http import Http404
 
 CACHE_TIMEOUT = 60 * 60
 
+@cache_page(CACHE_TIMEOUT)
 def show_naa_home(request):
     return render_to_response('rsviewer-home.html', {}, context_instance=RequestContext(request))
 
+@cache_page(CACHE_TIMEOUT)
 def show_naa_page(request, barcode, page=1):
     page = int(page)
     details = cache.get('%s-details' % barcode)
@@ -119,6 +122,7 @@ def get_item_details(barcode):
         raise Http404
     return {'series': series, 'control': control, 'title': title}
 
+@cache_page(CACHE_TIMEOUT)
 def get_naa_image(request, barcode, page):
     width = request.GET.get('width', '')
     height = request.GET.get('height', '')
