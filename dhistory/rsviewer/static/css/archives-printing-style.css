@@ -1,7 +1,7 @@
 p#details { font-weight: bold; }
 
 @media print {
-    img#page-image { max-width: 100% important!; max-height: 20cm; overflow: none; }
+    img.page-image { max-width: 100%; max-height: 22cm; overflow: none; }
     div.navbar-fixed-top { display: none; }
-    div.print-page { page-break-inside: avoid; page-break-after: always; page: normal;}
+    div.print-page { page-break-inside: avoid; page-break-after: always; }
 }

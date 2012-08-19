@@ -12,8 +12,8 @@
       <div class="span12">
           
           {% for page in pages %}
-          <div id="print-page">
-            <img src="/archives/naa/images/{{ barcode }}/{{ page }}/">
+          <div class="print-page">
+            <img class="page-image" src="/archives/naa/images/{{ barcode }}/{{ page }}/">
             <p id="details" data-barcode="{{ barcode }}" data-reference="{{ details.series }}, {{ details.control }}">National Archives of Australia: {{ details.series }}, {{ details.control }}, page {{ page }}</p>
             <p>Accessed on {% now "j F Y" %} via http://dhistory.org/archives/naa/items/{{ barcode }}/</p>
           </div>
