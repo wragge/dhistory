@@ -24,7 +24,7 @@ CACHE_TIMEOUT = 60 * 60
 def show_naa_home(request):
     return render_to_response('rsviewer-home.html', {}, context_instance=RequestContext(request))
     
-#@cache_page(CACHE_TIMEOUT)
+@cache_page(CACHE_TIMEOUT)
 def show_naa_connectors(request):
     return render_to_response('rsviewer-connectors.html', {}, context_instance=RequestContext(request))
 
