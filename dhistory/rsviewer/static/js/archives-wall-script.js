@@ -38,4 +38,8 @@ $(function () {
     $("#go-to").change(function() {
        window.location = "/archives/naa/items/" + barcode + "/" + $("#go-to").val() + "/";
     });
+    $("#print").click(function(event) {
+        event.preventDefault();
+        window.location = "/archives/naa/items/" + barcode + "/print/?pages=" + $("#print-range").val();
+    });
 });

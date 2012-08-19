@@ -80,7 +80,7 @@ def show_printing(request, barcode):
             for page_num in range(int(start), int(end) + 1):
                 print_pages.append(page_num)
         else:
-            print_pages.append(range)
+            print_pages.append(rng)
     return render_to_response('rsviewer-print.html', {'pages': print_pages, 'details': details, 'barcode': barcode, 'total': total}, context_instance=RequestContext(request))
         
 def get_total_pages(barcode):

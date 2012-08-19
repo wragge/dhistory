@@ -3,21 +3,21 @@
 {% block extra_scripts %}
 {% endblock %}
 {% block extra_styles %}
-    <link href="{{ STATIC_URL }}css/archives-wall-style.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/archives-printing-style.css" rel="stylesheet">
 {% endblock %}
 {% block page_title %}NAA: {{ details.series }}, {{ details.control }}{% endblock %}
 {% block content %}
-<div class="container-fluid">
+<div class="container-fluid printing">
     <div class="row-fluid">
       <div class="span12">
-          <h2 id="details" data-barcode="{{ barcode }}" data-reference="{{ details.series }}, {{ details.control }}">National Archives of Australia: {{ details.series }}, {{ details.control }}</h2>
-          <h3 id="title">{{ details.title }}</h3>
-          <div id="wall">
+          
           {% for page in pages %}
+          <div id="print-page">
             <img src="/archives/naa/images/{{ barcode }}/{{ page }}/">
-          {% endfor %}
+            <p id="details" data-barcode="{{ barcode }}" data-reference="{{ details.series }}, {{ details.control }}">National Archives of Australia: {{ details.series }}, {{ details.control }}, page {{ page }}</p>
+            <p>Accessed on {% now "j F Y" %} via http://dhistory.org/archives/naa/items/{{ barcode }}/</p>
           </div>
-          <div id="page_nav"><a href="/archives/naa/items/{{ barcode }}/wall/?page={{ page }}">Next</a></div>
+          {% endfor %}
       </div>
     </div>
 </div>
