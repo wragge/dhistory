@@ -1,7 +1,7 @@
 body { background: #333333; color: #E3E3E3;}
 h1, h2, h4, label { color: #e3e3e3; font-weight: normal; }
 
-#find-barcode {
+#barcode {
     font-size: 150%;
     width: 50%;
     height: 150%;
