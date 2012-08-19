@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load utilities %}
+{% load thumbnail %}
+{% block extra_scripts %}
+    <script src="{{ STATIC_URL }}js/archives-item-script.js"></script>
+{% endblock %}
+{% block extra_styles %}
+    <link href="{{ STATIC_URL }}css/archives-wall-style.css" rel="stylesheet">
+{% endblock %}
+{% block page_title %}NAA: {{ details.series }}, {{ details.control }}, page {{ page }}{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row-fluid">
+      <div id="page-image-container" class="span12">
+        <div id="button-bar">
+            <form class="form-inline">
+            <a class="btn" href="/archives/naa/items/{{barcode}}/wall/"><i class="icon-th"></i> Wall</a>
+            <a class="btn" {% if previous %}href="/archives/naa/items/{{barcode}}/{{ previous }}/"{% endif %}><i class="icon-backward"></i></a>
+            <select id="go-to">
+                {% mkrange 1 total|add:1 as page_range %}
+                {% for page_num in page_range %}
+                    <option value="{{ page_num }}">Page {{ page_num }} of {{ total }}</option>
+                {% endfor %}
+            </select>
+            <a class="btn" {% if next %}href="/archives/naa/items/{{barcode}}/{{ next }}/"{% endif %}><i class="icon-forward"></i></a>
+            <button class="btn" id="print"><i class="icon-print"></i> Print</button> <input type="text" id="print-range" value="1-{{ total }}"></input>
+            </form>
+        </div>
+          <h2 id="details" data-barcode="{{ barcode }}" data-reference="{{ details.series }}, {{ details.control }}" data-page="{{ page }}">National Archives of Australia: {{ details.series }}, {{ details.control }}, page {{ page }}</h2>
+          <h4 id="title">{{ details.title }}</h4>
+          <img id="page-image" src="/archives/naa/images/{{ barcode }}/{{ page }}/">
+          <p>Share: <a href="http://dhistory.org/archives/naa/items/{{ barcode }}/{{ page }}/">http://dhistory.org/archives/naa/items/{{ barcode }}/{{ page }}/</a></p>
+          <p><a class="btn btn-primary" href="http://www.naa.gov.au/cgi-bin/Search?O=I&Number={{ barcode }}">View in RecordSearch</a></p>
+    {% include 'rsviewer-social.html' %}  
+    </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block footer %}
+    {% include 'rsviewer-footer.html' %}
+{% endblock %}

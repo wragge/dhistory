@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load utilities %}
+{% load thumbnail %}
+{% block extra_scripts %}
+{% endblock %}
+{% block extra_styles %}
+    <link href="{{ STATIC_URL }}css/archives-wall-style.css" rel="stylesheet">
+{% endblock %}
+{% block page_title %}NAA: {{ details.series }}, {{ details.control }}{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span12">
+          <h2 id="details" data-barcode="{{ barcode }}" data-reference="{{ details.series }}, {{ details.control }}">National Archives of Australia: {{ details.series }}, {{ details.control }}</h2>
+          <h3 id="title">{{ details.title }}</h3>
+          <div id="wall">
+          {% for page in pages %}
+            <img src="/archives/naa/images/{{ barcode }}/{{ page }}/">
+          {% endfor %}
+          </div>
+          <div id="page_nav"><a href="/archives/naa/items/{{ barcode }}/wall/?page={{ page }}">Next</a></div>
+      </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load utilities %}
+{% load thumbnail %}
+{% block extra_scripts %}
+    <script src="{{ STATIC_URL }}js/archives-item-script.js"></script>
+{% endblock %}
+{% block extra_styles %}
+    <link href="{{ STATIC_URL }}css/archives-wall-style.css" rel="stylesheet">
+{% endblock %}
+{% block page_title %}Archives Viewer :: National Archives of Australia{% endblock %}
+{% block content %}
+<div class="container-fluid home">
+    <div class="row-fluid">
+      <div class="span12">
+        <h1>Archives viewer</h1>
+        <h2>National Archives of Australia</h2>
+        <div class="row-fluid home-info">
+            <div class="span6">
+                <form class="inline-search">
+                   <input id="find-barcode" type="text" placeholder="item barcode">
+                   <button class="btn btn-primary btn-large">Show</button>
+                </form>
+                <h4>Features include:</h4>
+                <ul>
+                    <li>The wall &ndash; view all pages at once</li>
+                    <li>Persistent links to individual pages</li>
+                    <li>Easy printing of a whole file or selected pages</li>
+                <ul>
+            </div>
+            <div class="span6 lead">
+                <p>An experimental viewer for digitised files in the National Archives of Australia&rsquo;s RecordSearch database.</p>
+                
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block footer %}
+    {% include 'rsviewer-footer.html' %}
+{% endblock %}

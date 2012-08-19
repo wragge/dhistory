@@ -1,0 +1,50 @@
+body { background: #333333; color: #E3E3E3;}
+h1, h2, h4, label { color: #e3e3e3; font-weight: normal; }
+
+#find-barcode {
+    font-size: 150%;
+    width: 50%;
+    height: 150%;
+    line-height: 150%;
+}
+#wall {
+    margin: 20px 0 20px 0;
+}
+
+div.home p {
+
+}
+
+div.home-info {
+    margin-top: 40px;
+}
+div.social {
+    margin-top: 20px;
+    color: #323232;
+}
+
+a.element {
+    margin: 5px;
+    -webkit-box-shadow:0 0 15px #000000; 
+    -moz-box-shadow: 0 0 15px #000000; 
+    box-shadow:0 0 15px #000000;
+    }
+select#go-to, input#print-range { width: 10%;}
+img#page-image {
+    margin: 20px 0 20px 0;
+    -webkit-box-shadow:0 0 30px #000000; 
+    -moz-box-shadow: 0 0 30px #000000; 
+    box-shadow:0 0 30px #000000;
+    }
+
+hr { border-top: #666666; border-bottom: 1px solid #666666;}
+
+footer p {
+    color: #999999;
+}
+
+
+@media print {
+    img#page-image { max-width: 100% important!; max-height: 20cm; overflow: none; }
+    div#button-bar {display: none;}
+}

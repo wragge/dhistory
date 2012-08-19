@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from django.conf import settings
 from piston.resource import Resource
 from dhistory.frontpages.views import *
 from dhistory.frontpages.handlers import AutocompleteHandler
@@ -35,6 +36,19 @@ urlpatterns = patterns('',
     url(r'^frontpages/autocomplete/(?P<newspaper_id>\d+)/(?P<year>\d{4})/$', autocomplete_resource),
     url(r'^frontpages/autocomplete/(?P<newspaper_id>\d+)/(?P<year>\d{4})/(?P<month>\d{1,2})/$', autocomplete_resource),
 )
+urlpatterns += patterns('dhistory.rsviewer.views',
+    url(r'^archives/naa/$', 'show_naa_home'),
+    url(r'^archives/naa/items/(?P<barcode>\d+)/(?P<page>\d+)/$', 'show_naa_page'),
+    url(r'^archives/naa/items/(?P<barcode>\d+)/wall/$', 'show_wall'),
+    url(r'^archives/naa/items/(?P<barcode>\d+)/print/$', 'show_printing'),
+    url(r'^archives/naa/images/(?P<barcode>\d+)/(?P<page>\d+)/$', 'get_naa_image'), 
+)
 urlpatterns += patterns('django.views.generic.simple',
     url(r'^$', 'direct_to_template', {'template': 'home.html'}, name='home'),
 )
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+            'document_root': settings.MEDIA_ROOT,
+        }),
+   )
