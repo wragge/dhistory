@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load utilities %}
+{% block extra_scripts %}
+    <script src="{{ STATIC_URL }}js/archives-home-script.js"></script>
+{% endblock %}
+{% block extra_styles %}
+    <link href="{{ STATIC_URL }}css/archives-wall-style.css" rel="stylesheet">
+{% endblock %}
+{% block page_title %} :: Archives Viewer :: National Archives of Australia{% endblock %}
+{% block content %}
+<div class="container-fluid home">
+    <div class="row-fluid">
+      <div class="span12">
+        <h1>Archives viewer</h1>
+        <h2>National Archives of Australia &ndash; Connectors</h2>
+        <p class="lead connector-info">You don&rsquo;t have to keep cutting and pasting barcodes &ndash; use one of these connectors to automatically jump from RecordSearch to the Archives Viewer.</p>
+        <div class="row-fluid home-info">
+            <div class="span6">
+                <h3>Bookmarklet</h3>
+                <p>Just drag this link &ndash; <a href="javascript:(function(){if%20(window.location.href.match(/ItemDetail\.aspx/)){var%20pattern=/Barcode=(\d+)/;}else%20if%20(window.location.href.match(/Imagine\.asp/)){var%20pattern=/B=(\d+)/;}else{alert(&quot;Whoops!%20I%20can't%20find%20a%20barcode.&quot;)}window.location='http://dhistory.org/archives/naa/items/'+pattern.exec(window.location.href)[1]})();">Archives Viewer</a> &ndash; to your bookmarks toolbar.</p>
+                <p>Alternatively, you can manually create a bookmark and copy and paste this code into the url field:</p>
+                <p><textarea class="span12">javascript:(function(){if%20(window.location.href.match(/ItemDetail\.aspx/)){var%20pattern=/Barcode=(\d+)/;}else%20if%20(window.location.href.match(/Imagine\.asp/)){var%20pattern=/B=(\d+)/;}else{alert("Whoops!%20I%20can't%20find%20a%20barcode.")}window.location='http://dhistory.org/archives/naa/items/'+pattern.exec(window.location.href)[1]})();</textarea></p>
+                
+            </div>
+            <div class="span6">
+                <h3>Userscript</h3>
+                <p>If you're using Firefox or Chrome, you can install <a href="http://userscripts.org/scripts/show/141795">this userscript</a>.</p>
+                <p>As well as automatically rewriting digitised file links so that they open here, this script displays the number of pages in a digitised file inside RecordSearch.</p>
+                
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block footer %}
+    {% include 'rsviewer-footer.html' %}
+{% endblock %}

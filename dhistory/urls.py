@@ -38,6 +38,7 @@ urlpatterns = patterns('',
 )
 urlpatterns += patterns('dhistory.rsviewer.views',
     url(r'^archives/naa/$', 'show_naa_home'),
+    url(r'^archives/naa/connectors/$', 'show_naa_connectors'),
     url(r'^archives/naa/items/(?P<barcode>\d+)/$', 'show_naa_page'),
     url(r'^archives/naa/items/(?P<barcode>\d+)/(?P<page>\d+)/$', 'show_naa_page'),
     url(r'^archives/naa/items/(?P<barcode>\d+)/wall/$', 'show_wall'),

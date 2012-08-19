@@ -43,6 +43,7 @@ footer p {
     color: #999999;
 }
 
+p.connector-info { margin-top: 20px;}
 #infscr-loading {
   position: fixed;
   text-align: center;
