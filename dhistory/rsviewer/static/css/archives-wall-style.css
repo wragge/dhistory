@@ -9,6 +9,7 @@ h1, h2, h4, label { color: #e3e3e3; font-weight: normal; }
 }
 #wall {
     margin: 20px 0 20px 0;
+    min-height: 200px;
 }
 
 div.home p {

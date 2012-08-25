@@ -1,8 +1,11 @@
 $(function () {
     var el, barcode = $("#details").data('barcode');
     var $container = $('#wall');
+    $container.showLoading({
+                   'addClass': 'loading-indicator-bars'
+                                              });
     $container.imagesLoaded( function(){
-        $("#loading-message").remove();
+        $container.hideLoading();
         $container.isotope({
             layoutMode: 'fitRows',
             itemSelector : '.element',

@@ -4,10 +4,12 @@
     <script src="{{ STATIC_URL }}js/jquery.isotope.min.js"></script>
     <script src="{{ STATIC_URL }}js/jquery.infinitescroll.min.js"></script>
     <script src="{{ STATIC_URL }}js/jquery.fancybox.pack.js?v=2.0.6"></script>
+    <script src="{{ STATIC_URL }}js/showLoading/js/jquery.showLoading.min.js"></script>
     <script src="{{ STATIC_URL }}js/archives-wall-script.js"></script>
 {% endblock %}
 {% block extra_styles %}
     <link href="{{ STATIC_URL }}css/jquery.fancybox.css?v=2.0.6" rel="stylesheet">
+    <link href="{{ STATIC_URL }}js/showLoading/css/showLoading.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/archives-wall-style.css" rel="stylesheet">
 {% endblock %}
 {% block page_title %} :: Archives Viewer :: NAA: {{ details.series }}, {{ details.control }}{% endblock %}
@@ -29,7 +31,6 @@
         </div>
           <h2 id="details" data-barcode="{{ barcode }}" data-reference="{{ details.series }}, {{ details.control }}">National Archives of Australia: {{ details.series }}, {{ details.control }}</h2>
           <h4 id="title">{{ details.title }}</h4>
-          <div id="loading-message">loading images...</div>
           <div id="wall">
           {% for image in images %}
             <a class="element fancybox" rel="wall" data-page-id="{{ image }}" href="/archives/naa/images/{{ barcode }}/{{ image }}/" title="Page {{ image }}"><img src="/archives/naa/images/{{ barcode }}/{{ image }}/?width=200&height=200"></a>
