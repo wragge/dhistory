@@ -36,7 +36,9 @@
           {% endfor %}
           </div>
           <div id="page_nav" class="hidden"><a href="/archives/naa/items/{{ barcode }}/wall/?page={{ page }}">Next</a></div>
+          <p>Share: <a href="http://dhistory.org/archives/naa/items/{{ barcode }}/{{ page }}/">http://dhistory.org/archives/naa/items/{{ barcode }}/wall/</a></p>
           <p><a class="btn btn-primary" href="http://www.naa.gov.au/cgi-bin/Search?O=I&Number={{ barcode }}">View in RecordSearch</a></p>
+          {% include 'rsviewer-social.html' %} 
       </div>
     </div>
 </div>
