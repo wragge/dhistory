@@ -22,6 +22,7 @@
                 {% endfor %}
             </select>
             <a class="btn" {% if next %}href="/archives/naa/items/{{barcode}}/{{ next }}/"{% endif %}><i class="icon-forward"></i></a>
+            <button class="btn" id="zoom"><i id="zoom_icon" class="icon-zoom-in"></i> Enlarge</button>
             <button class="btn" id="print"><i class="icon-print"></i> Print</button> <input type="text" id="print-range" value="1-{{ total }}"></input>
             </form>
         </div>

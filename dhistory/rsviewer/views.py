@@ -28,7 +28,7 @@ def show_naa_home(request):
 def show_naa_connectors(request):
     return render_to_response('rsviewer-connectors.html', {}, context_instance=RequestContext(request))
 
-@cache_page(CACHE_TIMEOUT)
+#@cache_page(CACHE_TIMEOUT)
 def show_naa_page(request, barcode, page=1):
     page = int(page)
     details = cache.get('%s-details' % barcode)
@@ -126,11 +126,11 @@ def get_item_details(barcode):
         raise Http404
     return {'series': series, 'control': control, 'title': title}
 
-@cache_page(CACHE_TIMEOUT)
-def get_naa_image(request, barcode, page):
+#@cache_page(CACHE_TIMEOUT)
+def get_naa_image(request, barcode, page, size=None):
     width = request.GET.get('width', '')
     height = request.GET.get('height', '')
-    source_filename = get_naa_image_source(barcode, page)
+    source_filename = get_naa_image_source(barcode, page, size)
     source_filepath = os.path.join(settings.MEDIA_ROOT, 'archives/naa/%s' % source_filename)
     if width or height:
         deriv_filename = '%s-%s-%sx%s.jpg' % (barcode, page, width, height)
@@ -149,12 +149,16 @@ def get_naa_image(request, barcode, page):
     print filename
     return redirect('%sarchives/naa/%s' % (settings.MEDIA_URL, filename))
 
-def get_naa_image_source(barcode, page):
-    filename = '%s-%s.jpg' % (barcode, page)
+def get_naa_image_source(barcode, page, size=None):
+    size_code = 'P' if size == 'large' else 'R'
+    if size:
+        filename = '%s-%s-%s.jpg' % (barcode, page, size_code)
+    else:
+        filename = '%s-%s.jpg' % (barcode, page)
     filepath = os.path.join(settings.MEDIA_ROOT, 'archives/naa/%s' % filename)
     if not os.path.exists(filepath):
         h = httplib2.Http()
-        url = 'http://naa16.naa.gov.au/rs_images/ShowImage.php?B=%s&S=%s&T=R' % (barcode, page)
+        url = 'http://naa16.naa.gov.au/rs_images/ShowImage.php?B=%s&S=%s&T=%s' % (barcode, page, size_code)
         try:
             resp, content = h.request(url, "GET")
             with open(filepath, 'wb') as f:
