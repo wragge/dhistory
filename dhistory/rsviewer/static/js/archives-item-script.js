@@ -13,11 +13,19 @@ $(function () {
         event.preventDefault();
         var zoom = $("#zoom").text();
         if (zoom == " Enlarge") {
+            $("#page-image").showLoading();
             $("#page-image").attr("src", "/archives/naa/images/" + barcode + "/" + page + "/large/");
-            $("#zoom").html('<i class="icon-zoom-out"></i> Reduce');
+            $('#page-image-container').imagesLoaded(function() {
+                $("#page-image").hideLoading();
+                $("#zoom").html('<i class="icon-zoom-out"></i> Reduce');
+            });
         } else if (zoom == " Reduce") {
+            $("#page-image").showLoading();
             $("#page-image").attr("src", "/archives/naa/images/" + barcode + "/" + page + "/");
-            $("#zoom").html('<i class="icon-zoom-in"></i> Enlarge');
+            $('#page-image-container').imagesLoaded(function() {
+                $("#page-image").hideLoading();
+                $("#zoom").html('<i class="icon-zoom-in"></i> Enlarge');
+            });
         }
     });
 });

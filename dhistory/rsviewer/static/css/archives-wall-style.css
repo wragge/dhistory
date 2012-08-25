@@ -44,6 +44,22 @@ footer p {
 }
 
 p.connector-info { margin-top: 20px;}
+
+#status {
+    margin-top: 20px;
+  text-align: center;
+  z-index: 100;
+  background: white;
+  background: hsla( 0, 0%, 100%, 0.8 );
+  padding: 20px;
+  color: #222;
+  font-size: 100%;
+  font-weight: normal;
+  -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+          border-radius: 5px;
+}
+
 #infscr-loading {
   position: fixed;
   text-align: center;

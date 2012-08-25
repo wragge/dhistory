@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 {% load utilities %}
 {% block extra_scripts %}
+    <script src="{{ STATIC_URL }}js/jquery.isotope.min.js"></script>
+    <script src="{{ STATIC_URL }}js/showLoading/js/jquery.showLoading.min.js"></script>
     <script src="{{ STATIC_URL }}js/archives-item-script.js"></script>
 {% endblock %}
 {% block extra_styles %}
+    <link href="{{ STATIC_URL }}js/showLoading/css/showLoading.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/archives-wall-style.css" rel="stylesheet">
 {% endblock %}
 {% block page_title %} :: Archives Viewer :: NAA: {{ details.series }}, {{ details.control }}, page {{ page }}{% endblock %}
