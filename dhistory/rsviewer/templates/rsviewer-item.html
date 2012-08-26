@@ -41,10 +41,12 @@
     </div>
     </div>
 </div>
-<div id="snippets" prefix="bibo: http://purl.org/ontology/bibo/ arch: http://purl.org/archival/vocab/arch# locah: http://data.archiveshub.ac.uk/def/">
+<div id="snippets" prefix="bibo: http://purl.org/ontology/bibo/ arch: http://purl.org/archival/vocab/arch# locah: http://data.archiveshub.ac.uk/def/ ore: http://www.openarchives.org/ore/terms/">
     <div about="#page" typeof="bibo:Manuscript arch:Manuscript" property="rdfs:label" content="National Archives of Australia: {{ details.series }}, {{ details.control }}, page {{ page }}">
         <div rel="foaf:img" resource="http://dhistory.org/archives/naa/images/{{ barcode }}"></div>
-        <div rel="bibo:isPartOf dc:isPartOf" resource="#file"></div>
+        <div property="bibo:locator" content="{{ details.series }}, {{ details.control }}, page {{ page }}"></div>
+        <div property="bibo:pageStart bibo:pageEnd" content="{{ page }}"></div>
+        <div rel="bibo:isPartOf dc:isPartOf ore:isAggregatedBy" resource="#file"></div>
         <div rel="locah:accessProvidedBy arch:heldBy" resource="#repository"></div>
     </div>
     <div about="#file" typeof="locah:ArchiveResource bibo:Collection arch:Collection" property="rdfs:label" content="National Archives of Australia: {{ details.series }}, {{ details.control }}">
@@ -52,8 +54,9 @@
         <div property="bibo:locator dc:identifer" content="{{ details.series }}, {{ details.control }}"></div>
         <div property="dc:identifier" content="{{ barcode }}"></div>
         <div rel="rdfs:seeAlso" resource="http://www.naa.gov.au/cgi-bin/Search?O=I&Number={{ barcode }}"></div>
-        <div rel="bibo:isPartOf dc:isPartOf" resource="#series"></div>
+        <div rel="bibo:isPartOf dc:isPartOf ore:isAggregatedBy" resource="#series"></div>
         <div rel="locah:accessProvidedBy arch:heldBy" resource="#repository"></div>
+        <div rel="owl:sameAs" resource="http://dhistory.org/archives/naa/{{ barcode }}/#file"></div>
     </div>
     <div about="#series" typeof="locah:ArchiveResource bibo:Collection arch:Collection" property="rdfs:label" content="National Archives of Australia: {{ details.series }}">
         <div property="bibo:locator dc:identifer" content="{{ details.series }}"></div>
