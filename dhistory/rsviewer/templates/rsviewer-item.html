@@ -19,7 +19,7 @@
       <div id="page-image-container" class="span12">
         <div id="button-bar">
             <form class="form-inline">
-            <a class="btn" href="/archives/naa/items/{{barcode}}/wall/"><i class="icon-th"></i> Wall</a>
+            <a class="btn" href="/archives/naa/items/{{barcode}}/"><i class="icon-th"></i> Wall</a>
             <a class="btn" {% if previous %}href="/archives/naa/items/{{barcode}}/{{ previous }}/"{% endif %}><i class="icon-backward"></i></a>
             <select id="go-to">
                 {% mkrange 1 total|add:1 as page_range %}

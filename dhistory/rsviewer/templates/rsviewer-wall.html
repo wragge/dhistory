@@ -37,7 +37,7 @@
           {% endfor %}
           </div>
           <div id="page_nav" class="hidden"><a href="/archives/naa/items/{{ barcode }}/wall/?page={{ page }}">Next</a></div>
-          <p>Share: <a href="http://dhistory.org/archives/naa/items/{{ barcode }}/{{ page }}/">http://dhistory.org/archives/naa/items/{{ barcode }}/wall/</a></p>
+          <p>Share: <a href="http://dhistory.org/archives/naa/items/{{ barcode }}/">http://dhistory.org/archives/naa/items/{{ barcode }}/</a></p>
           <p><a class="btn btn-primary" href="http://www.naa.gov.au/cgi-bin/Search?O=I&Number={{ barcode }}">View in RecordSearch</a></p>
           {% include 'rsviewer-social.html' %} 
       </div>
@@ -52,14 +52,15 @@
         <div rel="bibo:isPartOf dc:isPartOf ore:isAggregatedBy" resource="#series"></div>
         <div rel="locah:accessProvidedBy arch:heldBy" resource="#repository"></div>
         <div rel="ore:aggregates dc:hasPart bibo:hasPart">
-            {% for image in images %}
-                <div about="#page-{{ image }}" typeof="bibo:Manuscript arch:Manuscript" property="rdfs:label" content="National Archives of Australia: {{ details.series }}, {{ details.control }}, page {{ image }}">
-                    <div rel="foaf:img" resource="http://dhistory.org/archives/naa/images/{{ barcode }}/{{ image }}"></div>
-                    <div property="bibo:locator" content="{{ details.series }}, {{ details.control }}, page {{ image }}"></div>
-                    <div property="bibo:pageStart bibo:pageEnd" content="{{ image }}"></div>
+            {% mkrange 1 total|add:1 as pages %}
+            {% for page in pages %}
+                <div about="#page-{{ page }}" typeof="bibo:Manuscript arch:Manuscript" property="rdfs:label" content="National Archives of Australia: {{ details.series }}, {{ details.control }}, page {{ page }}">
+                    <div rel="foaf:img" resource="http://dhistory.org/archives/naa/images/{{ barcode }}/{{ page }}"></div>
+                    <div property="bibo:locator" content="{{ details.series }}, {{ details.control }}, page {{ page }}"></div>
+                    <div property="bibo:pageStart bibo:pageEnd" content="{{ page }}"></div>
                     <div rel="bibo:isPartOf dc:isPartOf ore:isAggregatedBy" resource="#file"></div>
                     <div rel="locah:accessProvidedBy arch:heldBy" resource="#repository"></div>
-                    <div rel="owl:sameAs" resource="http://dhistory.org/archives/naa/{{ barcode }}/{{ image }}/#page"></div>
+                    <div rel="owl:sameAs" resource="http://dhistory.org/archives/naa/{{ barcode }}/{{ page }}/#page"></div>
                 </div>
             {% endfor %}
         </div>
