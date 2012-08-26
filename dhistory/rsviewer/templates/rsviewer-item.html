@@ -32,7 +32,7 @@
             <button class="btn" id="print"><i class="icon-print"></i> Print</button> <input type="text" id="print-range" value="1-{{ total }}"></input>
             </form>
         </div>
-          <h2 id="details" data-barcode="{{ barcode }}" data-reference="{{ details.series }}, {{ details.control }}" data-page="{{ page }}">National Archives of Australia: {{ details.series }}, {{ details.control }}, page {{ page }}</h2>
+          <h2 id="details" data-barcode="{{ barcode }}" data-page="{{ page }}">National Archives of Australia: {{ details.series }}, {{ details.control }}, page {{ page }}</h2>
           <h4 id="title">{{ details.title }}</h4>
           <img id="page-image" src="/archives/naa/images/{{ barcode }}/{{ page }}/">
           <p>Share: <a href="http://dhistory.org/archives/naa/items/{{ barcode }}/{{ page }}/">http://dhistory.org/archives/naa/items/{{ barcode }}/{{ page }}/</a></p>
@@ -43,7 +43,7 @@
 </div>
 <div id="snippets" prefix="bibo: http://purl.org/ontology/bibo/ arch: http://purl.org/archival/vocab/arch# locah: http://data.archiveshub.ac.uk/def/ ore: http://www.openarchives.org/ore/terms/">
     <div about="#page" typeof="bibo:Manuscript arch:Manuscript" property="rdfs:label" content="National Archives of Australia: {{ details.series }}, {{ details.control }}, page {{ page }}">
-        <div rel="foaf:img" resource="http://dhistory.org/archives/naa/images/{{ barcode }}"></div>
+        <div rel="foaf:img" resource="http://dhistory.org/archives/naa/images/{{ barcode }}/{{ page }}/large/"></div>
         <div property="bibo:locator" content="{{ details.series }}, {{ details.control }}, page {{ page }}"></div>
         <div property="bibo:pageStart bibo:pageEnd" content="{{ page }}"></div>
         <div rel="bibo:isPartOf dc:isPartOf ore:isAggregatedBy" resource="#file"></div>
@@ -65,6 +65,7 @@
     </div>
     <div about="#repository" typeof="locah:Repository foaf:Agent dc:Agent arch:Archive" label="National Archives of Australia">
         <div property="foaf:name" content="National Archives of Australia"></div>
+        <div property="foaf:nick" content="NAA"></div>
         <div rel="owl:sameAs" resource="http://dbpedia.org/resource/National_Archives_of_Australia"></div>
         <div rel="rdfs:seeAlso" resource="http://directory.archivists.org.au/archives/3/"></div>
         <div property="foaf:homepage" content="http://naa.gov.au"></div>
