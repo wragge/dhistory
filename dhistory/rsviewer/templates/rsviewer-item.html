@@ -9,6 +9,9 @@
     <link href="{{ STATIC_URL }}js/showLoading/css/showLoading.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/archives-wall-style.css" rel="stylesheet">
 {% endblock %}
+{% block namespaces %}
+    
+{% endblock %}
 {% block page_title %} :: Archives Viewer :: NAA: {{ details.series }}, {{ details.control }}, page {{ page }}{% endblock %}
 {% block content %}
 <div class="container-fluid">
@@ -38,7 +41,32 @@
     </div>
     </div>
 </div>
-
+<div id="snippets" prefix="bibo: http://purl.org/ontology/bibo/ arch: http://purl.org/archival/vocab/arch# locah: http://data.archiveshub.ac.uk/def/">
+    <div about="#page" typeof="bibo:Manuscript arch:Manuscript" property="rdfs:label" content="National Archives of Australia: {{ details.series }}, {{ details.control }}, page {{ page }}">
+        <div rel="foaf:img" resource="http://dhistory.org/archives/naa/images/{{ barcode }}"></div>
+        <div rel="bibo:isPartOf dc:isPartOf" resource="#file"></div>
+        <div rel="locah:accessProvidedBy arch:heldBy" resource="#repository"></div>
+    </div>
+    <div about="#file" typeof="locah:ArchiveResource bibo:Collection arch:Collection" property="rdfs:label" content="National Archives of Australia: {{ details.series }}, {{ details.control }}">
+        <div property="dc:title" content="{{ details.title }}"></div>
+        <div property="bibo:locator dc:identifer" content="{{ details.series }}, {{ details.control }}"></div>
+        <div property="dc:identifier" content="{{ barcode }}"></div>
+        <div rel="rdfs:seeAlso" resource="http://www.naa.gov.au/cgi-bin/Search?O=I&Number={{ barcode }}"></div>
+        <div rel="bibo:isPartOf dc:isPartOf" resource="#series"></div>
+        <div rel="locah:accessProvidedBy arch:heldBy" resource="#repository"></div>
+    </div>
+    <div about="#series" typeof="locah:ArchiveResource bibo:Collection arch:Collection" property="rdfs:label" content="National Archives of Australia: {{ details.series }}">
+        <div property="bibo:locator dc:identifer" content="{{ details.series }}"></div>
+        <div rel="rdfs:seeAlso" resource="http://www.naa.gov.au/cgi-bin/Search?Number={{ details.series }}"></div>
+        <div rel="locah:accessProvidedBy arch:heldBy" resource="#repository"></div>
+    </div>
+    <div about="#repository" typeof="locah:Repository foaf:Agent dc:Agent arch:Archive" label="National Archives of Australia">
+        <div property="foaf:name" content="National Archives of Australia"></div>
+        <div rel="owl:sameAs" resource="http://dbpedia.org/resource/National_Archives_of_Australia"></div>
+        <div rel="rdfs:seeAlso" resource="http://directory.archivists.org.au/archives/3/"></div>
+        <div property="foaf:homepage" content="http://naa.gov.au"></div>
+    </div>
+</div>
 {% endblock %}
 {% block footer %}
     {% include 'rsviewer-footer.html' %}
