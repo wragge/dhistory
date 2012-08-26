@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.conf import settings
+from django.views.generic.simple import redirect_to
 from piston.resource import Resource
 from dhistory.frontpages.views import *
 from dhistory.frontpages.handlers import AutocompleteHandler
@@ -41,6 +42,7 @@ urlpatterns += patterns('dhistory.rsviewer.views',
     url(r'^archives/naa/connectors/$', 'show_naa_connectors'),
     url(r'^archives/naa/items/(?P<barcode>\d+)/$', 'show_wall'),
     url(r'^archives/naa/items/(?P<barcode>\d+)/(?P<page>\d+)/$', 'show_naa_page'),
+    url(r'^archives/naa/items/(?P<barcode>\d+)/wall/$', redirect_to, { 'url': '/archives/naa/items/%(barcode)s/'}),
     url(r'^archives/naa/items/(?P<barcode>\d+)/wall/$', 'show_wall'),
     url(r'^archives/naa/items/(?P<barcode>\d+)/print/$', 'show_printing'),
     url(r'^archives/naa/images/(?P<barcode>\d+)/(?P<page>\d+)/$', 'get_naa_image'),

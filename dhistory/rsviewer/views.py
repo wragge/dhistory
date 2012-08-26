@@ -28,7 +28,7 @@ def show_naa_home(request):
 def show_naa_connectors(request):
     return render_to_response('rsviewer-connectors.html', {}, context_instance=RequestContext(request))
 
-#@cache_page(CACHE_TIMEOUT)
+@cache_page(CACHE_TIMEOUT)
 def show_naa_page(request, barcode, page=1):
     page = int(page)
     details = cache.get('%s-details' % barcode)
