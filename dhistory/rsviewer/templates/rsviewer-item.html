@@ -46,24 +46,25 @@
         <div rel="foaf:img" resource="http://dhistory.org/archives/naa/images/{{ barcode }}/{{ page }}/large/"></div>
         <div property="bibo:locator" content="{{ details.series }}, {{ details.control }}, page {{ page }}"></div>
         <div property="bibo:pageStart bibo:pageEnd" content="{{ page }}"></div>
-        <div rel="bibo:isPartOf dc:isPartOf ore:isAggregatedBy" resource="#file"></div>
-        <div rel="locah:accessProvidedBy arch:heldBy" resource="#repository"></div>
+        <div rel="bibo:isPartOf dc:isPartOf ore:isAggregatedBy" resource="/archives/naa/items/{{ barcode }}#file"></div>
+        <div rel="locah:accessProvidedBy arch:heldBy" resource="/archives/naa/items/{{ barcode }}#repository"></div>
     </div>
-    <div about="#file" typeof="locah:ArchiveResource bibo:Collection arch:Collection" property="rdfs:label" content="National Archives of Australia: {{ details.series }}, {{ details.control }}">
+    <div about="/archives/naa/items/{{ barcode }}#file" typeof="locah:ArchiveResource bibo:Collection arch:Collection" property="rdfs:label" content="National Archives of Australia: {{ details.series }}, {{ details.control }}">
         <div property="dc:title" content="{{ details.title }}"></div>
         <div property="bibo:locator dc:identifer" content="{{ details.series }}, {{ details.control }}"></div>
         <div property="dc:identifier" content="{{ barcode }}"></div>
+        <div rel="bibo:hasPart dc:hasPart ore:aggregates" resource="#page"></div>
         <div rel="rdfs:seeAlso" resource="http://www.naa.gov.au/cgi-bin/Search?O=I&Number={{ barcode }}"></div>
-        <div rel="bibo:isPartOf dc:isPartOf ore:isAggregatedBy" resource="#series"></div>
-        <div rel="locah:accessProvidedBy arch:heldBy" resource="#repository"></div>
-        <div rel="owl:sameAs" resource="http://dhistory.org/archives/naa/{{ barcode }}/#file"></div>
+        <div rel="bibo:isPartOf dc:isPartOf ore:isAggregatedBy" resource="/archives/naa/items/{{ barcode }}#series"></div>
+        <div rel="locah:accessProvidedBy arch:heldBy" resource="/archives/naa/items/{{ barcode }}#repository"></div>
     </div>
-    <div about="#series" typeof="locah:ArchiveResource bibo:Collection arch:Collection" property="rdfs:label" content="National Archives of Australia: {{ details.series }}">
+    <div about="/archives/naa/items/{{ barcode }}#series" typeof="locah:ArchiveResource bibo:Collection arch:Collection" property="rdfs:label" content="National Archives of Australia: {{ details.series }}">
         <div property="bibo:locator dc:identifer" content="{{ details.series }}"></div>
+        <div rel="bibo:hasPart dc:hasPart ore:aggregates" resource="/archives/naa/items/{{ barcode }}#file"></div>
         <div rel="rdfs:seeAlso" resource="http://www.naa.gov.au/cgi-bin/Search?Number={{ details.series }}"></div>
-        <div rel="locah:accessProvidedBy arch:heldBy" resource="#repository"></div>
+        <div rel="locah:accessProvidedBy arch:heldBy" resource="/archives/naa/items/{{ barcode }}#repository"></div>
     </div>
-    <div about="#repository" typeof="locah:Repository foaf:Agent dc:Agent arch:Archive" label="National Archives of Australia">
+    <div about="/archives/naa/items/{{ barcode }}#repository" typeof="locah:Repository foaf:Agent dc:Agent arch:Archive" label="National Archives of Australia">
         <div property="foaf:name" content="National Archives of Australia"></div>
         <div property="foaf:nick" content="NAA"></div>
         <div rel="owl:sameAs" resource="http://dbpedia.org/resource/National_Archives_of_Australia"></div>
