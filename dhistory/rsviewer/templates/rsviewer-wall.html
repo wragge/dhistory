@@ -54,7 +54,7 @@
         <div rel="ore:aggregates dc:hasPart bibo:hasPart">
             {% mkrange 1 total|add:1 as pages %}
             {% for page in pages %}
-                <div about="/archives/naa/items/{{ barcode }}/{{ page }}#page" typeof="bibo:Manuscript arch:Manuscript" property="rdfs:label" content="National Archives of Australia: {{ details.series }}, {{ details.control }}, page {{ page }}">
+                <div about="/archives/naa/items/{{ barcode }}/{{ page }}/#page" typeof="bibo:Manuscript arch:Manuscript" property="rdfs:label" content="National Archives of Australia: {{ details.series }}, {{ details.control }}, page {{ page }}">
                     <div rel="foaf:img" resource="http://dhistory.org/archives/naa/images/{{ barcode }}/{{ page }}"></div>
                     <div property="bibo:locator" content="{{ details.series }}, {{ details.control }}, page {{ page }}"></div>
                     <div property="bibo:pageStart bibo:pageEnd" content="{{ page }}"></div>
