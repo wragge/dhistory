@@ -1,0 +1,162 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title></title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <!-- CSS: implied media=all -->
+  <!-- CSS concatenated and minified via ant build script-->
+  <link rel="stylesheet" href="{{ STATIC_URL}}css/style.css">
+  <link href="{{ STATIC_URL}}css/960.css" rel="stylesheet" media="screen" />
+  <link href="{{ STATIC_URL}}css/ui/jquery-ui.css" rel="stylesheet" media="screen" />
+  <link href="{{ STATIC_URL}}js/mylibs/showLoading/css/showLoading.css" rel="stylesheet" media="screen" />
+  <!-- end CSS-->
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
+
+  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="js/libs/modernizr-2.0.6.min.js"></script>
+</head>
+
+<body>
+
+  <div id="container" class="container_12">
+    <header class="grid_12">
+        <div id="type_selector">Show: <select id="graph_type"><option value="ratio">proportion of total articles</option><option value="total">number of articles</option></select></div>
+        <h1>QueryPic</h1>
+        <h2>Exploring digitised newspapers from Australia &amp; New Zealand</h2>
+    </header>
+    <div id="main" role="main">
+        <div class="grid_12">
+            <p>
+                Word or phrase: <input type="text" id="query">
+                Country: <select id="country">
+                    <option value="aus">Australia</option>
+                    <option value="nz">New Zealand</option>
+                </select>
+                <input type="radio" name="accuracy" id="exact" value="exact" checked="checked"></input> exact
+                <input type="radio" name="accuracy" id="fuzzy" value="fuzzy"></input> fuzzy
+                <button id="do_query">Show</button>
+                <button id="clear_last">Clear last</button> <button id="clear_all">Clear all</button>
+            </p>
+            <p><input type="text" id="query_url"></p>
+            <div id="status"></div>
+            <div id="graph" style="height:500px;width:940px; "></div>
+        </div>
+        <div id="trove-results" class="grid_12">
+            <p id="link"></p>
+            <p id="twitter-button"><iframe id="twitter-frame" allowtransparency="true" frameborder="0" scrolling="no"
+        src="//platform.twitter.com/widgets/tweet_button.html"
+        style="width:130px; height:20px;"></iframe></p>
+            <div id="articles">
+
+            </div>
+	</div>
+        <div class="grid_12">
+            <div id="intro">
+                <p></p>
+            </div>
+            <div class="grid_4 box alpha">
+                <div class="box-content">
+                <h4>Hints</h4>
+                <ul id="intro-hints">
+                    <li>Just enter a word or phrase to graph its frequency over time.</li>
+                    <li>Enclose phrases in double quotes.</li>
+                    <li>&lsquo;Exact&rsquo; is more accurate &ndash; no plurals or variations.</li>
+                    <li>&lsquo;Fuzzy&rsquo; is more inclusive &ndash; returns variations and mispellings.</li>
+                </ul>
+                <ul id="graph-hints">
+                    <li>Enclose phrases in double quotes.</li>
+                    <li>Add more keywords to compare results</li>
+                    <li>&lsquo;Exact&rsquo; is more accurate &ndash; no plurals or variations.</li>
+                    <li>&lsquo;Fuzzy&rsquo; is more inclusive &ndash; returns variations and mispellings.</li>
+                    <li>Click on a point to view articles</li>
+                    <li>Click on a label in the legend to hide it</li>
+                    <li>Click and drag to zoom the graph</li>
+                </ul>
+                </div>
+            </div>
+
+            <div id="notes" class="grid_4 box">
+                <div class="box-content">
+                <div id="intro-notes">
+                <h4>What am I searching?</h4>
+                <p>QueryPic searches the massive digitised newspaper collections made available by <a href="http://paperspast.natlib.govt.nz/cgi-bin/paperspast">Papers Past</a> (New Zealand) and <a href="http://trove.nla.gov.au/newspaper/">Trove</a> (Australia).</p>
+                </div>
+                <div id="graph-notes">
+                <h4>Why so few NZ results?</h4>
+                <p>DigitalNZ currently searches article titles only, while Trove searches the full text. This means the total results for Papers Past are lower than you might expect. It also makes it hard to create meaningful comparisons between countries. Hopefully this will change in the future.</p>
+                </div>
+                </div>
+            </div>
+            <div class="grid_4 box omega">
+                <div class="box-content">
+                <h4>About</h4>
+                <p>QueryPic talks to the newspaper databases using APIs provided by <a href="http://digitalnz.org.nz/">DigitalNZ</a> and <a href="http://trove.nla.gov.au/general/api">Trove</a>.
+                <p>Comments or questions to Tim Sherratt (<a href="http://twitter.com/wragge">@wragge</a>). More at <a href="http://discontents.com.au/shed/experiments/the-new-querypic-or-what-a-difference-an-api-makes">discontents</a> and the <a href="http://wraggelabs.com/emporium/trove-tools/newspaper-search-summariser/">WraggeLabs Emporium</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+    </footer>
+  </div> <!--! end of #container -->
+
+
+  <!-- JavaScript at the bottom for fast page loading -->
+
+  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.6.2.min.js"><\/script>')</script>
+
+
+  <!-- scripts concatenated and minified via ant build script-->
+  <script src="{{ STATIC_URL}}js/mylibs/highcharts/highcharts.js" type="text/javascript"></script>
+  <script type="text/javascript" src="{{ STATIC_URL}}js/mylibs/showLoading/js/jquery.showLoading.min.js"></script>
+  <script src="{{ STATIC_URL}}js/mylibs/jquery-ui-1.8.17.min.js" type="text/javascript"></script>
+  <script src="{{ STATIC_URL}}js/mylibs/purl.js" type="text/javascript"></script>
+  <script defer src="{{ STATIC_URL}}js/plugins.js"></script>
+  <script defer src="{{ STATIC_URL}}js/script.js"></script>
+  <script id="series_data">
+    var series_data = [];
+  </script>
+  <!-- end scripts-->
+
+
+  <!-- Change UA-XXXXX-X to be your site's ID -->
+  <script>
+    window._gaq = [['_setAccount','UA-12509340-1'],['_trackPageview'],['_trackPageLoadTime']];
+    Modernizr.load({
+      load: ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js'
+    });
+  </script>
+
+
+  <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
+       chromium.org/developers/how-tos/chrome-frame-getting-started -->
+  <!--[if lt IE 7 ]>
+    <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+    <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+  <![endif]-->
+
+</body>
+</html>
