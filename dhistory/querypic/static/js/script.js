@@ -12,7 +12,7 @@ var dataSources = {
 		}
 };
 function graphData() {
-	this.label = '';
+	this.name = '';
 	this.query = '';
         this.api_query = '';
         this.web_query = '';
@@ -78,13 +78,20 @@ $(function(){
     var decade_end = 195;
     var year_start = 1803;
     var year_end = 1954;
+    var interval = "year";
     var decade_current = decade_start;
+    var year_current = year_start;
     queries = [];
     var query_type = 'ratio';
 
     function get_query() {
-        if ($("#query").val() !== "") {
+        if (dataSources.sources.length > 0) {
+            $("#graph").show();
+            makeChart("ratio");
+        } else if ($("#query").val() !== "") {
             queries.push($("#query").val() + "|" + $("#country").val() + "|" + $("input[name=accuracy][type=radio]:checked").val());
+        } else if ($("#query_url").val() !== "") {
+            queries.push($("#query_url").val());
         } else if (window.location.href.match(/\?trove_query=.+/)) {
             queries.push($.url().param("trove_query"));
         } else if (window.location.href.match(/\?q=.+/)) {
@@ -279,6 +286,7 @@ $(function(){
         var trove_params = $.url(trove_url).param();
         var keywords = [];
         var facets = [];
+        var limits = {};
         if (trove_params['q']) {
             keywords.push(trove_params['q']);
         }
@@ -292,23 +300,15 @@ $(function(){
             keywords.push('NOT+(' + trove_params['notWords'].split(' ').join('+OR+') + ')');
         }
         if (trove_params['fromyyyy'] || trove_params['toyyyy']) {
-            years = [];
             if (trove_params['fromyyyy']) {
                 year_start = trove_params['fromyyyy'];
                 decade_start = Math.floor(year_start / 10);
                 decade_current = decade_start;
-                years.push(year_start);
-            } else {
-                years.push("*");
             }
             if (trove_params['toyyyy']) {
                 year_end = trove_params['toyyyy'];
                 decade_end = Math.floor(year_end / 10);
-                years.push(year_end);
-            } else {
-                years.push("*");
             }
-            keywords.push("date:[" + years.join(" TO ") + "]");
         }
         if (trove_params['l-title']) {
             var titles = [];
@@ -324,17 +324,18 @@ $(function(){
         qstring = keywords.join('+');
         query['total'] = trove_api_url + "&q=" + qstring + facets + "&facet=year&n=0&encoding=json&key=" + trove_api_key;
         query['ratio'] = trove_api_url + facets + "&facet=year&n=0&encoding=json&key=" + trove_api_key;
-        var api_query = trove_api_url + "&q=" + qstring + facets + "&n=20&encoding=json&key=" + trove_api_key;
-        var web_query = trove_html_url + qstring + facets;
         query['country'] = "Aus";
         current_series = new graphData();
-        current_series.name = qstring;
-        current_series.query = qstring + facets;
-        current_series.api_query = api_query;
-        current_series.web_query = web_query;
+        current_series.name = qstring.replace('+', ' ');
+        current_series.query = trove_url;
+        current_series.api_query = trove_api_url + "&q=" + qstring + facets + "&n=20&encoding=json&key=" + trove_api_key;
+        current_series.web_query = remove_dates(trove_url);
         current_series.interval = "year";
         current_series.country = "Aus";
         current_series.accuracy = "exact";
+   }
+   function remove_dates(url) {
+        return url.replace(/&(from|to)(yyyy|mm|dd)=\d*/gi, '');
    }
    function make_link() {
         var params = [];
@@ -362,9 +363,9 @@ $(function(){
         $("#type_selector").show();
         $('#graph_type').val(type);
         $("#query").val("");
-        var link = make_link();
-        $("#link").html("Share this: <a href='" + link + "'>" + link + "</a>");
-        $("#twitter-frame").attr('src', twitter_url + "?url=" + encodeURIComponent(link) + "&text=" + encodeURIComponent("Made with QueryPic") + "&hashtags=querypic");
+        //var link = make_link();
+        //$("#link").html("Share this: <a href='" + link + "'>" + link + "</a>");
+        //$("#twitter-frame").attr('src', twitter_url + "?url=" + encodeURIComponent(link) + "&text=" + encodeURIComponent("Made with QueryPic") + "&hashtags=querypic");
         if (dataSources.sources[0].interval == "month") {
             x_date = "%b %Y";
             xLabel = "Month";
@@ -556,10 +557,23 @@ $(function(){
     });
     $("#clear_last").button().click(function(){ clear_last(); });
     $("#clear_all").button().click(function(){ clear_all(); });
+    $("#save_graph").submit(function() {
+        $("#id_sources").val(JSON.stringify(dataSources));
+    });
+    $.each(sources, function(key, source) {
+        new_source = new graphData();
+        new_source['data'] = source['data'];
+        new_source['name'] = source['name'];
+        new_source['query'] = source['query'];
+        new_source['api_query'] = source['api_query'];
+        new_source['web_query'] = source['web_query'];
+        new_source['interval'] = source['interval'];
+        new_source['country'] = source['country'];
+        new_source['accuracy'] = source['accuracy'];
+        dataSources["sources"].push(new_source);
+    });
     get_query();
 });
-
-
 
 
 

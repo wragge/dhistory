@@ -34,7 +34,7 @@
   <!-- All JavaScript at the bottom, except for Modernizr / Respond.
        Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
        For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
-  <script src="js/libs/modernizr-2.0.6.min.js"></script>
+  <script src="{{ STATIC_URL }}js/libs/modernizr-2.0.6.min.js"></script>
 </head>
 
 <body>
@@ -59,6 +59,10 @@
                 <button id="clear_last">Clear last</button> <button id="clear_all">Clear all</button>
             </p>
             <p><input type="text" id="query_url"></p>
+            <form id="save_graph" action="/querypic/" method="post">{% csrf_token %}
+          {{ form.as_p }}
+          <input type="submit" value="Submit" />
+        </form>
             <div id="status"></div>
             <div id="graph" style="height:500px;width:940px; "></div>
         </div>
@@ -67,7 +71,7 @@
             <p id="twitter-button"><iframe id="twitter-frame" allowtransparency="true" frameborder="0" scrolling="no"
         src="//platform.twitter.com/widgets/tweet_button.html"
         style="width:130px; height:20px;"></iframe></p>
-            <div id="articles">
+        <div id="articles">
 
             </div>
 	</div>
@@ -125,8 +129,8 @@
   <!-- JavaScript at the bottom for fast page loading -->
 
   <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.6.2.min.js"><\/script>')</script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
 
 
   <!-- scripts concatenated and minified via ant build script-->
@@ -138,6 +142,9 @@
   <script defer src="{{ STATIC_URL}}js/script.js"></script>
   <script id="series_data">
     var series_data = [];
+  </script>
+  <script type="text/javascript">
+    var sources = {{ sources|safe }};
   </script>
   <!-- end scripts-->
 

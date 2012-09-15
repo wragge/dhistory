@@ -49,7 +49,8 @@ urlpatterns += patterns('dhistory.rsviewer.views',
     url(r'^archives/naa/images/(?P<barcode>\d+)/(?P<page>\d+)/large/$', 'get_naa_image', {'size': 'large'}),
 )
 urlpatterns += patterns('dhistory.querypic.views',
-    url(r'^querypic/$', 'show_querypic'),
+    url(r'^querypic/$', 'show_querypic_form'),
+    url(r'^querypic/(?P<short_url>[a-z0-9]+)/$', 'show_querypic_form'),
 )
 urlpatterns += patterns('django.views.generic.simple',
     url(r'^$', 'direct_to_template', {'template': 'home.html'}, name='home'),
