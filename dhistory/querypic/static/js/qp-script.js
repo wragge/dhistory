@@ -314,7 +314,7 @@ $(function(){
             var titles = [];
             if ($.isArray(trove_params['l-title'])) {
                 $.each(trove_params['l-title'], function(index, value) {
-                    titles.push(value.match(/\|(\d+)/)[1]);
+                    titles.push(value.match(/\|?(\d+)/)[1]);
                 });
             } else {
                 titles.push(trove_params['l-title'].match(/\|(\d+)/)[1]);
@@ -548,7 +548,8 @@ $(function(){
     $('#graph_type').change(function() {
        makeChart($('#graph_type').val());
     });
-    $("#do_query").button().click(function(){ get_query(); });
+    $("#do_keyword_query").button().click(function(){ get_query(); });
+    $("#do_url_query").button().click(function(){ get_query(); });
     $('#query').keydown(function(event) {
         if (event.which == 13) {
             event.preventDefault();
@@ -560,17 +561,9 @@ $(function(){
     $("#save_graph").submit(function() {
         $("#id_sources").val(JSON.stringify(dataSources));
     });
-    $.each(sources, function(key, source) {
-        new_source = new graphData();
-        new_source['data'] = source['data'];
-        new_source['name'] = source['name'];
-        new_source['query'] = source['query'];
-        new_source['api_query'] = source['api_query'];
-        new_source['web_query'] = source['web_query'];
-        new_source['interval'] = source['interval'];
-        new_source['country'] = source['country'];
-        new_source['accuracy'] = source['accuracy'];
-        dataSources["sources"].push(new_source);
+    $('#query_forms a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
     });
     get_query();
 });

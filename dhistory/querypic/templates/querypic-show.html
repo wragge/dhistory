@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block extra_scripts %}
+    <script src="{{ STATIC_URL}}js/highcharts.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/showLoading/js/jquery.showLoading.min.js"></script>
+    <script src="{{ STATIC_URL}}js/purl.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/qp-show-script.js"></script>
+    <script id="series_data">
+        var series_data = [];
+    </script>
+  {% if qpgraph %}
+  <script type="text/javascript">
+        var sources = {{ qpgraph.data|safe }};
+    </script>
+    {% endif %}
+{% endblock %}
+{% block extra_styles %}
+    <link href="{{ STATIC_URL }}css/qp-style.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row-fluid">
+        <header class="span12">
+            <h1>QueryPic <small class="muted">Exploring digitised newspapers from Australia &amp; New Zealand</small></h1>
+            <ul class="nav nav-pills">
+              <li><a href="/querypic/">Home</a></li>
+              <li><a href="/querypic/explore/">Explore</a></li>
+              <li><a href="/querypic/create/">Create</a></li>
+            </ul>
+            <h2>{{ qpgraph.title }}</h2>
+        </header>
+    </div>
+    <div class="row-fluid">
+        <div class="span10">
+            <div id="status"></div>
+            <div id="graph" style="height:600px;width:100%; "></div>
+
+        </div>
+        <div class="span2">
+            <div id="type_selector"><select class="input-medium" id="graph_type"><option value="ratio">proportion of total articles</option><option value="total">number of articles</option></select></div>
+            {% if qpgraph.creator %}
+                <h5>Created by</h5>
+                <p>
+                    {% if qpgraph.creator_url %}
+                        <a href="{{ qpgraph.creator_url }}">{{ qpgraph.creator }}</a>
+                    {% else %}
+                        {{ qpgraph.creator }}
+                    {% endif %}
+                </p>
+            {% endif %}
+            <h5>Date created</h5>
+            <p>{{ qpgraph.created|date:"j F Y" }}</p>
+            {% if qpgraph.description %}
+                <h5>Description</h5>
+                {{ qpgraph.description|linebreaks }}
+            {% endif %}
+            <h5>Data summary</h5>
+            <div id="series-details" class="accordion">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

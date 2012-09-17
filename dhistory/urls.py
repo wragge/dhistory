@@ -1,9 +1,12 @@
 from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.views.generic.simple import redirect_to
+from haystack.views import search_view_factory
 from piston.resource import Resource
 from dhistory.frontpages.views import *
 from dhistory.frontpages.handlers import AutocompleteHandler
+from dhistory.querypic.views import ExploreView
+from dhistory.querypic.forms import ExploreForm
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -49,8 +52,13 @@ urlpatterns += patterns('dhistory.rsviewer.views',
     url(r'^archives/naa/images/(?P<barcode>\d+)/(?P<page>\d+)/large/$', 'get_naa_image', {'size': 'large'}),
 )
 urlpatterns += patterns('dhistory.querypic.views',
-    url(r'^querypic/$', 'show_querypic_form'),
-    url(r'^querypic/(?P<short_url>[a-z0-9]+)/$', 'show_querypic_form'),
+    url(r'^querypic/create/$', 'show_querypic_form'),
+    url(r'^querypic/explore/$', search_view_factory(
+        view_class=ExploreView,
+        template='querypic-browse.html',
+        form_class=ExploreForm
+    ), name='haystack_search'),
+    url(r'^querypic/(?P<short_url>[a-z0-9]+)/$', 'show_querypic'),
 )
 urlpatterns += patterns('django.views.generic.simple',
     url(r'^$', 'direct_to_template', {'template': 'home.html'}, name='home'),

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block extra_scripts %}
+    <script src="{{ STATIC_URL}}js/highcharts.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/showLoading/js/jquery.showLoading.min.js"></script>
+    <script src="{{ STATIC_URL}}js/purl.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/qp-script.js"></script>
+    <script id="series_data">
+        var series_data = [];
+    </script>
+  {% if qpgraph %}
+  <script type="text/javascript">
+    $(function(){
+        var sources = {{ qpgraph.data|safe }};
+        $.each(sources["sources"], function(key, source) {
+            new_source = new graphData();
+            new_source['data'] = source['data'];
+            new_source['name'] = source['name'];
+            new_source['query'] = source['query'];
+            new_source['api_query'] = source['api_query'];
+            new_source['web_query'] = source['web_query'];
+            new_source['interval'] = source['interval'];
+            new_source['country'] = source['country'];
+            new_source['accuracy'] = source['accuracy'];
+            dataSources["sources"].push(new_source);
+        });
+    });
+    </script>
+    {% endif %}
+{% endblock %}
+{% block extra_styles %}
+    <link href="{{ STATIC_URL }}css/qp-style.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <h1>QueryPic <small class="muted">Exploring digitised newspapers from Australia &amp; New Zealand</small></h1>
+            <ul class="nav nav-pills">
+              <li><a href="/querypic/">Home</a></li>
+              <li><a href="/querypic/explore/">Explore</a></li>
+              <li class="active"><a href="/querypic/create/">Create</a></li>
+            </ul>
+            <ul class="nav nav-tabs" id="query_forms">
+              <li class="active"><a href="#keywords">Keywords</a></li>
+              <li><a href="#trove_url">Trove url</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="keywords">
+                    <p class="form-inline">
+                        Word or phrase: <input type="text" id="query">
+                        Country: <select id="country">
+                            <option value="aus">Australia</option>
+                            <option value="nz">New Zealand</option>
+                        </select>
+                        <input type="radio" name="accuracy" id="exact" value="exact" checked="checked"></input> exact
+                        <input type="radio" name="accuracy" id="fuzzy" value="fuzzy"></input> fuzzy
+                        <button class="btn" id="do_keyword_query">Show</button>
+                        <button class="btn" id="clear_last">Clear last</button> <button class="btn" id="clear_all">Clear all</button>
+                    </p>
+                </div>
+                <div class="tab-pane" id="trove_url">
+                    <p class="form-inline">Trove query url: <input type="text" id="query_url"> <button class="btn" id="do_url_query">Show</button></p>
+                </div>
+            </div>
+            <div class="modal hide">
+                <form id="save_graph" action="/querypic/" method="post">{% csrf_token %}
+                    <div class="control-group">
+                        <label class="control-label" for="id_creator">Your name</label>
+                        <div class="controls">{{ form.creator }}<span class="help-inline">optional</span></div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="id_creator_email">Your email</label>
+                        <div class="controls">{{ form.creator_email }}<span class="help-inline">required, but not displayed</span></div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="id_creator_url">Your website</label>
+                        <div class="controls">{{ form.creator_url }}<span class="help-inline">optional</span></div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="id_title">Give your graph a title</label>
+                        <div class="controls">{{ form.title }}<span class="help-inline">required</span></div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="id_description">Describe your graph</label>
+                        <div class="controls">{{ form.description }}<span class="help-inline">optional</span></div>
+                    </div>
+                    <input type="submit" value="Submit" />
+                </form>
+            </div>
+            <div id="status"></div>
+            <div id="graph" style="height:600px;width:100%; "></div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,25 +1,65 @@
 # Create your views here.
 import json
+import validictory
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from haystack.views import SearchView
 from dhistory.querypic.forms import QPForm
 from dhistory.querypic.models import QPGraph
 
-def show_querypic(request):
+JSON_SCHEMA = {
+                "type": "object",
+                "properties": {
+                    "sources": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {"type": "string"},
+                                "query": {"type": "string"},
+                                "web_query": {"type": "string"},
+                                "api_query": {"type": "string"},
+                                "interval": {"type": "string"},
+                                "country": {"type": "string"},
+                                "accuracy": {"type": "string"},
+                                "data": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "object",
+                                        "properties": {
+                                            "all": {"type": "integer"},
+                                            "total": {"type": "integer"},
+                                            "ratio": {"type": "number"}
+                                        },
+                                        "additionalProperties": False
+                                    }
+                                },
+                            },
+                            "additionalProperties": False,
+                        },
+
+                    },
+                },
+            }
+
+
+def show_querypic_form(request):
     if request.method == 'POST':
         form = QPForm(request.POST)
         if form.is_valid():
-            creator = form.cleaned_date['creator']
-            email = form.cleaned_date['creator_email']
-            creator_url = form.cleaned_date['creator_url']
-            title = form.cleaned_date['title']
-            description = form.cleaned_date['description']
+            creator = form.cleaned_data['creator']
+            email = form.cleaned_data['creator_email']
+            creator_url = form.cleaned_data['creator_url']
+            title = form.cleaned_data['title']
+            description = form.cleaned_data['description']
             data = form.cleaned_data['sources']
             # Validation of json
             try:
                 json_data = json.loads(data)
-                # Validate here
+                validictory.validate(json_data, JSON_SCHEMA)
             except ValueError:
-                return render(request, 'index.html', {'form': form, 'sources': None})
+                return render(request, 'index.html', {'form': form})
             else:
                 keywords = []
                 for source in json_data['sources']:
@@ -32,11 +72,55 @@ def show_querypic(request):
                     description=description,
                     data=data,
                     keywords=keywords)
+                short_url = qpgraph.short_url
+                return HttpResponseRedirect('/querypic/%s/' % short_url)
         else:
             form = QPForm()
     else:
         form = QPForm()
-    return render(request, 'index.html', {'form': form})
+    return render(request, 'querypic-create.html', {'form': form})
+
+
+def show_querypic(request, short_url):
+    qpgraph = QPGraph.objects.get(short_url=short_url)
+    return render(request, 'querypic-show.html', {'qpgraph': qpgraph})
+
+
+class ExploreView(SearchView):
+    def __name__(self):
+        return "ExploreView"
+
+    def extra_context(self):
+        extra = super(ExploreView, self).extra_context()
+        sort = self.request.GET.get('sort_by', 'title')
+        extra['sort'] = sort
+        if not self.query:
+            results = QPGraph.objects.all().order_by(sort)
+            paginator = Paginator(results, 25)
+            page = self.request.GET.get('page')
+            try:
+                qpgraphs = paginator.page(page)
+            except PageNotAnInteger:
+                qpgraphs = paginator.page(1)
+            except EmptyPage:
+                qpgraphs = paginator.page(paginator.num_pages)
+            extra['qpgraphs'] = qpgraphs
+        return extra
+
+
+def list_querypics(request):
+    sort = request.GET.get('sort_by', 'title')
+    results = QPGraph.objects.all().order_by(sort)
+    paginator = Paginator(results, 25)
+    page = request.GET.get('page')
+    try:
+        qpgraphs = paginator.page(page)
+    except PageNotAnInteger:
+        qpgraphs = paginator.page(1)
+    except EmptyPage:
+        qpgraphs = paginator.page(paginator.num_pages)
+    return render(request, 'querypic-browse.html', {'qpgraphs': qpgraphs, 'sort': sort})
+
 
 
 def clean_keywords(string):

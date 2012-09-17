@@ -1,3 +1,4 @@
 settings_local.py
 settings_prod.py
 media/*
+whoosh_index/*

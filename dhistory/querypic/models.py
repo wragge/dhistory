@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.http import int_to_base36
+from django.db.models.signals import post_save
 
 # Create your models here.
 
@@ -15,6 +16,12 @@ class QPGraph(models.Model):
     keywords = models.CharField(max_length=250, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
 
-    def save(self, *args, **kwargs):
-        self.short_url = int_to_base36((100 * self.id))
-        super(QPGraph, self).save(*args, **kwargs)
+
+def add_short_url(sender, **kwargs):
+    qpgraph = kwargs['instance']
+    if not qpgraph.short_url:
+        qpgraph.short_url = int_to_base36((100 * qpgraph.id))
+        qpgraph.save()
+
+
+post_save.connect(add_short_url, sender=QPGraph)
