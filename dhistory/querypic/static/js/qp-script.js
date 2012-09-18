@@ -235,6 +235,9 @@ $(function(){
                     year_start = 1839;
                     year_end = 1945;
                 }
+                decade_start = Math.floor(year_start / 10);
+                decade_end = Math.floor(year_end / 10);
+                decade_current = decade_start;
                 current_series = new graphData();
                 current_series.name = series_name;
                 current_series.query = web_query;
@@ -287,14 +290,17 @@ $(function(){
         if (trove_params['fromyyyy'] || trove_params['toyyyy']) {
             if (trove_params['fromyyyy']) {
                 year_start = trove_params['fromyyyy'];
-                decade_start = Math.floor(year_start / 10);
-                decade_current = decade_start;
             }
             if (trove_params['toyyyy']) {
                 year_end = trove_params['toyyyy'];
-                decade_end = Math.floor(year_end / 10);
             }
+        } else {
+            year_start = 1803;
+            year_end = 1954;
         }
+        decade_start = Math.floor(year_start / 10);
+        decade_current = decade_start;
+        decade_end = Math.floor(year_end / 10);
         if (trove_params['l-title']) {
             var titles = [];
             if ($.isArray(trove_params['l-title'])) {
