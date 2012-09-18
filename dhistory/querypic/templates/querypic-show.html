@@ -3,12 +3,14 @@
     <script src="{{ STATIC_URL}}js/highcharts.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/showLoading/js/jquery.showLoading.min.js"></script>
     <script src="{{ STATIC_URL}}js/purl.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/jquery.scrollto.min.js"></script>
+    <script src="{{ STATIC_URL}}js/jquery.dateformat-1.0.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/qp-show-script.js"></script>
     <script id="series_data">
         var series_data = [];
     </script>
   {% if qpgraph %}
-  <script type="text/javascript">
+   <script type="text/javascript">
         var sources = {{ qpgraph.data|safe }};
     </script>
     {% endif %}
@@ -36,9 +38,10 @@
 
         </div>
         <div class="span2">
+            <h4>View</h4>
             <div id="type_selector"><select class="input-medium" id="graph_type"><option value="ratio">proportion of total articles</option><option value="total">number of articles</option></select></div>
             {% if qpgraph.creator %}
-                <h5>Created by</h5>
+                <h4>Created by</h4>
                 <p>
                     {% if qpgraph.creator_url %}
                         <a href="{{ qpgraph.creator_url }}">{{ qpgraph.creator }}</a>
@@ -47,15 +50,20 @@
                     {% endif %}
                 </p>
             {% endif %}
-            <h5>Date created</h5>
+            <h4>Date created</h4>
             <p>{{ qpgraph.created|date:"j F Y" }}</p>
             {% if qpgraph.description %}
-                <h5>Description</h5>
+                <h4>Description</h4>
                 {{ qpgraph.description|linebreaks }}
             {% endif %}
-            <h5>Data summary</h5>
+            <h4>Data</h4>
             <div id="series-details" class="accordion">
             </div>
+        </div>
+    </div>
+        <div class="row-fluid">
+        <div id="trove-results" class="span12">
+            <div id="articles"></div>
         </div>
     </div>
 </div>

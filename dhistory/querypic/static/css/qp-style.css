@@ -1,1 +1,6 @@
 body { padding-top: 40px;}
+footer {
+    padding-top: 10px;
+border-top: 5px solid #949AA2;
+border-bottom: 1px solid #CACACA;
+}

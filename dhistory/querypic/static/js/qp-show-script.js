@@ -20,6 +20,7 @@ function graphData() {
         this.interval = '';
         this.country = '';
         this.accuracy = '';
+        this.dates = '';
 	this.getYears = function() {
 		var years = [];
 		$.each(this.data, function(year, value) {
@@ -74,14 +75,6 @@ $(function(){
     var twitter_url ="http://platform.twitter.com/widgets/tweet_button.html";
     var query_type = 'ratio';
 
-   function make_link() {
-        var params = [];
-        $.each(dataSources.sources, function(key, source) {
-            params.push(source.query + "|" + source.country + "|" + source.accuracy);
-        });
-        var link = "http://wraggelabs.com/shed/querypic/?q=" + params.join("&q=");
-        return link;
-   }
     var chart;
 
     function makeChart(type) {
@@ -200,11 +193,11 @@ $(function(){
             $('#articles').showLoading();
             var this_query = dataSources.sources[series.index].api_query;
             var callback;
-            if (dataSources.sources[series.index].country == "aus") {
+            if (dataSources.sources[series.index].country[0] == "Australia") {
                 this_query = this_query + "&l-year=" + query_date;
                 callback = "callback";
-            } else if (dataSources.sources[series.index].country == "nz") {
-                this_query = this_query + "+year:" + query_date;
+            } else if (dataSources.sources[series.index].country[0] == "New Zealand") {
+                this_query = this_query + "&and[year]=" + query_date;
                 callback = "jsonp";
             }
             $.ajax({
@@ -214,12 +207,14 @@ $(function(){
                     "success": function(results) {
                             $('#articles').height('');
                             $('#articles').append('<h3>Articles</h3>');
-                            if (dataSources.sources[series.index].country == "aus") {
+                            if (dataSources.sources[series.index].country[0] == "Australia") {
+                                alert(JSON.stringify(results.response.zone[0].records.article));
                                 show_trove_articles(results, query_date, series);
-                            } else if (dataSources.sources[series.index].country == "nz") {
+                            } else if (dataSources.sources[series.index].country[0] == "New Zealand") {
                                 show_digitalnz_articles(results, query_date, series);
                             }
                             $('#articles').hideLoading();
+                            $('#articles').ScrollTo();
                     }
             });
     }
@@ -237,10 +232,10 @@ $(function(){
 
     }
     function show_digitalnz_articles(results, query_date, series) {
-        if (results.results.length > 0) {
+        if (results.search.results.length > 0) {
             var articles = $('<ul id="articles"></ul>');
-            $.each(results.results, function(key, article) {
-                    articles.append('<li><a target="_blank" class="article" href="'+ article.display_url + '">' + article.title + '</a></li>');
+            $.each(results.search.results, function(key, article) {
+                    articles.append('<li><a target="_blank" class="article" href="'+ article.source_url + '">' + article.title + '</a></li>');
             });
             $('#articles').append(articles);
         }
@@ -259,22 +254,30 @@ $(function(){
             new_source['web_query'] = source['web_query'];
             new_source['interval'] = source['interval'];
             new_source['country'] = source['country'];
-            new_source['accuracy'] = source['accuracy'];
-            dataSources["sources"].push(new_source);
+            new_source['dates'] = source['dates'];
+            dataSources['sources'].push(new_source);
         });
     }
     function showSeriesDetails() {
+        $("#series-details").empty();
         $.each(dataSources.sources, function(key, source) {
             var $group = $('<div class="accordion-group"></div>');
             var $header = $('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#series-details" href="#series' + key + '">Query ' + (key+1) + '</a></div>');
             var $body = $('<div id="series' + key + '" class="accordion-body collapse"></div>');
             var $inner = $('<div class="accordion-inner"></div>');
+            $inner.append('<p><small>' + source.country[0] + '</small></p>');
             $inner.append('<p><small>' + source.name + '</small></p>');
-            var $show_trove = $('<a href="' + source.query + '" class="btn btn-mini btn-primary">Show in Trove</a>');
-            $inner.append($show_trove);
-            if (source.country == "Aus") {
-                var $new_qp = $('<br><a href="/querypic/create/?trove_query=' + encodeURIComponent(source.query) + '" class="btn btn-mini btn-primary">Use in new QP</a>');
-                $inner.append($new_qp);
+            $inner.append('<p><small>' + source.dates + '</small></p>');
+            if (source.country[0] == "Australia") {
+                var $show_trove = $('<p><a target="_blank" href="' + source.query + '" class="btn btn-mini">Show in Trove &raquo;</a></p>');
+                $inner.append($show_trove);
+                var $show_trove_qp = $('<p><a target="_blank" href="/querypic/create/?trove_query=' + encodeURIComponent(source.query) + '" class="btn btn-mini">Create new QP &raquo;</a></p>');
+                $inner.append($show_trove_qp);
+            } else if (source.country[0] == "New Zealand") {
+                var $show_dnz = $('<p><a target="_blank" href="' + source.query + '" class="btn btn-mini">Show in DigitalNZ &raquo;</a></p>');
+                $inner.append($show_dnz);
+                var $show_dnz_qp = $('<p><a target="_blank" href="/querypic/create/?dnz_query=' + encodeURIComponent(source.query) + '" class="btn btn-mini">Create new QP &raquo;</a></p>');
+                $inner.append($show_dnz_qp);
             }
             $body.append($inner);
             $group.append($header).append($body);

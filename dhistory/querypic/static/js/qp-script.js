@@ -6,7 +6,7 @@ var dataSources = {
 	'listSeries': function(type) {
 			var series = [];
 			$.each(this.sources, function(index, source) {
-				series.push({'name': source.name, 'data': source.makeSeries(type)});
+				series.push({'name': source.name + " (" + source.country[1] + ")", 'data': source.makeSeries(type)});
 			});
 			return series;
 		}
@@ -14,12 +14,12 @@ var dataSources = {
 function graphData() {
 	this.name = '';
 	this.query = '';
-        this.api_query = '';
-        this.web_query = '';
-	this.data = {};
-        this.interval = '';
-        this.country = '';
-        this.accuracy = '';
+    this.api_query = '';
+    this.web_query = '';
+    this.data = {};
+    this.interval = '';
+    this.country = '';
+    this.dates = [];
 	this.getYears = function() {
 		var years = [];
 		$.each(this.data, function(year, value) {
@@ -67,7 +67,7 @@ function graphData() {
 $(function(){
     reset();
     var digitalnz_api_key = "9yXNTynMDb3TUQws7QuD";
-    var digitalnz_api_url = "http://api.digitalnz.org/records/v2.json?";
+    var digitalnz_api_url = "http://api.digitalnz.org/v3/records.json?api_key=" + digitalnz_api_key + "&and[display_collection][]=Papers+Past";
     var digitalnz_html_url = "http://digitalnz.org.nz/records?i[display_collection]=Papers+Past";
     var trove_api_key = "6pi5hht0d2umqcro";
     var trove_api_url = "http://api.trove.nla.gov.au/result?zone=newspaper";
@@ -81,19 +81,22 @@ $(function(){
     var interval = "year";
     var decade_current = decade_start;
     var year_current = year_start;
-    queries = [];
+    var queries = [];
     var query_type = 'ratio';
+    var current_series;
 
     function get_query() {
-        if (dataSources.sources.length > 0) {
-            $("#graph").show();
-            makeChart("ratio");
-        } else if ($("#query").val() !== "") {
-            queries.push($("#query").val() + "|" + $("#country").val() + "|" + $("input[name=accuracy][type=radio]:checked").val());
+        if ($("#query").val() !== "") {
+            queries.push($("#query").val() + "|" + $("#country").val());
         } else if ($("#query_url").val() !== "") {
             queries.push($("#query_url").val());
-        } else if (window.location.href.match(/\?trove_query=.+/)) {
-            queries.push($.url().param("trove_query"));
+        } else if (window.location.href.match(/(\?trove_query=.+|\?dnz_query=.+)/)) {
+            if ($.url().param("trove_query")) {
+                queries = queries.concat($.url().param("trove_query"));
+            }
+            if ($.url().param("dnz_query")) {
+                queries = queries.concat($.url().param("dnz_query"));
+            }
         } else if (window.location.href.match(/\?q=.+/)) {
             queries = window.location.href.split(/\?q=|&q=/);
             queries.shift();
@@ -103,14 +106,14 @@ $(function(){
     function api_request() {
         var this_query = query[query_type];
         var callback;
-        if (query["country"] == "Aus") {
+        if (query["country"] == "Australia") {
             $("#status").html("<p>Retrieving data for the " + decade_current + "0s...</p>");
             this_query = this_query + "&l-decade=" + decade_current;
             if (query_type == "ratio") {
                 this_query = this_query + "&q=date:[" + decade_current + "0 TO " + decade_current + "9]";
             }
             callback = "callback";
-        } else if (query["country"] == "NZ") {
+        } else if (query["country"] == "New Zealand") {
              $("#status").html("<p>Retrieving data...</p>");
             callback = "jsonp";
         }
@@ -129,9 +132,9 @@ $(function(){
    }
 
     function process_results(results) {
-        if (query["country"] == "Aus") {
+        if (query["country"] == "Australia") {
             process_trove_results(results);
-        } else if (query["country"] == "NZ") {
+        } else if (query["country"] == "New Zealand") {
             process_digitalnz_results(results);
         }
         if (query_type == "ratio") {
@@ -139,7 +142,7 @@ $(function(){
             api_request();
         } else if (query_type == "total") {
             query_type = "ratio";
-            if (query["country"] == "Aus" && decade_current < decade_end) {
+            if (query["country"] == "Australia" && decade_current < decade_end) {
                 decade_current++;
                 api_request();
             } else {
@@ -176,113 +179,95 @@ $(function(){
     }
 
     function process_digitalnz_results(results) {
-        var facets = results.facets[0].values;
+        var facets = results.search.facets.year;
         if (query_type == "total") {
-            $.each(facets, function(index, value) {
-                current_year = parseInt(value.name, 10);
-                current_series.data[current_year]['total'] = value.num_results;
-                var ratio = value.num_results / current_series.data[current_year]['all'];
-                current_series.data[current_year]['ratio'] = ratio;
+            $.each(facets, function(year, total) {
+                if (year >= year_start && year <= year_end) {
+                    current_series.data[year]['total'] = total;
+                    var ratio = total / current_series.data[year]['all'];
+                    current_series.data[year]['ratio'] = ratio;
+                }
             });
         } else if (query_type == "ratio") {
-            $.each(facets, function(index, value) {
-                current_year = parseInt(value.name, 10);
-                current_series.data[current_year] = {};
-                current_series.data[current_year]['all'] = value.num_results;
-                current_series.data[current_year]['total'] = 0;
-                current_series.data[current_year]['ratio'] = 0;
+            $.each(facets, function(year, total) {
+                if (year >= year_start && year <= year_end) {
+                    current_series.data[year] = {};
+                    current_series.data[year]['all'] = total;
+                    current_series.data[year]['total'] = 0;
+                    current_series.data[year]['ratio'] = 0;
+                }
             });
         }
    }
 
-   function setup_query() {
+    function setup_query() {
         if (queries.length > 0) {
-            if (dataSources.sources.length > 0) {
-                makeChart('ratio');
-            }
             $("#graph").show().showLoading();
-            decade_current = decade_start;
             if (queries[0].match(/http/)) {
-                process_trove_query();
+                process_url_query();
             } else {
                 var query_parts = decodeURIComponent(queries.shift()).split('|');
-                //keywords = encodeURIComponent(query_parts[0])
                 keywords = query_parts[0];
-                var accuracy, api_query, web_query;
-                var qstrings = [];
-                if (query_parts[2]) {
-                    accuracy = query_parts[2];
+                var qstring, api_query, web_query, series_name, abbr;
+                if (keywords.indexOf('"') == -1) {
+                    qstring = keywords.split(" ").join(" AND ");
                 } else {
-                    accuracy = "fuzzy";
+                    qstring = keywords;
                 }
+                series_name = qstring;
+                qstring = encodeURIComponent(qstring);
                 if (query_parts[1] == "aus") {
-                    if (accuracy == "exact") {
-                        if (keywords.indexOf('"') === 0) {
-                            qstring = "fulltext:" + keywords;
-                        } else {
-                            $.each(keywords.split(" "), function(index, word) {
-                                qstrings.push("fulltext:" + word);
-                            });
-                            qstring = qstrings.join(" AND ");
-                        }
-                    } else {
-                        qstring = keywords;
-                    }
-                    qstring = encodeURIComponent(qstring);
                     query['total'] = trove_api_url + "&q=" + qstring + "&facet=year&n=0&encoding=json&key=" + trove_api_key;
                     query['ratio'] = trove_api_url + "&facet=year&n=0&encoding=json&key=" + trove_api_key;
+                    query['country'] = "Australia";
+                    abbr = "Aus";
                     api_query = trove_api_url + "&q=" + qstring + "&n=20&encoding=json&key=" + trove_api_key;
                     web_query = trove_html_url + qstring;
-                    query['country'] = "Aus";
+                    year_start = 1803;
+                    year_end = 1954;
                 } else if (query_parts[1] == "nz") {
-                    if (accuracy == "fuzzy") {
-                        if (keywords.indexOf('"') === 0) {
-                            qstring = keywords + "~";
-                        } else {
-                            $.each(keywords.split(" "), function(index, word) {
-                                qstrings.push(word + "~");
-                            });
-                            qstring = qstrings.join(" AND ");
-                        }
-                    } else {
-                        if (keywords.indexOf('"') == -1) {
-                            $.each(keywords.split(" "), function(index, word) {
-                                qstrings.push('"' + word + '"');
-                            });
-                            qstring = qstrings.join(" AND ");
-                        } else {
-                            qstring = keywords;
-                        }
-                    }
-                    qstring = encodeURIComponent(qstring);
-                    query['total'] = digitalnz_api_url + '&search_text=' + qstring + '+collection:"Papers+Past"&facets=year&facet_num_results=200&num_results=0&api_key=' + digitalnz_api_key;
-                    query['ratio'] = digitalnz_api_url + '&search_text=collection:"Papers+Past"&facets=year&facet_num_results=200&num_results=0&api_key=' + digitalnz_api_key;
-                    api_query = digitalnz_api_url + '&num_results=20&api_key=' + digitalnz_api_key + '&search_text=' + qstring + '+collection:"Papers+Past"';
+                    query['total'] = digitalnz_api_url + '&text=' + qstring + '&facets=year&facets_per_page=150&per_page=0';
+                    query['ratio'] = digitalnz_api_url + '&text=&facets=year&facets_per_page=150&per_page=0';
+                    query['country'] = "New Zealand";
+                    abbr = "NZ";
+                    api_query = digitalnz_api_url + '&per_page=20&text=' + qstring;
                     web_query = digitalnz_html_url + '&text=' + qstring;
-                    query['country'] = 'NZ';
+                    year_start = 1839;
+                    year_end = 1945;
                 }
                 current_series = new graphData();
-                current_series.name = query_parts[0] + " (" + query['country'] + ", " + accuracy + ")";
-                current_series.query = encodeURIComponent(keywords);
+                current_series.name = series_name;
+                current_series.query = web_query;
                 current_series.api_query = api_query;
                 current_series.web_query = web_query;
                 current_series.interval = "year";
-                current_series.country = query_parts[1];
-                current_series.accuracy = accuracy;
+                current_series.country = [query['country'], abbr];
+                current_series.dates = year_start + "&ndash;" + year_end;
             }
             api_request(query['ratio']);
         } else if (dataSources.sources.length > 0) {
             makeChart('ratio');
-            $('#clear_last').show();
+            $('#clear_last1').show();
+            $('#clear_last2').show();
             if (dataSources.sources.length > 1) {
-                $('#clear_all').show();
+                $('#clear_all1').show();
+                $('#clear_all2').show();
             }
         }
    }
-   function process_trove_query() {
+
+   function process_url_query() {
+        var url_query = queries.shift();
+        if (url_query.match(/trove/)) {
+            process_trove_query(url_query);
+        } else if (url_query.match(/digitalnz/)) {
+            process_dnz_query(url_query);
+        }
+   }
+
+   function process_trove_query(trove_url) {
         //alert(encodeURIComponent('http://trove.nla.gov.au/newspaper/result?q=cat&exactPhrase=&anyWords=&notWords=&l-textSearchScope=*ignore*%7C*ignore*&fromdd=&frommm=&fromyyyy=1925&todd=&tomm=&toyyyy=1945&l-title=%7C61&l-title=%7C77&l-word=*ignore*%7C*ignore*&sortby='));
         //var trove_url = $.url().param("trove_query");
-        var trove_url = queries.shift();
         var trove_params = $.url(trove_url).param();
         var keywords = [];
         var facets = [];
@@ -324,32 +309,54 @@ $(function(){
         qstring = keywords.join('+');
         query['total'] = trove_api_url + "&q=" + qstring + facets + "&facet=year&n=0&encoding=json&key=" + trove_api_key;
         query['ratio'] = trove_api_url + facets + "&facet=year&n=0&encoding=json&key=" + trove_api_key;
-        query['country'] = "Aus";
+        query['country'] = "Australia";
         current_series = new graphData();
         current_series.name = qstring.replace('+', ' ');
         current_series.query = trove_url;
         current_series.api_query = trove_api_url + "&q=" + qstring + facets + "&n=20&encoding=json&key=" + trove_api_key;
         current_series.web_query = remove_dates(trove_url);
         current_series.interval = "year";
-        current_series.country = "Aus";
-        current_series.accuracy = "exact";
+        current_series.country = ["Australia", "Aus"];
+        current_series.dates = year_start + "&ndash;" + year_end;
    }
+
+   function process_dnz_query(dnz_url) {
+        var dnz_params = $.url(dnz_url).param();
+        qstring = dnz_params["text"];
+        year_range = dnz_params["i"]["year"];
+        if (typeof year_range !== "undefined") {
+            years = year_range.match(/(\d{4}) TO (\d{4})/);
+            if (years[1] >= 1839) {
+                year_start = years[1];
+            } else {
+                year_start = 1839;
+            }
+            if (years[2] <= 1945) {
+                year_end = years[2];
+            } else {
+                year_end = 1945;
+            }
+        } else {
+            year_start = 1839;
+            year_end = 1945;
+        }
+        query['total'] = digitalnz_api_url + '&text=' + qstring + '&facets=year&facets_per_page=150&per_page=0';
+        query['ratio'] = digitalnz_api_url + '&text=&facets=year&facets_per_page=150&per_page=0';
+        api_query = digitalnz_api_url + '&per_page=20&text=' + qstring;
+        web_query = digitalnz_html_url + '&text=' + qstring;
+        query['country'] = 'New Zealand';
+        current_series = new graphData();
+        current_series.name = qstring.replace('+', ' ');
+        current_series.query = dnz_url;
+        current_series.api_query = api_query;
+        current_series.web_query = web_query;
+        current_series.interval = "year";
+        current_series.country = ["New Zealand", "NZ"];
+        current_series.dates = year_start + "&ndash;" + year_end;
+   }
+
    function remove_dates(url) {
         return url.replace(/&(from|to)(yyyy|mm|dd)=\d*/gi, '');
-   }
-   function make_link() {
-        var params = [];
-        $.each(dataSources.sources, function(key, source) {
-            params.push(source.query + "|" + source.country + "|" + source.accuracy);
-        });
-        var link = "http://wraggelabs.com/shed/querypic/?q=" + params.join("&q=");
-        return link;
-   }
-   function serialise_data() {
-        series_name = "series" + series_data.length;
-        $("#series_data").append("var" + series_name + " = new graphData();");
-        $("#series_data").append(series_name + ".name = '" + current_series.name + "';");
-        $("#series_data").append("series_data.push(" + series_name + ");");
    }
     var chart;
 
@@ -361,11 +368,10 @@ $(function(){
         $("#graph-hints").show();
         $("#trove-results").show();
         $("#type_selector").show();
+        $("#metadata").show();
         $('#graph_type').val(type);
         $("#query").val("");
-        //var link = make_link();
-        //$("#link").html("Share this: <a href='" + link + "'>" + link + "</a>");
-        //$("#twitter-frame").attr('src', twitter_url + "?url=" + encodeURIComponent(link) + "&text=" + encodeURIComponent("Made with QueryPic") + "&hashtags=querypic");
+        $("#query_url").val("");
         if (dataSources.sources[0].interval == "month") {
             x_date = "%b %Y";
             xLabel = "Month";
@@ -462,17 +468,18 @@ $(function(){
                }
             }
         });
+        showSeriesDetails();
     }
     function showArticles(query_date, series) {
             $('#articles').empty().height('50px');
             $('#articles').showLoading();
             var this_query = dataSources.sources[series.index].api_query;
             var callback;
-            if (dataSources.sources[series.index].country == "aus") {
+            if (dataSources.sources[series.index].country[0] == "Australia") {
                 this_query = this_query + "&l-year=" + query_date;
                 callback = "callback";
-            } else if (dataSources.sources[series.index].country == "nz") {
-                this_query = this_query + "+year:" + query_date;
+            } else if (dataSources.sources[series.index].country[0] == "New Zealand") {
+                this_query = this_query + "&and[year]=" + query_date;
                 callback = "jsonp";
             }
             $.ajax({
@@ -482,9 +489,10 @@ $(function(){
                     "success": function(results) {
                             $('#articles').height('');
                             $('#articles').append('<h3>Articles</h3>');
-                            if (dataSources.sources[series.index].country == "aus") {
+                            if (dataSources.sources[series.index].country[0] == "Australia") {
+                                alert(JSON.stringify(results.response.zone[0].records.article));
                                 show_trove_articles(results, query_date, series);
-                            } else if (dataSources.sources[series.index].country == "nz") {
+                            } else if (dataSources.sources[series.index].country[0] == "New Zealand") {
                                 show_digitalnz_articles(results, query_date, series);
                             }
                             $('#articles').hideLoading();
@@ -505,10 +513,10 @@ $(function(){
 
     }
     function show_digitalnz_articles(results, query_date, series) {
-        if (results.results.length > 0) {
+        if (results.search.results.length > 0) {
             var articles = $('<ul id="articles"></ul>');
-            $.each(results.results, function(key, article) {
-                    articles.append('<li><a target="_blank" class="article" href="'+ article.display_url + '">' + article.title + '</a></li>');
+            $.each(results.search.results, function(key, article) {
+                    articles.append('<li><a target="_blank" class="article" href="'+ article.source_url + '">' + article.title + '</a></li>');
             });
             $('#articles').append(articles);
         }
@@ -535,15 +543,14 @@ $(function(){
     function reset() {
         decade_current = decade_start;
         $("#graph").hide();
-        $("#clear_last").hide();
-        $("#clear_all").hide();
+        $("#clear_last1").hide();
+        $("#clear_all1").hide();
+        $("#clear_last2").hide();
+        $("#clear_all2").hide();
         $("#type_selector").hide();
         $("#trove-results").hide();
-        $("#graph-hints").hide();
-        $("#intro-hints").show();
-        $("#intro-notes").show();
-        $("#graph-notes").hide();
         $("#articles").empty();
+        $("#metadata").hide();
     }
     $('#graph_type').change(function() {
        makeChart($('#graph_type').val());
@@ -556,14 +563,44 @@ $(function(){
             get_query();
         }
     });
-    $("#clear_last").button().click(function(){ clear_last(); });
-    $("#clear_all").button().click(function(){ clear_all(); });
-    $("#save_graph").submit(function() {
-        $("#id_sources").val(JSON.stringify(dataSources));
-    });
+    $("#clear_last1").button().click(function(){ clear_last(); });
+    $("#clear_all1").button().click(function(){ clear_all(); });
+    $("#clear_last2").button().click(function(){ clear_last(); });
+    $("#clear_all2").button().click(function(){ clear_all(); });
     $('#query_forms a').click(function (e) {
         e.preventDefault();
         $(this).tab('show');
+    });
+    function showSeriesDetails() {
+        $("#series-details").empty();
+        $.each(dataSources.sources, function(key, source) {
+            var $group = $('<div class="accordion-group"></div>');
+            var $header = $('<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#series-details" href="#series' + key + '">Query ' + (key+1) + '</a></div>');
+            var $body = $('<div id="series' + key + '" class="accordion-body collapse"></div>');
+            var $inner = $('<div class="accordion-inner"></div>');
+            $inner.append('<p><small>' + source.country[0] + '</small></p>');
+            $inner.append('<p><small>' + source.name + '</small></p>');
+            $inner.append('<p><small>' + source.dates + '</small></p>');
+            if (source.country[0] == "Australia") {
+                var $show_trove = $('<p><a target="_blank" href="' + source.query + '" class="btn btn-mini">Show in Trove &laquo;</a></p>');
+                $inner.append($show_trove);
+            } else if (source.country[0] == "New Zealand") {
+                var $show_dnz = $('<p><a target="_blank" href="' + source.query + '" class="btn btn-mini">Show in DigitalNZ &laquo;</a></p>');
+                $inner.append($show_dnz);
+            }
+            $body.append($inner);
+            $group.append($header).append($body);
+            $("#series-details").append($group);
+        });
+    }
+    $("#show-form").click(function(){
+        $("#save-graph").modal("show");
+    });
+    $("#save-form").submit(function() {
+        $("#id_sources").val(JSON.stringify(dataSources));
+    });
+    $("#submit-form").click(function(){
+        $("#save-form").submit();
     });
     get_query();
 });

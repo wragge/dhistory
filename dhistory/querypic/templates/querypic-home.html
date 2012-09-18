@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block extra_scripts %}
+    <script src="{{ STATIC_URL}}js/highcharts.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/showLoading/js/jquery.showLoading.min.js"></script>
+    <script src="{{ STATIC_URL}}js/purl.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL}}js/jquery.dateformat-1.0.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/qp-script.js"></script>
+{% endblock %}
+{% block extra_styles %}
+    <link href="{{ STATIC_URL }}css/qp-style.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row-fluid">
+        <header class="span12">
+            <h1>QueryPic <small class="muted">Exploring digitised newspapers from Australia &amp; New Zealand</small></h1>
+            <ul class="nav nav-pills">
+              <li><a href="/querypic/">Home</a></li>
+              <li><a href="/querypic/explore/">Explore</a></li>
+              <li><a href="/querypic/create/">Create</a></li>
+            </ul>
+        </header>
+    </div>
+    <div class="row-fluid">
+        <div class="span4">
+            <p class="lead">
+                QueryPic provides a new way of seeing, searching and understanding the digitised newspapers made available by Trove and Papers Past.
+            </p>
+            <p class="lead">
+                Follow changes over time. Map trends and patterns. Follow a hunch. Frame a question. Explore...
+            </p>
+        </div>
+        <div class="span4 offset1">
+            <h3>Latest QueryPics</h3>
+            <ul>
+            {% for qp in qpgraphs %}
+                <li><a href="/querypic/{{ qp.short_url }}/">{{ qp.title }}</a></li>
+            {% endfor %}
+            </ul>
+             <p><a href="/querypic/create/" class="btn btn-primary btn-block">Create your own!</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block footer %}
+{% include "querypic-footer.html" %}
+{% endblock %}

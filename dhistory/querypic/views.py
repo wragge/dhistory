@@ -21,8 +21,8 @@ JSON_SCHEMA = {
                                 "web_query": {"type": "string"},
                                 "api_query": {"type": "string"},
                                 "interval": {"type": "string"},
-                                "country": {"type": "string"},
-                                "accuracy": {"type": "string"},
+                                "country": {"type": "array"},
+                                "dates": {"type": "string"},
                                 "data": {
                                     "type": "object",
                                     "additionalProperties": {
@@ -47,6 +47,7 @@ JSON_SCHEMA = {
 def show_querypic_form(request):
     if request.method == 'POST':
         form = QPForm(request.POST)
+        print form.errors
         if form.is_valid():
             creator = form.cleaned_data['creator']
             email = form.cleaned_data['creator_email']
@@ -59,7 +60,8 @@ def show_querypic_form(request):
                 json_data = json.loads(data)
                 validictory.validate(json_data, JSON_SCHEMA)
             except ValueError:
-                return render(request, 'index.html', {'form': form})
+                #return render(request, 'querypic-create.html', {'form': form})
+                raise
             else:
                 keywords = []
                 for source in json_data['sources']:
@@ -106,6 +108,11 @@ class ExploreView(SearchView):
                 qpgraphs = paginator.page(paginator.num_pages)
             extra['qpgraphs'] = qpgraphs
         return extra
+
+
+def show_home(request):
+    qpgraphs = QPGraph.objects.all().order_by('-created')[:5]
+    return render(request, 'querypic-home.html', {'qpgraphs': qpgraphs})
 
 
 def list_querypics(request):

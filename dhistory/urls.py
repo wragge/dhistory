@@ -52,6 +52,7 @@ urlpatterns += patterns('dhistory.rsviewer.views',
     url(r'^archives/naa/images/(?P<barcode>\d+)/(?P<page>\d+)/large/$', 'get_naa_image', {'size': 'large'}),
 )
 urlpatterns += patterns('dhistory.querypic.views',
+    url(r'^querypic/$', 'show_home'),
     url(r'^querypic/create/$', 'show_querypic_form'),
     url(r'^querypic/explore/$', search_view_factory(
         view_class=ExploreView,

@@ -3,29 +3,11 @@
     <script src="{{ STATIC_URL}}js/highcharts.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/showLoading/js/jquery.showLoading.min.js"></script>
     <script src="{{ STATIC_URL}}js/purl.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL}}js/jquery.dateformat-1.0.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/qp-script.js"></script>
     <script id="series_data">
         var series_data = [];
     </script>
-  {% if qpgraph %}
-  <script type="text/javascript">
-    $(function(){
-        var sources = {{ qpgraph.data|safe }};
-        $.each(sources["sources"], function(key, source) {
-            new_source = new graphData();
-            new_source['data'] = source['data'];
-            new_source['name'] = source['name'];
-            new_source['query'] = source['query'];
-            new_source['api_query'] = source['api_query'];
-            new_source['web_query'] = source['web_query'];
-            new_source['interval'] = source['interval'];
-            new_source['country'] = source['country'];
-            new_source['accuracy'] = source['accuracy'];
-            dataSources["sources"].push(new_source);
-        });
-    });
-    </script>
-    {% endif %}
 {% endblock %}
 {% block extra_styles %}
     <link href="{{ STATIC_URL }}css/qp-style.css" rel="stylesheet">
@@ -33,7 +15,7 @@
 {% block content %}
 <div class="container-fluid">
     <div class="row-fluid">
-        <div class="span12">
+        <header class="span12">
             <h1>QueryPic <small class="muted">Exploring digitised newspapers from Australia &amp; New Zealand</small></h1>
             <ul class="nav nav-pills">
               <li><a href="/querypic/">Home</a></li>
@@ -42,7 +24,7 @@
             </ul>
             <ul class="nav nav-tabs" id="query_forms">
               <li class="active"><a href="#keywords">Keywords</a></li>
-              <li><a href="#trove_url">Trove url</a></li>
+              <li><a href="#trove_url">Query url</a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="keywords">
@@ -52,45 +34,69 @@
                             <option value="aus">Australia</option>
                             <option value="nz">New Zealand</option>
                         </select>
-                        <input type="radio" name="accuracy" id="exact" value="exact" checked="checked"></input> exact
-                        <input type="radio" name="accuracy" id="fuzzy" value="fuzzy"></input> fuzzy
                         <button class="btn" id="do_keyword_query">Show</button>
-                        <button class="btn" id="clear_last">Clear last</button> <button class="btn" id="clear_all">Clear all</button>
+                        <button class="btn" id="clear_last1">Clear last</button>
+                        <button class="btn" id="clear_all1">Clear all</button>
                     </p>
                 </div>
                 <div class="tab-pane" id="trove_url">
-                    <p class="form-inline">Trove query url: <input type="text" id="query_url"> <button class="btn" id="do_url_query">Show</button></p>
+                    <p class="form-inline">Query url: <input type="text" id="query_url"> <button class="btn" id="do_url_query">Show</button>
+                    <button class="btn" id="clear_last2">Clear last</button>
+                    <button class="btn" id="clear_all2">Clear all</button>
+                    </p>
                 </div>
             </div>
-            <div class="modal hide">
-                <form id="save_graph" action="/querypic/" method="post">{% csrf_token %}
-                    <div class="control-group">
-                        <label class="control-label" for="id_creator">Your name</label>
-                        <div class="controls">{{ form.creator }}<span class="help-inline">optional</span></div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="id_creator_email">Your email</label>
-                        <div class="controls">{{ form.creator_email }}<span class="help-inline">required, but not displayed</span></div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="id_creator_url">Your website</label>
-                        <div class="controls">{{ form.creator_url }}<span class="help-inline">optional</span></div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="id_title">Give your graph a title</label>
-                        <div class="controls">{{ form.title }}<span class="help-inline">required</span></div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="id_description">Describe your graph</label>
-                        <div class="controls">{{ form.description }}<span class="help-inline">optional</span></div>
-                    </div>
-                    <input type="submit" value="Submit" />
-                </form>
+        </header>
+    </div>
+    <div class="row-fluid">
+        <div class="span10">
+            <div class="modal hide" id="save-graph">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3>Save this QueryPic</h3>
+                </div>
+                <div class="modal-body">
+                    <form id="save-form" action="/querypic/create/" method="post">{% csrf_token %}
+                            <label class="control-label" for="id_creator"><small>Your name (optional)</small></label>
+                            <div class="controls">{{ form.creator }}</div>
+                            <label class="control-label" for="id_creator_email"><small>Your email (required, but not displayed)</small></label>
+                            <div class="controls">{{ form.creator_email }}</div>
+                            <label class="control-label" for="id_creator_url"><small>Your website (optional)</small></label>
+                            <div class="controls">{{ form.creator_url }}</div>
+                            <label class="control-label" for="id_title"><small>Give your QueryPic a title (required)</small></label>
+                            <div class="controls">{{ form.title }}</div>
+                            <label class="control-label" for="id_description"><small>Describe your graph (optional)</small></label>
+                            <div class="controls">{{ form.description }}</div>
+                            <div class="controls">{{ form.sources }}</div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal">Close</button>
+                    <button id="submit-form" class="btn btn-primary">Save changes</button>
+                </div>
             </div>
             <div id="status"></div>
             <div id="graph" style="height:600px;width:100%; "></div>
 
         </div>
+        <div class="span2">
+            <div id="metadata">
+                <h4>View</h4>
+                <div id="type_selector"><select class="input-medium" id="graph_type"><option value="ratio">proportion of total articles</option><option value="total">number of articles</option></select></div>
+                <h4>Data</h4>
+                <div id="series-details" class="accordion">
+                </div>
+                <button id="show-form" class="btn btn-block btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div id="trove-results" class="span12">
+            <div id="articles"></div>
+        </div>
     </div>
 </div>
+{% endblock %}
+{% block footer %}
+{% include "querypic-footer.html" %}
 {% endblock %}
