@@ -496,7 +496,6 @@ $(function(){
                             $('#articles').height('');
                             $('#articles').append('<h3>Articles</h3>');
                             if (dataSources.sources[series.index].country[0] == "Australia") {
-                                alert(JSON.stringify(results.response.zone[0].records.article));
                                 show_trove_articles(results, query_date, series);
                             } else if (dataSources.sources[series.index].country[0] == "New Zealand") {
                                 show_digitalnz_articles(results, query_date, series);
