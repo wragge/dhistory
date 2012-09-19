@@ -91,9 +91,19 @@ $(function(){
 
     function get_query() {
         if ($("#query").val() !== "") {
-            queries.push($("#query").val() + "|" + $("#country").val());
+            var keywords = $("#query").val();
+            if (keywords.match(/^[a-zA-Z\d"\(\)\- ]+$/)) {
+                queries.push(keywords + "|" + $("#country").val());
+            } else {
+                alert("That's not a valid query...");
+            }
         } else if ($("#query_url").val() !== "") {
-            queries.push($("#query_url").val());
+            var url = $("#query_url").val();
+            if (url.match(/(^http:\/\/trove\.nla\.gov\.au\/newspaper\/result\?|^http:\/\/www\.digitalnz\.org\/records\?)/)) {
+                queries.push(url);
+            } else {
+                alert("That's not a valid url...");
+            }
         } else if (window.location.href.match(/(\?trove_query=.+|\?dnz_query=.+)/)) {
             if ($.url().param("trove_query")) {
                 queries = queries.concat($.url().param("trove_query"));
@@ -207,7 +217,7 @@ $(function(){
     function setup_query() {
         if (queries.length > 0) {
             $("#graph").show().showLoading();
-            if (queries[0].match(/http/)) {
+            if (queries[0].match(/^http/)) {
                 process_url_query();
             } else {
                 var query_parts = decodeURIComponent(queries.shift()).split('|');
@@ -251,7 +261,11 @@ $(function(){
                 current_series.country = [query['country'], abbr];
                 current_series.dates = year_start + "&ndash;" + year_end;
             }
-            api_request(query['ratio']);
+            if (query["ratio"]) {
+                api_request(query['ratio']);
+            } else {
+                $("#graph").hide().hideLoading();
+            }
         } else if (dataSources.sources.length > 0) {
             makeChart('ratio');
             $('#clear_last1').show();
@@ -265,10 +279,14 @@ $(function(){
 
    function process_url_query() {
         var url_query = queries.shift();
-        if (url_query.match(/trove/)) {
-            process_trove_query(url_query);
-        } else if (url_query.match(/digitalnz/)) {
-            process_dnz_query(url_query);
+        if (url_query.match(/(^http:\/\/trove\.nla\.gov\.au\/newspaper\/result\?|^http:\/\/www\.digitalnz\.org\/records\?)/)) {
+            if (url_query.match(/trove/)) {
+                process_trove_query(url_query);
+            } else if (url_query.match(/digitalnz/)) {
+                process_dnz_query(url_query);
+            }
+        } else {
+            alert("That's not a valid query...");
         }
    }
 
@@ -331,23 +349,17 @@ $(function(){
         }
         if (trove_params['l-word']) {
             var words = [];
-            if ($.isArray(trove_params['l-word'])) {
-                $.each(trove_params['l-word'], function(index, value) {
-                    if ($.isNumeric(value)) {
-                        words.push(value);
-                    } else {
-                        words.push(value.match(/sizecategory\:(\d{1})/)[1]);
-                    }
-                });
-            } else {
-                if ($.isNumeric(trove_params['l-word'])) {
-                    words.push(trove_params['l-word']);
+            var word_limit = trove_params['l-word'];
+            if (word_limit.match(/ignore/) === null) {
+                if ($.isNumeric(word_limit)) {
+                    words.push(word_limit);
                 } else {
-                    words.push(trove_params['l-word'].match(/sizecategory\:(\d{1})/)[1]);
+                    words.push(word_limit.match(/sizecategory\:(\d{1})/)[1]);
                 }
+
+                facets.push("&l-word=" + words.join("&l-word="));
+                limits['Words'] = words;
             }
-            facets.push("&l-word=" + words.join("&l-word="));
-            limits['Words'] = words;
         }
         qstring = keywords.join('+');
         query['total'] = trove_api_url + "&q=" + qstring + facets.join("") + "&facet=year&n=0&encoding=json&key=" + trove_api_key;
