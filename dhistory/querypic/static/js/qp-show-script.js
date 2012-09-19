@@ -74,6 +74,7 @@ $(function(){
     var trove_html_url = "http://trove.nla.gov.au/newspaper/result?q=";
     var trove_api_title_url = "http://api.trove.nla.gov.au/newspaper/title/";
     var trove_html_title_url = "http://trove.nla.gov.au/ndp/del/title/";
+    var word_categories = {0: "< 100", 1: "100&ndash;1000", 3: "> 1000"};
     var twitter_url ="http://platform.twitter.com/widgets/tweet_button.html";
     var query_type = 'ratio';
 
@@ -280,6 +281,12 @@ $(function(){
                             title_limits.push('<a href="' + trove_html_title_url + value + '" class="title-details"><small>' + value + '</small></a>');
                         });
                         $limits.append(title_limits.join(", "));
+                    } else if (limit == 'Words') {
+                        var word_limits = [];
+                        $.each(values, function(index, value) {
+                            word_limits.push('<small>' + word_categories[value] + '</small></a>');
+                        });
+                        $limits.append(word_limits.join(", "));
                     } else {
                         $limits.append(" <small>" + values.join(", ") + "</small>");
                     }
