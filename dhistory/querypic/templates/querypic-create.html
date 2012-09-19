@@ -29,18 +29,18 @@
             <div class="tab-content">
                 <div class="tab-pane active" id="keywords">
                     <p class="form-inline">
-                        Word or phrase: <input type="text" id="query">
+                        Word or phrase: <input type="text" id="query"> <i title="Tip" data-content="Enclose phrases in double quotes. Searches will match all words." class="icon-question-sign tip-popover"></i>
                         Country: <select id="country">
                             <option value="aus">Australia</option>
                             <option value="nz">New Zealand</option>
-                        </select>
+                        </select> <i title="Tip" data-content="Search either Trove (Australia) or DigitalNZ (New Zealand)." class="icon-question-sign tip-popover"></i>
                         <button class="btn" id="do_keyword_query">Show</button>
                         <button class="btn" id="clear_last1">Clear last</button>
                         <button class="btn" id="clear_all1">Clear all</button>
                     </p>
                 </div>
                 <div class="tab-pane" id="trove_url">
-                    <p class="form-inline">Query url: <input type="text" id="query_url"> <button class="btn" id="do_url_query">Show</button>
+                    <p class="form-inline">Query url: <input type="text" id="query_url"> <i title="Tip" data-content="Construct your search at Trove or DigitalNZ and then just copy and paste the url into this box." class="icon-question-sign tip-popover"></i> <button class="btn" id="do_url_query">Show</button>
                     <button class="btn" id="clear_last2">Clear last</button>
                     <button class="btn" id="clear_all2">Clear all</button>
                     </p>

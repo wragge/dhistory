@@ -72,6 +72,8 @@ $(function(){
     var trove_api_key = "6pi5hht0d2umqcro";
     var trove_api_url = "http://api.trove.nla.gov.au/result?zone=newspaper";
     var trove_html_url = "http://trove.nla.gov.au/newspaper/result?q=";
+    var trove_api_title_url = "http://api.trove.nla.gov.au/newspaper/title/";
+    var trove_html_title_url = "http://trove.nla.gov.au/ndp/del/title/";
     var twitter_url ="http://platform.twitter.com/widgets/tweet_button.html";
     var query_type = 'ratio';
 
@@ -254,6 +256,7 @@ $(function(){
             new_source['interval'] = source['interval'];
             new_source['country'] = source['country'];
             new_source['dates'] = source['dates'];
+            new_source['limits'] = source['limits'];
             dataSources['sources'].push(new_source);
         });
     }
@@ -267,15 +270,31 @@ $(function(){
             $inner.append('<p><small>' + source.country[0] + '</small></p>');
             $inner.append('<p><small>' + source.name + '</small></p>');
             $inner.append('<p><small>' + source.dates + '</small></p>');
+            if ($.isEmptyObject(source.limits) === false) {
+                $.each(source.limits, function(limit, values) {
+                    $limits = $('<p><small>' + limit + ':</small> </p>');
+                    //$limits = $("<ul></ul>");
+                    if (limit == 'Titles') {
+                        var title_limits = [];
+                        $.each(values, function(index, value) {
+                            title_limits.push('<a href="' + trove_html_title_url + value + '" class="title-details"><small>' + value + '</small></a>');
+                        });
+                        $limits.append(title_limits.join(", "));
+                    } else {
+                        $limits.append(" <small>" + values.join(", ") + "</small>");
+                    }
+                    $inner.append($limits);
+                });
+            }
             if (source.country[0] == "Australia") {
-                var $show_trove = $('<p><a target="_blank" href="' + source.query + '" class="btn btn-mini">Show in Trove &raquo;</a></p>');
+                var $show_trove = $('<p><a href="' + source.query + '" class="btn btn-mini">Show in Trove &raquo;</a></p>');
                 $inner.append($show_trove);
-                var $show_trove_qp = $('<p><a target="_blank" href="/querypic/create/?trove_query=' + encodeURIComponent(source.query) + '" class="btn btn-mini">Create new QP &raquo;</a></p>');
+                var $show_trove_qp = $('<p><a href="/querypic/create/?trove_query=' + encodeURIComponent(source.query) + '" class="btn btn-mini">Create new QP &raquo;</a></p>');
                 $inner.append($show_trove_qp);
             } else if (source.country[0] == "New Zealand") {
-                var $show_dnz = $('<p><a target="_blank" href="' + source.query + '" class="btn btn-mini">Show in DigitalNZ &raquo;</a></p>');
+                var $show_dnz = $('<p><a href="' + source.query + '" class="btn btn-mini">Show in DigitalNZ &raquo;</a></p>');
                 $inner.append($show_dnz);
-                var $show_dnz_qp = $('<p><a target="_blank" href="/querypic/create/?dnz_query=' + encodeURIComponent(source.query) + '" class="btn btn-mini">Create new QP &raquo;</a></p>');
+                var $show_dnz_qp = $('<p><a href="/querypic/create/?dnz_query=' + encodeURIComponent(source.query) + '" class="btn btn-mini">Create new QP &raquo;</a></p>');
                 $inner.append($show_dnz_qp);
             }
             $body.append($inner);

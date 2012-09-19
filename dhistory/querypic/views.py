@@ -23,6 +23,7 @@ JSON_SCHEMA = {
                                 "interval": {"type": "string"},
                                 "country": {"type": "array"},
                                 "dates": {"type": "string"},
+                                "limits": {"type": "object", "required": False},
                                 "data": {
                                     "type": "object",
                                     "additionalProperties": {

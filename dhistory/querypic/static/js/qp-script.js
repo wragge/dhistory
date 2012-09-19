@@ -20,6 +20,7 @@ function graphData() {
     this.interval = '';
     this.country = '';
     this.dates = [];
+    this.limits = {};
 	this.getYears = function() {
 		var years = [];
 		$.each(this.data, function(year, value) {
@@ -72,7 +73,10 @@ $(function(){
     var trove_api_key = "6pi5hht0d2umqcro";
     var trove_api_url = "http://api.trove.nla.gov.au/result?zone=newspaper";
     var trove_html_url = "http://trove.nla.gov.au/newspaper/result?q=";
+    var trove_api_title_url = "http://api.trove.nla.gov.au/newspaper/title/";
+    var trove_html_title_url = "http://trove.nla.gov.au/ndp/del/title/";
     var twitter_url ="http://platform.twitter.com/widgets/tweet_button.html";
+    var word_categories = {0: "< 100", 1: "100&ndash;1000", 3: "> 1000"};
     var query = {};
     var decade_start = 180;
     var decade_end = 195;
@@ -308,13 +312,38 @@ $(function(){
                     titles.push(value.match(/\|?(\d+)/)[1]);
                 });
             } else {
-                titles.push(trove_params['l-title'].match(/\|(\d+)/)[1]);
+                titles.push(trove_params['l-title'].match(/\|?(\d+)/)[1]);
             }
             facets.push("&l-title=" + titles.join("&l-title="));
+            limits['Titles'] = titles;
+        }
+        if (trove_params['l-category']) {
+            var categories = [];
+            if ($.isArray(trove_params['l-category'])) {
+                $.each(trove_params['l-category'], function(index, value) {
+                    categories.push(value.match(/([a-zA-Z ]+)\|?/)[1]);
+                });
+            } else {
+                categories.push(trove_params['l-category'].match(/([a-zA-Z ]+)\|?/)[1]);
+            }
+            facets.push("&l-category=" + categories.join("&l-category="));
+            limits['Categories'] = categories;
+        }
+        if (trove_params['l-word']) {
+            var words = [];
+            if ($.isArray(trove_params['l-word'])) {
+                $.each(trove_params['l-word'], function(index, value) {
+                    words.push(value.match(/sizecategory\:(\d{1})/)[1]);
+                });
+            } else {
+                words.push(trove_params['l-word'].match(/sizecategory\:(\d{1})/)[1]);
+            }
+            facets.push("&l-word=" + words.join("&l-word="));
+            limits['Words'] = words;
         }
         qstring = keywords.join('+');
-        query['total'] = trove_api_url + "&q=" + qstring + facets + "&facet=year&n=0&encoding=json&key=" + trove_api_key;
-        query['ratio'] = trove_api_url + facets + "&facet=year&n=0&encoding=json&key=" + trove_api_key;
+        query['total'] = trove_api_url + "&q=" + qstring + facets.join("") + "&facet=year&n=0&encoding=json&key=" + trove_api_key;
+        query['ratio'] = trove_api_url + facets.join("") + "&facet=year&n=0&encoding=json&key=" + trove_api_key;
         query['country'] = "Australia";
         current_series = new graphData();
         current_series.name = qstring.replace('+', ' ');
@@ -324,6 +353,7 @@ $(function(){
         current_series.interval = "year";
         current_series.country = ["Australia", "Aus"];
         current_series.dates = year_start + "&ndash;" + year_end;
+        current_series.limits = limits;
    }
 
    function process_dnz_query(dnz_url) {
@@ -586,6 +616,27 @@ $(function(){
             $inner.append('<p><small>' + source.country[0] + '</small></p>');
             $inner.append('<p><small>' + source.name + '</small></p>');
             $inner.append('<p><small>' + source.dates + '</small></p>');
+            if ($.isEmptyObject(source.limits) === false) {
+                $.each(source.limits, function(limit, values) {
+                    $limits = $('<p><small>' + limit + ':</small> </p>');
+                    if (limit == 'Titles') {
+                        var title_limits = [];
+                        $.each(values, function(index, value) {
+                            title_limits.push('<a target="_blank" href="' + trove_html_title_url + value + '" class="title-details"><small>' + value + '</small></a>');
+                        });
+                        $limits.append(title_limits.join(", "));
+                    } else if (limit == 'Words') {
+                        var word_limits = [];
+                        $.each(values, function(index, value) {
+                            word_limits.push('<small>' + word_categories[value] + '</small></a>');
+                        });
+                        $limits.append(word_limits.join(", "));
+                    } else {
+                        $limits.append(" <small>" + values.join(", ") + "</small>");
+                    }
+                    $inner.append($limits);
+                });
+            }
             if (source.country[0] == "Australia") {
                 var $show_trove = $('<p><a target="_blank" href="' + source.query + '" class="btn btn-mini">Show in Trove &laquo;</a></p>');
                 $inner.append($show_trove);
@@ -607,6 +658,7 @@ $(function(){
     $("#submit-form").click(function(){
         $("#save-form").submit();
     });
+    $(".tip-popover").popover();
     get_query();
 });
 
