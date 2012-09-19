@@ -20,7 +20,7 @@ class QPGraph(models.Model):
 def add_short_url(sender, **kwargs):
     qpgraph = kwargs['instance']
     if not qpgraph.short_url:
-        qpgraph.short_url = int_to_base36((100 * qpgraph.id))
+        qpgraph.short_url = int_to_base36((100 + qpgraph.id))
         qpgraph.save()
 
 
