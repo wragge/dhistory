@@ -333,10 +333,18 @@ $(function(){
             var words = [];
             if ($.isArray(trove_params['l-word'])) {
                 $.each(trove_params['l-word'], function(index, value) {
-                    words.push(value.match(/sizecategory\:(\d{1})/)[1]);
+                    if ($.isNumeric(value)) {
+                        words.push(value);
+                    } else {
+                        words.push(value.match(/sizecategory\:(\d{1})/)[1]);
+                    }
                 });
             } else {
-                words.push(trove_params['l-word'].match(/sizecategory\:(\d{1})/)[1]);
+                if ($.isNumeric(trove_params['l-word'])) {
+                    words.push(trove_params['l-word']);
+                } else {
+                    words.push(trove_params['l-word'].match(/sizecategory\:(\d{1})/)[1]);
+                }
             }
             facets.push("&l-word=" + words.join("&l-word="));
             limits['Words'] = words;
@@ -348,7 +356,7 @@ $(function(){
         current_series = new graphData();
         current_series.name = qstring.replace('+', ' ');
         current_series.query = trove_url;
-        current_series.api_query = trove_api_url + "&q=" + qstring + facets + "&n=20&encoding=json&key=" + trove_api_key;
+        current_series.api_query = trove_api_url + "&q=" + qstring + facets.join("") + "&n=20&encoding=json&key=" + trove_api_key;
         current_series.web_query = remove_dates(trove_url);
         current_series.interval = "year";
         current_series.country = ["Australia", "Aus"];
@@ -531,6 +539,7 @@ $(function(){
                                 show_digitalnz_articles(results, query_date, series);
                             }
                             $('#articles').hideLoading();
+                            $('#articles').ScrollTo();
                     }
             });
     }
