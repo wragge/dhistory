@@ -92,7 +92,7 @@ $(function(){
     function get_query() {
         if ($("#query").val() !== "") {
             var keywords = $("#query").val();
-            if (keywords.match(/^[a-zA-Z\d"\(\)\- ]+$/)) {
+            if (keywords.match(/^[a-zA-Z\d"\(\)\~\:\- ]+$/)) {
                 queries.push(keywords + "|" + $("#country").val());
             } else {
                 alert("That's not a valid query...");

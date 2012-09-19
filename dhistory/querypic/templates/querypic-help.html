@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block body_attrs %} data-spy="scroll" data-target="#side-nav" data-offset="80" {% endblock %}
+{% block extra_scripts %}
+    <script src="{{ STATIC_URL}}js/highcharts.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/showLoading/js/jquery.showLoading.min.js"></script>
+    <script src="{{ STATIC_URL}}js/purl.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL}}js/jquery.dateFormat-1.0.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/qp-help-script.js"></script>
+{% endblock %}
+{% block extra_styles %}
+    <link href="{{ STATIC_URL }}css/qp-style.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row-fluid">
+        <header class="span12">
+            <h1>QueryPic <small class="muted">Exploring digitised newspapers from Australia &amp; New Zealand</small></h1>
+            <ul class="nav nav-pills">
+              <li><a href="/querypic/">Home</a></li>
+              <li><a href="/querypic/explore/">Explore</a></li>
+              <li><a href="/querypic/create/">Create</a></li>
+              <li class="active"><a href="/querypic/help/">Help</a></li>
+            </ul>
+        </header>
+    </div>
+    <div>
+        <div class="span3" id="side-nav">
+        <ul class="nav nav-list affix">
+          <li class="nav-header">About QueryPic</li>
+          <li><a href="#whatfor">What is it for?</a></li>
+          <li><a href="#whatdata">What data does it use?</a></li>
+          <li class="nav-header">Creating a QueryPic</li>
+          <li><a href="#keyword">Simple keyword searches</a></li>
+          <li><a href="#query">More complex searches</a></li>
+          <li><a href="#copying">Copying an existing QueryPic</a></li>
+          <li class="nav-header">Saving, sharing and using</li>
+          <li><a href="#saving">Saving a QueryPic</a></li>
+          <li><a href="#sharing">Sharing a QueryPic</a></li>
+        </ul>
+        </div>
+        <div class="span9">
+            <h3>About QueryPic</h3>
+            <h4 id="whatfor">What is it for?</h4>
+                <p>QueryPic provides a simple visualisation of a set of search results. Instead of just presenting you with a list of matches, it plots the results over time as a familiar line graph. Each point on the graph represents the number of articles in that year matching your search query.</p>
+                <p>It&rsquo;s simple, but it&rsquo;s also suprisingly powerful. QueryPic lets you see patterns and trends that normal search interfaces hide. It helps you frame your research questions &ndash; to survey the territory and decide where to dig.</p>
+            <h4 id="whatdata">What data does it use?</h4>
+            <p>QueryPic searches digitised newspapers from Australia and New Zealand published online by Trove and Papers Past. The data is accessed through APIs (Application Programming Interfaces) provided by Trove and DigitalNZ.</p>
+            <p>These are wonderfully rich resources, but if you&rsquo;re going to interpret QueryPic results you really need to think about their limitations. What titles have been digitised? What sort of gaps remain? What is the quality of the text extracted by OCR? How might factors such as these affect your results?</p>
+            <p>And then there&rsquo;s the question of how search actually works in the two databases. How &lsquo;fuzzy&rsquo; are the matches? How do they handle hyphenated words? I&rsquo;d suggest you become familiar with the help pages of both systems.</p>
+            <p>QueryPic lets you pursue your hunches, but what it creates are sketches, not arguments. You have to think critically about the data and how you&rsquo;re accessing it.</p>
+            <h4 id="keyword">Simple keyword searches</h4>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block footer %}
+{% include "querypic-footer.html" %}
+{% endblock %}

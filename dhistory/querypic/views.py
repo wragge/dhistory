@@ -116,6 +116,10 @@ def show_home(request):
     return render(request, 'querypic-home.html', {'qpgraphs': qpgraphs})
 
 
+def show_help(request):
+    return render(request, 'querypic-help.html', {})
+
+
 def list_querypics(request):
     sort = request.GET.get('sort_by', 'title')
     results = QPGraph.objects.all().order_by(sort)

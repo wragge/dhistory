@@ -53,6 +53,7 @@ urlpatterns += patterns('dhistory.rsviewer.views',
 )
 urlpatterns += patterns('dhistory.querypic.views',
     url(r'^querypic/$', 'show_home'),
+    url(r'^querypic/help/$', 'show_help'),
     url(r'^querypic/create/$', 'show_querypic_form'),
     url(r'^querypic/explore/$', search_view_factory(
         view_class=ExploreView,
