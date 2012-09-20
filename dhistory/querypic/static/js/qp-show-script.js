@@ -24,18 +24,18 @@ function graphData() {
 	this.getYears = function() {
 		var years = [];
 		$.each(this.data, function(year, value) {
-			years.push(year);
+			years.push(parseInt(year, 10));
 		});
 		years.sort();
 		return years;
 	};
 	this.makeSeries = function(type) {
-		//years = this.getYears();
+		years = this.getYears();
 		var series = [];
-		//var self = this;
+		var self = this;
                 if (this.interval == "year") {
-                    $.each(this.data, function(year, values) {
-                        series.push([Date.UTC(parseInt(year, 10), 0, 1), values[type]]);
+                    $.each(years, function(index, year) {
+                        series.push([Date.UTC(year, 0, 1), self.data[year][type]]);
                     });
                 } else if (this.interval == "month") {
                     $.each(this.data, function(year, values) {
