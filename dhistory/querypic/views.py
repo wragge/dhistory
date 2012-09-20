@@ -134,7 +134,6 @@ def list_querypics(request):
     return render(request, 'querypic-browse.html', {'qpgraphs': qpgraphs, 'sort': sort})
 
 
-
 def clean_keywords(string):
     ignore = ['AND', 'NOT', 'OR']
     keywords = [keyword.strip('(').strip(')') for keyword in string.split() if keyword not in ignore]

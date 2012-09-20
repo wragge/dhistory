@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block body_attrs %} data-spy="scroll" data-target="#side-nav" data-offset="80" {% endblock %}
+{% block body_attrs %}{% endblock %}
 {% block extra_scripts %}
     <script src="{{ STATIC_URL}}js/highcharts.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/showLoading/js/jquery.showLoading.min.js"></script>
@@ -24,19 +24,22 @@
         </header>
     </div>
     <div>
-        <div class="span3" id="side-nav">
-        <ul class="nav nav-list affix">
-          <li class="nav-header">About QueryPic</li>
-          <li><a href="#whatfor">What is it for?</a></li>
-          <li><a href="#whatdata">What data does it use?</a></li>
-          <li class="nav-header">Creating a QueryPic</li>
-          <li><a href="#keyword">Simple keyword searches</a></li>
-          <li><a href="#query">Using query urls</a></li>
-          <li><a href="#copying">Copying an existing QueryPic</a></li>
-          <li class="nav-header">Saving, sharing and using</li>
-          <li><a href="#saving">Saving a QueryPic</a></li>
-          <li><a href="#sharing">Sharing a QueryPic</a></li>
-        </ul>
+        <div class="span3">
+            <div id="side-nav">
+                <ul class="nav nav-list affix">
+                  <li class="nav-header">About QueryPic</li>
+                  <li><a href="#whatfor">What is it for?</a></li>
+                  <li><a href="#whatdata">What data does it use?</a></li>
+                  <li class="nav-header">Creating a QueryPic</li>
+                  <li><a href="#keyword">Simple keyword searches</a></li>
+                  <li><a href="#query">Using query urls</a></li>
+                  <li><a href="#bookmarklet">Using the bookmarklet</a></li>
+                  <li><a href="#copying">Copying an existing QueryPic</a></li>
+                  <li class="nav-header">Saving, sharing and using</li>
+                  <li><a href="#saving">Saving a QueryPic</a></li>
+                  <li><a href="#sharing">Sharing a QueryPic</a></li>
+                </ul>
+            </div>
         </div>
         <div class="span9">
             <h3>About QueryPic</h3>
@@ -54,6 +57,8 @@
             <p>You can use the keywords option to build more complex queries, such as proximity searches, but if you need something more than a basic search, you should probably use the query url option.</p>
             <h4 id="query">Using query urls</h4>
             <p>For more complex queries just construct your search using the Trove or DigitalNZ search interfaces. Once you're happy with the results, copy the url and paste it into QueryPic&rsquo;s query url box. QueryPic will parse the url, build an API request, and retrieve the results. You can, for example, limit the date range of your QueryPic. If you&rsquo;re using Trove you can apply a number of other limits including the newspaper, the type of article and it&rsquo;s word length.</p>
+            <h4 id="bookmarklet">Using the bookmarklet</h4>
+            <p>To save you from excessive copying and pasting, there&rsquo;s a bookmarklet that links Trove and DigitalNZ direct to QueryPic. To install the bookmarklet simply drag this link &ndash; <a href='javascript:(function(){if(window.location.href.match(/^http:\/\/trove\.nla\.gov\.au\/newspaper\/result\?/)){window.location="http://dhistory.org/querypic/create/?trove_query="+encodeURIComponent(window.location.href);}else%20if(window.location.href.match(/^http:\/\/www\.digitalnz\.org\/records\?/)){window.location="http://dhistory.org/querypic/create/?dnz_query="+encodeURIComponent(window.location.href);}})();'>QueryPic</a> &ndash; to your browser&rsquo;s bookmarks bar. Then when you&rsquo;ve constructed your search in Trove or DigitalNZ click on the bookmarklet. That&rsquo;s it! QueryPic will open automatically and start loading data.</p>
         </div>
     </div>
 </div>
