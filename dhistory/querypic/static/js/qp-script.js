@@ -24,18 +24,21 @@ function graphData() {
 	this.getYears = function() {
 		var years = [];
 		$.each(this.data, function(year, value) {
-			years.push(year);
+			years.push(parseInt(year, 10));
 		});
 		years.sort();
 		return years;
 	};
 	this.makeSeries = function(type) {
-		//years = this.getYears();
+		var years = this.getYears();
 		var series = [];
-		//var self = this;
+		var self = this;
                 if (this.interval == "year") {
-                    $.each(this.data, function(year, values) {
-                        series.push([Date.UTC(parseInt(year, 10), 0, 1), values[type]]);
+                    //$.each(this.data, function(year, values) {
+                        //series.push([Date.UTC(parseInt(year, 10), 0, 1), values[type]]);
+                    $.each(years, function(index, year) {
+                        series.push([Date.UTC(year, 0, 1), self.data[year][type]]);
+
                     });
                 } else if (this.interval == "month") {
                     $.each(this.data, function(year, values) {
@@ -44,9 +47,6 @@ function graphData() {
                         });
                     });
                 }
-		//$.each(years, function(index, year) {
-		//	series.push([parseInt(year), self.data[year][type]]);
-		//});
 		return series;
 	};
 	this.getTotal = function(year, month) {
@@ -171,8 +171,8 @@ $(function(){
         if (query_type == "total") {
             if (parseInt(results.response.zone[0].records.total, 10) > 0) {
                 $.each(results.response.zone[0].facets.facet.term, function(index, value) {
-                    current_year = value.display;
-                    if (parseInt(current_year, 10) >= year_start && parseInt(current_year, 10) <= year_end) {
+                    current_year = parseInt(value.display, 10);
+                    if (current_year >= year_start && current_year <= year_end) {
                         current_series.data[current_year]['total'] = parseInt(value.count, 10);
                         var ratio = value.count / current_series.data[current_year]['all'];
                         current_series.data[current_year]['ratio'] = ratio;
@@ -181,8 +181,8 @@ $(function(){
             }
         } else if (query_type == "ratio") {
             $.each(results.response.zone[0].facets.facet.term, function(index, value) {
-                current_year = value.display;
-                if (parseInt(current_year, 10) >= year_start && parseInt(current_year, 10) <= year_end) {
+                current_year = parseInt(value.display, 10);
+                if (current_year >= year_start && current_year <= year_end) {
                     current_series.data[current_year] = {};
                     current_series.data[current_year]['all'] = parseInt(value.count, 10);
                     current_series.data[current_year]['total'] = 0;
@@ -196,6 +196,7 @@ $(function(){
         var facets = results.search.facets.year;
         if (query_type == "total") {
             $.each(facets, function(year, total) {
+                year = parseInt(year, 10);
                 if (year >= year_start && year <= year_end) {
                     current_series.data[year]['total'] = total;
                     var ratio = total / current_series.data[year]['all'];
@@ -205,6 +206,7 @@ $(function(){
         } else if (query_type == "ratio") {
             $.each(facets, function(year, total) {
                 if (year >= year_start && year <= year_end) {
+                    year = parseInt(year, 10);
                     current_series.data[year] = {};
                     current_series.data[year]['all'] = total;
                     current_series.data[year]['total'] = 0;
