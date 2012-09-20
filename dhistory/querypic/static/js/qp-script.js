@@ -495,9 +495,9 @@ $(function(){
                         displayValue = (this.y * 100).toPrecision(2) + "% (" + dataSources.sources[this.series.index].getTotal(year, month) + " articles)";
                     }
                     if (interval == "month") {
-                        return '<b>'+ this.series.name +'</b><br/>'+ month_name + ': ' + displayValue;
+                        return '<b>'+ this.series.name +'</b><br/>'+ month_name + ': ' + displayValue + '<br><em>Click to view articles.</em>';
                     } else {
-                        return '<b>'+ this.series.name + '</b><br/>' + year +': ' + displayValue;
+                        return '<b>'+ this.series.name + '</b><br/>' + year +': ' + displayValue + '<br><em>Click to view articles.</em>';
 
                     }
              }
