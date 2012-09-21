@@ -23,7 +23,7 @@ CACHE_TIMEOUT = 60 * 60
 @cache_page(CACHE_TIMEOUT)
 def show_naa_home(request):
     return render_to_response('rsviewer-home.html', {}, context_instance=RequestContext(request))
-    
+
 @cache_page(CACHE_TIMEOUT)
 def show_naa_connectors(request):
     return render_to_response('rsviewer-connectors.html', {}, context_instance=RequestContext(request))
@@ -89,7 +89,7 @@ def show_printing(request, barcode):
         else:
             print_pages.append(rng)
     return render_to_response('rsviewer-print.html', {'pages': print_pages, 'details': details, 'barcode': barcode, 'total': total}, context_instance=RequestContext(request))
-        
+
 def get_total_pages(barcode):
     url = 'http://recordsearch.naa.gov.au/scripts/Imagine.asp?B=%s&I=1&SE=1' % barcode
     print url
@@ -166,7 +166,7 @@ def get_naa_image_source(barcode, page, size=None):
         except:
             raise Http404
     return filename
-   
+
 def get_url(url):
     '''
     Retrieve page.
@@ -190,7 +190,7 @@ class ServerError(Exception):
 def rescale(data, width, height, force=True):
     """Rescale the given image, optionally cropping it to make sure the result image has the specified width and height."""
     from cStringIO import StringIO
-    
+
     max_width = width
     max_height = height
 
@@ -203,7 +203,7 @@ def rescale(data, width, height, force=True):
         src_ratio = float(src_width) / float(src_height)
         dst_width, dst_height = max_width, max_height
         dst_ratio = float(dst_width) / float(dst_height)
-        
+
         if dst_ratio < src_ratio:
             crop_height = src_height
             crop_width = crop_height * dst_ratio
@@ -217,12 +217,12 @@ def rescale(data, width, height, force=True):
             y_offset = 0
         img = img.crop((x_offset, y_offset, x_offset+int(crop_width), y_offset+int(crop_height)))
         img = img.resize((dst_width, dst_height), pil.ANTIALIAS)
-        
+
     tmp = StringIO()
     img.save(tmp, 'JPEG')
     tmp.seek(0)
     output_data = tmp.getvalue()
     input_file.close()
     tmp.close()
-    
+
     return output_data
