@@ -281,7 +281,7 @@ $(function(){
 
    function process_url_query() {
         var url_query = queries.shift();
-        if (url_query.match(/(^http:\/\/trove\.nla\.gov\.au\/newspaper\/result\?|^http:\/\/www\.digitalnz\.org\/records\?)/)) {
+        if (url_query.match(/(^http:\/\/trove\.nla\.gov\.au\/newspaper\/result\?|^http:\/\/(?:www\.)?digitalnz\.org(?:\.nz)?\/records\?)/)) {
             if (url_query.match(/trove/)) {
                 process_trove_query(url_query);
             } else if (url_query.match(/digitalnz/)) {
