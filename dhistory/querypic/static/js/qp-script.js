@@ -78,10 +78,10 @@ $(function(){
     var twitter_url ="http://platform.twitter.com/widgets/tweet_button.html";
     var word_categories = {0: "< 100", 1: "100&ndash;1000", 3: "> 1000"};
     var query = {};
-    var decade_start = 180;
-    var decade_end = 195;
-    var year_start = 1803;
-    var year_end = 1954;
+    var decade_start;
+    var decade_end;
+    var year_start;
+    var year_end;
     var interval = "year";
     var decade_current = decade_start;
     var year_current = year_start;
@@ -89,20 +89,27 @@ $(function(){
     var query_type = 'ratio';
     var current_series;
 
+    function reset_query() {
+        query = {};
+        interval = "year";
+        queries = [];
+        query_type = 'ratio';
+    }
+
     function get_query() {
         if ($("#query").val() !== "") {
             var keywords = $("#query").val();
             if (keywords.match(/^[a-zA-Z\d"\(\)\~\:\- ]+$/)) {
                 queries.push(keywords + "|" + $("#country").val());
             } else {
-                alert("That's not a valid query...");
+                $("#status").empty().html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>That&rsquo;s not a valid query...</div>');
             }
         } else if ($("#query_url").val() !== "") {
             var url = $("#query_url").val();
             if (url.match(/(^http:\/\/trove\.nla\.gov\.au\/newspaper\/result\?|^http:\/\/www\.digitalnz\.org\/records\?)/)) {
                 queries.push(url);
             } else {
-                alert("That's not a valid url...");
+                $("#status").empty().html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>That&rsquo;s not a valid url...</div>');
             }
         } else if (window.location.href.match(/(\?trove_query=.+|\?dnz_query=.+)/)) {
             if ($.url().param("trove_query")) {
@@ -121,26 +128,39 @@ $(function(){
         var this_query = query[query_type];
         var callback;
         if (query["country"] == "Australia") {
-            $("#status").html("<p>Retrieving data for the " + decade_current + "0s...</p>");
+            $("#status").empty().html("<p>Retrieving data for the " + decade_current + "0s...</p>");
             this_query = this_query + "&l-decade=" + decade_current;
             if (query_type == "ratio") {
                 this_query = this_query + "&q=date:[" + decade_current + "0 TO " + decade_current + "9]";
             }
             callback = "callback";
         } else if (query["country"] == "New Zealand") {
-             $("#status").html("<p>Retrieving data...</p>");
+             $("#status").empty().html("<p>Retrieving data...</p>");
             callback = "jsonp";
         }
-        $.ajax({
-            "dataType": "jsonp",
-            "jsonp": callback,
+        $.jsonp({
+            //"dataType": "jsonp",
+            //"jsonp": callback,
+            "callbackParameter": callback,
             "url": this_query,
+            "timeout": 20000,
             "success": function(results) {
                 process_results(results);
             },
-            error: function(xmlReq, txtStatus, errThrown){
+            "error": function(d, status) {
+                if (status == "timeout") {
+                    message = "Sorry, the server took too long to respond.";
+                } else if (status == "error") {
+                    message = "Sorry, I couldn't retrieve any data.";
+                } else {
+                    message = "Sorry, something went wrong.";
+                }
+                $("#status").empty().html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>' + message + '</div>');
                 $("#graph").hideLoading();
-                $('#status').text(xmlReq.responseText);
+                if (dataSources.sources.length === 0) {
+                    $("#graph").hide();
+                }
+                reset_query();
             }
         });
    }
@@ -225,10 +245,11 @@ $(function(){
                 var query_parts = decodeURIComponent(queries.shift()).split('|');
                 keywords = query_parts[0];
                 var qstring, api_query, web_query, series_name, abbr;
-                if (keywords.indexOf('"') == -1) {
-                    qstring = keywords.split(" ").join(" AND ");
-                } else {
+                if (keywords.match(/(AND|OR|NOT|\(|"|\-|\*)/)) {
+                //if (keywords.indexOf('"') == -1) {
                     qstring = keywords;
+                } else {
+                    qstring = keywords.split(" ").join(" AND ");
                 }
                 series_name = qstring;
                 qstring = encodeURIComponent(qstring);
@@ -288,7 +309,7 @@ $(function(){
                 process_dnz_query(url_query);
             }
         } else {
-            alert("That's not a valid query...");
+            $("#status").empty().html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>That&rsquo;s not a valid query...</div>');
         }
    }
 
@@ -530,7 +551,7 @@ $(function(){
     }
     function showArticles(query_date, series) {
             $('#articles').empty().height('50px');
-            $('#articles').showLoading();
+            $('#graph').showLoading();
             var this_query = dataSources.sources[series.index].api_query;
             var callback;
             if (dataSources.sources[series.index].country[0] == "Australia") {
@@ -540,20 +561,33 @@ $(function(){
                 this_query = this_query + "&and[year]=" + query_date;
                 callback = "jsonp";
             }
-            $.ajax({
-                    "dataType": "jsonp",
-                    "jsonp": callback,
+            $.jsonp({
+                    //"dataType": "jsonp",
+                    //"jsonp": callback,
+                    "callbackParameter": callback,
+                    "timeout": 20000,
                     "url": this_query,
                     "success": function(results) {
-                            $('#articles').height('');
-                            $('#articles').append('<h3>Articles</h3>');
-                            if (dataSources.sources[series.index].country[0] == "Australia") {
-                                show_trove_articles(results, query_date, series);
-                            } else if (dataSources.sources[series.index].country[0] == "New Zealand") {
-                                show_digitalnz_articles(results, query_date, series);
-                            }
-                            $('#articles').hideLoading();
-                            $('#articles').ScrollTo();
+                        $('#articles').height('');
+                        $('#articles').append('<h3>Articles</h3>');
+                        if (dataSources.sources[series.index].country[0] == "Australia") {
+                            show_trove_articles(results, query_date, series);
+                        } else if (dataSources.sources[series.index].country[0] == "New Zealand") {
+                            show_digitalnz_articles(results, query_date, series);
+                        }
+                        $('#graph').hideLoading();
+                        $('#articles').ScrollTo();
+                    },
+                    "error": function(d, status) {
+                        if (status == "timeout") {
+                            message = "Sorry, the server took too long to respond.";
+                        } else if (status == "error") {
+                            message = "Sorry, I couldn't retrieve any data.";
+                        } else {
+                            message = "Sorry, something went wrong.";
+                        }
+                        $("#status").empty().html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>' + message + '</div>');
+                        $("#graph").hideLoading();
                     }
             });
     }
@@ -567,7 +601,7 @@ $(function(){
             });
             $('#articles').append(articles);
         }
-        $('#articles').append('<div class="more"><p><a target="_blank" href="' + dataSources.sources[series.index].web_query + '&fromyyyy=' + query_date + '&toyyyy=' + query_date + '">&gt; View more in Trove</a></p></div>');
+        $('#articles').append('<div class="more"><p><a class="btn" target="_blank" href="' + dataSources.sources[series.index].web_query + '&fromyyyy=' + query_date + '&toyyyy=' + query_date + '">&gt; View more in Trove</a></p></div>');
 
     }
     function show_digitalnz_articles(results, query_date, series) {
@@ -578,7 +612,7 @@ $(function(){
             });
             $('#articles').append(articles);
         }
-        $('#articles').append('<div class="more"><p><a target="_blank" href="' + dataSources.sources[series.index].web_query + '&i[year]=%5B' + query_date + '+TO+' + query_date + '%5D&">&gt; View more at DigitalNZ</a></p></div>');
+        $('#articles').append('<div class="more"><p><a class="btn" target="_blank" href="' + dataSources.sources[series.index].web_query + '&i[year]=%5B' + query_date + '+TO+' + query_date + '%5D&">&gt; View more at DigitalNZ</a></p></div>');
     }
     function clear_last() {
         dataSources.sources.pop();
@@ -682,6 +716,10 @@ $(function(){
         $("#save-form").submit();
     });
     $(".tip-popover").popover();
+    $("#loading-indicator-graph-overlay").click(function() {
+        alert("hello");
+        $("#graph").hideLoading();
+    });
     get_query();
 });
 

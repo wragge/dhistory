@@ -192,33 +192,44 @@ $(function(){
         });
     }
     function showArticles(query_date, series) {
-            $('#articles').empty().height('50px');
-            $('#articles').showLoading();
-            var this_query = dataSources.sources[series.index].api_query;
-            var callback;
-            if (dataSources.sources[series.index].country[0] == "Australia") {
-                this_query = this_query + "&l-year=" + query_date;
-                callback = "callback";
-            } else if (dataSources.sources[series.index].country[0] == "New Zealand") {
-                this_query = this_query + "&and[year]=" + query_date;
-                callback = "jsonp";
+        $('#articles').empty().height('50px');
+        $('#graph').showLoading();
+        var this_query = dataSources.sources[series.index].api_query;
+        var callback;
+        if (dataSources.sources[series.index].country[0] == "Australia") {
+            this_query = this_query + "&l-year=" + query_date;
+            callback = "callback";
+        } else if (dataSources.sources[series.index].country[0] == "New Zealand") {
+            this_query = this_query + "&and[year]=" + query_date;
+            callback = "jsonp";
+        }
+        $.jsonp({
+            "callbackParameter": callback,
+            "timeout": 20000,
+            "url": this_query,
+            "success": function(results) {
+                $('#articles').height('');
+                $('#articles').append('<h3>Articles</h3>');
+                if (dataSources.sources[series.index].country[0] == "Australia") {
+                    show_trove_articles(results, query_date, series);
+                } else if (dataSources.sources[series.index].country[0] == "New Zealand") {
+                    show_digitalnz_articles(results, query_date, series);
+                }
+                $('#graph').hideLoading();
+                $('#articles').ScrollTo();
+            },
+            "error": function(d, status) {
+                if (status == "timeout") {
+                    message = "Sorry, the server took too long to respond.";
+                } else if (status == "error") {
+                    message = "Sorry, I couldn't retrieve any data.";
+                } else {
+                    message = "Sorry, something went wrong.";
+                }
+                $("#status").empty().html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>' + message + '</div>');
+                $("#graph").hideLoading();
             }
-            $.ajax({
-                    "dataType": "jsonp",
-                    "jsonp": callback,
-                    "url": this_query,
-                    "success": function(results) {
-                            $('#articles').height('');
-                            $('#articles').append('<h3>Articles</h3>');
-                            if (dataSources.sources[series.index].country[0] == "Australia") {
-                                show_trove_articles(results, query_date, series);
-                            } else if (dataSources.sources[series.index].country[0] == "New Zealand") {
-                                show_digitalnz_articles(results, query_date, series);
-                            }
-                            $('#articles').hideLoading();
-                            $('#articles').ScrollTo();
-                    }
-            });
+        });
     }
     function show_trove_articles(results, query_date, series) {
         if (results.response.zone[0].records.article.length > 0) {
@@ -241,7 +252,7 @@ $(function(){
             });
             $('#articles').append(articles);
         }
-        $('#articles').append('<div class="more"><p><a class="button" href="' + dataSources.sources[series.index].web_query + '&i[year]=%5B' + query_date + '+TO+' + query_date + '%5D&">View more at DigitalNZ &raquo;</a></p></div>');
+        $('#articles').append('<div class="more"><p><a class="btn" href="' + dataSources.sources[series.index].web_query + '&i[year]=%5B' + query_date + '+TO+' + query_date + '%5D&">View more at DigitalNZ &raquo;</a></p></div>');
     }
     $('#graph_type').change(function() {
        makeChart($('#graph_type').val());

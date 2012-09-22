@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <title>dhistory{% block page_title %}{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta property="og:site_name" content="dhistory"/>
+    {% block extra_meta %}{% endblock %}
 
     <!-- Le styles -->
     <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
