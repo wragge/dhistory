@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% block page_title %} :: QueryPic :: Help{% endblock %}
 {% block body_attrs %} data-spy="scroll" data-target="#side-nav" data-offset="50" {% endblock %}
 {% block extra_scripts %}
     <script src="{{ STATIC_URL}}js/highcharts.js" type="text/javascript"></script>
@@ -259,7 +260,7 @@
             <strong>Firefox:</strong> Views -&gt; Toolbars -&gt; Bookmarks toolbar<br/>
             <strong>Safari:</strong> Views -&gt; Show bookmarks bar<br/>
             <strong>IE:</strong> Tools -&gt; Toolbars -&gt; Favourites</p></li>
-            <li><p>For <strong>Chrome</strong>, <strong>Firefox</strong> or <strong>Safari</strong>, simply click and drag this link &#8211; QueryPic &#8211; to your bookmarks bar.</p>
+            <li><p>For <strong>Chrome</strong>, <strong>Firefox</strong> or <strong>Safari</strong>, simply click and drag this link &#8211; <a href='javascript:(function(){if(window.location.href.match(/^http:\/\/trove\.nla\.gov\.au\/newspaper\/result\?/)){window.location="http://dhistory.org/querypic/create/?trove_query="+encodeURIComponent(window.location.href);}else%20if(window.location.href.match(/^http:\/\/(?:www\.)?digitalnz\.org(?:\.nz)?\/records\?/)){window.location="http://dhistory.org/querypic/create/?dnz_query="+encodeURIComponent(window.location.href);}})();'>QueryPic</a> &#8211; to your bookmarks bar.</p>
 
             <p>For <strong>IE</strong>:</p>
 
@@ -271,6 +272,22 @@
             <li>Click &#8216;Add&#8217;.</li>
             </ol></li>
             </ol>
+
+            <hr>
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+                var disqus_shortname = 'querypic'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
         </div>
     </div>
