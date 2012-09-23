@@ -1,28 +1,46 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container-fluid">
-    <div class="hero-unit">
-      <h1>dhistory</h1>
-      <p>Your digital history workbench</p>
-    </div>
     <div class="row-fluid">
-            <div class="span4 offset1">
-                <h2>The front page</h2>
-                <a class="thumbnail" href="/frontpages/"><img src="{{ STATIC_URL }}images/words.png"></a>
-                <p>Explore changes in the front pages of Australian newspapers.</p>
-            </div>
-            <div class="span4 offset1">
-                <h2>Archives Viewer</h2>
-                <a class="thumbnail" href="/archives/naa/"><img src="{{ STATIC_URL }}images/rsviewer-360.png"></a>
-                <p>Explore digitised records.</p>
-            </div>
+        <div class="hero-unit">
+          <h1>dhistory</h1>
+          <p class="lead">Your digital history workbench</p>
+        </div>
+        <ul class="thumbnails">
+            <li class="span3 offset1">
+                <div class="thumbnail">
+                    <a href="/frontpages/"><img src="{{ STATIC_URL }}/img/front-page-300x200.png" alt=""></a>
+                    <h3>The front page</h3>
+                    <p>Explore changes in the front pages of Australian newspapers.</p>
+                    <a class="btn btn-block btn-primary" href="/frontpages/">Launch</a>
+                </div>
+            </li>
+            <li class="span3">
+                <div class="thumbnail">
+                    <a href="/archives/naa/"><img src="{{ STATIC_URL }}/img/archives-viewer-300x200.png" alt=""></a>
+                    <h3>Archives Viewer</h3>
+                    <p>Explore digitised records from the National Archives of Australia.</p>
+                    <a class="btn btn-block btn-primary" href="/archives/naa/">Launch</a>
+                </div>
+            </li>
+            <li class="span3">
+                <div class="thumbnail">
+                    <a href="/querypic/"><img src="{{ STATIC_URL }}/img/qp-300x200.png" alt=""></a>
+                    <h3>QueryPic</h3>
+                    <p>Explore digitised newspapers form Australia and New Zealand.</p>
+                    <a class="btn btn-block btn-primary" href="/querypic/">Launch</a>
+                </div>
+            </li>
+        </ul>
+
     </div>
 </div>
-<hr>
     <footer>
         <div class="container-fluid">
-        <p>Another fine product from the <a href="http://wraggelabs.com/emporium/">Wragge Labs Emporium</a></p>
-        <p>Developed by <a href="http://discontents.com.au/about-me">Tim Sherratt</a> (<a href="http://twitter.com/wragge">@wragge</a>).<p>
+            <div class="span6">
+            <p>Developed by <a href="http://discontents.com.au/about-me">Tim Sherratt</a> (<a href="http://twitter.com/wragge">@wragge</a>).<p>
+            <p>Another fine product from the <a href="http://wraggelabs.com/emporium/">Wragge Labs Emporium</a></p>
+        </div>
         </div>
     </footer>
 {% endblock %}
