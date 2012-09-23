@@ -103,6 +103,7 @@ $(function(){
                 queries.push(keywords + "|" + $("#country").val());
             } else {
                 $("#status").empty().html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>That&rsquo;s not a valid query...</div>');
+                return;
             }
         } else if ($("#query_url").val() !== "") {
             var url = $("#query_url").val();
@@ -110,6 +111,7 @@ $(function(){
                 queries.push(url);
             } else {
                 $("#status").empty().html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>That&rsquo;s not a valid url...</div>');
+                return;
             }
         } else if (window.location.href.match(/(\?trove_query=.+|\?dnz_query=.+)/)) {
             if ($.url().param("trove_query")) {
@@ -310,6 +312,7 @@ $(function(){
             }
         } else {
             $("#status").empty().html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>That&rsquo;s not a valid query...</div>');
+            return;
         }
    }
 
