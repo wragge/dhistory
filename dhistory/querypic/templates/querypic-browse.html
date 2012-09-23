@@ -80,7 +80,7 @@
                 <div class="pagination">
                   <ul>
                     {% if page.has_previous%}
-                        <li><a href="/querypic/explore/q={{ query|urlencode }}&?sort_by={{ sort }}&page={{ page.previous_page_number }}">&laquo;</a></li>
+                        <li><a href="/querypic/explore/?q={{ query|urlencode }}&?sort_by={{ sort }}&page={{ page.previous_page_number }}">&laquo;</a></li>
                     {% else %}
                         <li class="disabled"><span>&laquo;</span></li>
                     {% endif %}
@@ -139,15 +139,15 @@
                 <div class="pagination">
                   <ul>
                     {% if qpgraphs.has_previous%}
-                        <li><a href="/querypic/explore/?sort_by={{ sort }}&page={{ qpgraphs.previous_page_number }}">&laquo;</a></li>
+                        <li><a href="/querypic/explore/?q=&sort_by={{ sort }}&page={{ qpgraphs.previous_page_number }}">&laquo;</a></li>
                     {% else %}
                         <li class="disabled"><span>&laquo;</span></li>
                     {% endif %}
                     {% for page in qpgraphs.paginator.page_range %}
-                        <li {% if page == qpgraphs.number %}class="active"{% endif %}><a href="/querypic/explore/?sort_by={{ sort }}&page={{ page }}">{{ page }}</a></li>
+                        <li {% if page == qpgraphs.number %}class="active"{% endif %}><a href="/querypic/explore/?q=&sort_by={{ sort }}&page={{ page }}">{{ page }}</a></li>
                     {% endfor %}
                     {% if qpgraphs.has_next%}
-                        <li><a href="/querypic/explore/?sort_by={{ sort }}&page={{ qpgraphs.next_page_number }}">&raquo;</a></li>
+                        <li><a href="/querypic/explore/?q=&sort_by={{ sort }}&page={{ qpgraphs.next_page_number }}">&raquo;</a></li>
                     {% else %}
                         <li class="disabled"><span>&raquo;</span></li>
                     {% endif %}

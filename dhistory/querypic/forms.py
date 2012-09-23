@@ -15,6 +15,7 @@ class QPForm(forms.Form):
 class ExploreForm(SearchForm):
     q = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'input-medium search-query'}))
     sort_by = forms.CharField(required=False)
+    page = forms.CharField(required=False)
 
     def search(self):
         if not self.is_valid():
