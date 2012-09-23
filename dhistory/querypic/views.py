@@ -66,7 +66,7 @@ def show_querypic_form(request):
             else:
                 keywords = []
                 for source in json_data['sources']:
-                    keywords.extend(clean_keywords(source['name']))
+                    keywords.extend(clean_keywords(source['name'].replace('+', ' ')))
                 keywords = ' '.join(keywords)
                 qpgraph = QPGraph.objects.create(creator=creator,
                     creator_email=email,

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block body_attrs %}{% endblock %}
+{% block body_attrs %} data-spy="scroll" data-target="#side-nav" data-offset="50" {% endblock %}
 {% block extra_scripts %}
     <script src="{{ STATIC_URL}}js/highcharts.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/showLoading/js/jquery.showLoading.min.js"></script>
@@ -31,34 +31,247 @@
                   <li><a href="#whatfor">What is it for?</a></li>
                   <li><a href="#whatdata">What data does it use?</a></li>
                   <li class="nav-header">Creating a QueryPic</li>
-                  <li><a href="#keyword">Simple keyword searches</a></li>
+                  <li><a href="#keyword">Keyword searches</a></li>
+                  <li><a href="#keyworddetails">Keyword search details</a></li>
                   <li><a href="#query">Using query urls</a></li>
                   <li><a href="#bookmarklet">Using the bookmarklet</a></li>
                   <li><a href="#copying">Copying an existing QueryPic</a></li>
-                  <li class="nav-header">Saving, sharing and using</li>
+                  <li><a href="#combining">Combining queries</a></li>
+                  <li><a href="#regenerate">Regenerating QueryPics</a></li>
                   <li><a href="#saving">Saving a QueryPic</a></li>
+                  <li class="nav-header">Sharing and using</li>
+                  <li><a href="#exploring">Exploring saved QueryPics</a></li>
                   <li><a href="#sharing">Sharing a QueryPic</a></li>
+                  <li><a href="#articles">Previewing articles</a></li>
+                  <li><a href="#metadata">Viewing query metadata</a></li>
+                  <li><a href="#graph">Features of the graph</a></li>
+                  <li class="nav-header">Hints and tips</li>
+                  <li><a href="#fuzzy">Fuzzy searches</a></li>
+                  <li><a href="#installingbookmarklet">Viewing query metadata</a></li>
+
                 </ul>
             </div>
         </div>
         <div class="span9">
             <h3>About QueryPic</h3>
+
             <h4 id="whatfor">What is it for?</h4>
-                <p>QueryPic provides a simple visualisation of a set of search results. Instead of just presenting you with a list of matches, it plots the results over time as a familiar line graph. Each point on the graph represents the number of articles in that year matching your search query.</p>
-                <p>It&rsquo;s simple, but it&rsquo;s also suprisingly powerful. QueryPic lets you see patterns and trends that normal search interfaces hide. It helps you frame your research questions &ndash; to survey the territory and decide where to dig.</p>
+
+            <p>QueryPic provides a simple visualisation of a set of search results. Instead of just presenting you with a list of matches, it plots the results over time as a familiar line graph. Each point on the graph represents the number of articles in that year matching your search query. You can even <a href="#combining">combine multiple queries</a> to compare results.</p>
+
+            <p>It&#8217;s simple, but it&#8217;s also surprisingly powerful. QueryPic lets you see patterns and trends that normal search interfaces hide. It helps you frame your research questions &#8211; to survey the territory and decide where to dig.</p>
+
             <h4 id="whatdata">What data does it use?</h4>
-            <p>QueryPic searches digitised newspapers from Australia and New Zealand published online by Trove and Papers Past. The data is accessed through APIs (Application Programming Interfaces) provided by Trove and DigitalNZ.</p>
-            <p>These are wonderfully rich resources, but if you&rsquo;re going to interpret QueryPic results you really need to think about their limitations. What titles have been digitised? What sort of gaps remain? What is the quality of the text extracted by OCR? How might factors such as these affect your results?</p>
-            <p>And then there&rsquo;s the question of how search actually works in the two databases. How &lsquo;fuzzy&rsquo; are the matches? How do they handle hyphenated words? I&rsquo;d suggest you become familiar with the help pages of both systems.</p>
-            <p>QueryPic lets you pursue your hunches, but what it creates are sketches, not arguments. You have to think critically about the data and how you&rsquo;re accessing it.</p>
+
+            <p>QueryPic searches digitised newspapers from Australia and New Zealand published online by Trove and Papers Past. The data is accessed through APIs (<a href="http://en.wikipedia.org/wiki/Application_programming_interface">Application Programming Interfaces</a>) provided by <a href="http://trove.nla.gov.au/general/api-technical">Trove</a> and <a href="http://www.digitalnz.org/developers">DigitalNZ</a>.</p>
+
+            <p>These are wonderfully rich resources, but if you&#8217;re going to interpret QueryPic results you really need to think about their limitations. What titles have been digitised? What sort of gaps remain? What is the quality of the text extracted by OCR? How might factors such as these affect your results?</p>
+
+            <p>And then there&#8217;s the question of how search actually works in the two databases. How &#8216;fuzzy&#8217; are the matches? How do they handle hyphenated words? I&#8217;d suggest you become familiar with the help pages of both systems.</p>
+
+            <p>QueryPic lets you pursue your hunches, but what it creates are sketches, not arguments. You have to think critically about the data and how you&#8217;re accessing it.</p>
+
             <h3>Creating a QueryPic</h3>
-            <h4 id="keyword">Simple keyword searches</h4>
-            <p>The easiest way to make a QueryPic is to type a word or phrase in the keywords search box. To search for a phrase, enclose it in double quotation marks. If you submit multiple keywords, only articles that contain all the words will be matched.</p>
-            <p>You can use the keywords option to build more complex queries, such as proximity searches, but if you need something more than a basic search, you should probably use the query url option.</p>
+
+            <h4 id="keyword">Keyword searches</h4>
+
+            <p>The easiest way to make a QueryPic is to type a word or phrase in the keywords search box. To search for a phrase, enclose it in double quotation marks. If you submit multiple keywords, only articles that contain <em>all</em> the words will be matched.</p>
+
+            <p>You can also use standard boolean operators &#8211; like AND, OR and NOT &#8211; to build more complex searches. Have a look at the help pages of <a href="http://trove.nla.gov.au/general/finding-articles-in-digitised-newspapers-faq/searchTips">Trove</a> and <a href="http://www.digitalnz.org/about/search-tips">DigitalNZ</a> for more details.</p>
+
+            <h4 id="keyworddetails">What actually happens when you perform a keyword search?</h4>
+
+            <p>As I said, it&#8217;s important to try and understand what&#8217;s going on behind the scenes when you search, so here&#8217;s the blow by blow description.</p>
+
+            <ol>
+            <li>You enter your keywords and press &#8216;show&#8217;.</li>
+            <li>QueryPic examines the keywords string, looking for signs that it&#8217;s a complex query. These signs include:
+
+            <ul>
+            <li>double quotes</li>
+            <li>any of the words AND, OR, NOT</li>
+            <li>any of the following punctuation marks: brackets, colon, minus sign, squiggly thing (~)</li>
+            </ul></li>
+            <li>If any of the signs are present QueryPic leaves the keywords string alone, assuming that you know what you&#8217;re doing.</li>
+            <li>If there are no signs, QueryPic treats the string as a series of keywords. It splits words at spaces and then connects them back together using the &#8216;AND&#8217; operator. So if you enter &#8216;cat dog&#8217;, QueryPic turns it into &#8216;cat AND dog&#8217;. Ok, this isn&#8217;t strictly necessary as, by default, both Trove and DigitalNZ will treat keywords as if they were &#8216;ANDed&#8217; together. But I thought it was good to be explicit, particularly as default behaviours can sometimes change.</li>
+            <li>QueryPic sets the date range for the search at 1803&#8211;1954 for Trove and 1839&#8211;1945 for Papers Past. Yes, there is some post&#8211;1954 content in Trove, but it can cause odd results. If you want control over the date range, use the <a href="#queryurl">query url</a> option.</li>
+            <li>The query string is then sent off to the appropriate API. It&#8217;s important to note that, by default, both Trove and DigitalNZ apply some degree of <a href="#fuzzy">fuzzy matching</a> to your search terms.</li>
+            <li>For each year in the date range, QueryPic extracts two values: the number of articles matching your query and the total number of articles. It then calculates the proportion of articles matching your query by just dividing one by the other.</li>
+            </ol>
+
             <h4 id="query">Using query urls</h4>
-            <p>For more complex queries just construct your search using the Trove or DigitalNZ search interfaces. Once you're happy with the results, copy the url and paste it into QueryPic&rsquo;s query url box. QueryPic will parse the url, build an API request, and retrieve the results. You can, for example, limit the date range of your QueryPic. If you&rsquo;re using Trove you can apply a number of other limits including the newspaper, the type of article and it&rsquo;s word length.</p>
+
+            <p>While you can build fairly complex queries using the keywords option, you&#8217;ll probably find it easier to build and test your query using the existing search interfaces to Trove and Papers Past. You&#8217;ll also be able to apply custom limits, such as date ranges.</p>
+
+            <p>The procedure is fairly simple. In Trove head to the &#8216;Advanced search&#8217; page and start building your query. Alternatively, you can use the basic interface and filter your search by selecting facets. See the help pages for more information.</p>
+
+            <p>QueryPic recognises the following facets (or limits) in Trove searches:</p>
+
+            <ul>
+            <li>date ranges (years only)</li>
+            <li>newspaper titles</li>
+            <li>article categories</li>
+            <li>word length</li>
+            <li>illustrated (yes or no)</li>
+            </ul>
+
+            <p>Note that the option to search only certain parts of articles (such as the headings) is not currently supported by the Trove API, so QueryPic can&#8217;t apply it.</p>
+
+            <p>In DigitalNZ you can use the &#8216;filters&#8217; option to apply a date range.</p>
+
+            <p>You can, of course, keep testing and tweaking until it looks like you&#8217;re getting the results you want (or none of the results you don&#8217;t want). Then it&#8217;s just a matter of copying the url in your browser&#8217;s address box, selecting the &#8216;query url&#8217; tab in QueryPic and pasting in the url.</p>
+
+            <p>When you click &#8216;Show&#8217;, QueryPic will parse the url into it&#8217;s components and translate them into the form required by the APIs. As with the keyword search, it will gather data for each year and calculate proportions.</p>
+
+            <p>To make using the query url option even easier, you can install a <a href="#bookmarklet">bookmarklet</a> that connects Trove and DigitalNZ directly to QueryPic.</p>
+
             <h4 id="bookmarklet">Using the bookmarklet</h4>
-            <p>To save you from excessive copying and pasting, there&rsquo;s a bookmarklet that links Trove and DigitalNZ direct to QueryPic. To install the bookmarklet simply drag this link &ndash; <a href='javascript:(function(){if(window.location.href.match(/^http:\/\/trove\.nla\.gov\.au\/newspaper\/result\?/)){window.location="http://dhistory.org/querypic/create/?trove_query="+encodeURIComponent(window.location.href);}else%20if(window.location.href.match(/^http:\/\/www\.digitalnz\.org\/records\?/)){window.location="http://dhistory.org/querypic/create/?dnz_query="+encodeURIComponent(window.location.href);}})();'>QueryPic</a> &ndash; to your browser&rsquo;s bookmarks bar. Then when you&rsquo;ve constructed your search in Trove or DigitalNZ click on the bookmarklet. That&rsquo;s it! QueryPic will open automatically and start loading data.</p>
+
+            <p>A bookmarklet is a little piece of javascript code disguised as a browser bookmark. When you click on the bookmark, the code runs.</p>
+
+            <p>The QueryPic bookmarklet is designed to copy a query url from Trove or DigitalNZ and feed it directly to QueryPic &#8211; no copying and pasting required!</p>
+
+            <p>To install the bookmarklet simply drag this link &#8211; <a href='javascript:(function(){if(window.location.href.match(/^http:\/\/trove\.nla\.gov\.au\/newspaper\/result\?/)){window.location="http://dhistory.org/querypic/create/?trove_query="+encodeURIComponent(window.location.href);}else%20if(window.location.href.match(/^http:\/\/(?:www\.)?digitalnz\.org(?:\.nz)?\/records\?/)){window.location="http://dhistory.org/querypic/create/?dnz_query="+encodeURIComponent(window.location.href);}})();'>QueryPic</a> &#8211; to your browser&#8217;s bookmarks bar. Different browsers work slightly differently, so if this doesn&#8217;t seem to work see <a href="#installingbookmarklet">installing the bookmarklet</a> for more detailed instructions.</p>
+
+            <p>Once the bookmarklet is installed just construct your search in Trove or DigitalNZ. When you&#8217;re happy with it click on the bookmarklet. That&#8217;s it! QueryPic will open automatically and start loading data.</p>
+
+            <h4 id="copying">Copying an existing QueryPic</h4>
+
+            <p>If you come across an interesting QueryPic that you like to use as a basis for your own comparison you can use it to generate a new graph.</p>
+
+            <ol>
+            <li>Go to the existing QueryPic and click on the tab in the right-hand side bar corresponding to the query you&#8217;re interested in &#8211; they&#8217;ll be labelled &#8216;Query 1&#8217;, &#8216;Query 2&#8217; etc.</li>
+            <li>Click on the &#8216;Create new QP&#8217; button.</li>
+            <li>The &#8216;Create&#8217; page will open and QueryPic will start retrieving data. Note that the contents of Trove and DigitalNZ can change as more newspapers and articles are added and the OCR text is improved. That means the new graph you create might not be exactly the same as the one you&#8217;re basing it on.</li>
+            <li>Once the graph is complete, you can build a new comparison by <a href="#combining">combining it with another query</a>.</li>
+            </ol>
+
+            <p>You can also <a href="#regenerate">regenerate a complete QueryPic</a>.</p>
+
+            <h4 id="combining">Combining queries</h4>
+
+            <p>One of the most useful aspects of QueryPic is it&#8217;s ability to compare queries &#8211; you can add as many lines as you like to a single QueryPic.</p>
+
+            <p>Combining queries is easy, once you added your first query simply add another <a href="#keyword">keyword search</a> or <a href="#queryurl">query url</a>. And then repeat until you&#8217;re done.</p>
+
+            <p>Note that you can&#8217;t add queries to a saved QueryPic, so wait until you&#8217;ve added all your queries before <a href="#saving">saving</a>.</p>
+
+            <p>Also you can&#8217;t use the bookmarklet to add additional queries, so you&#8217;ll have to resort to copying and pasting the urls.</p>
+
+            <h4 id="regenerate">Regenerating QueryPics</h4>
+
+            <p>The contents of Trove and Papers Past will change over time. Additional newspapers and articles will be added, and corrections will be made to the text. A query you ran a year ago might produce a different result today. For this reason every saved QueryPic is date-stamped. You should include this date in any citation.</p>
+
+            <p>If you want to track changes over time you can easily regenerate a saved QueryPic. Just click on the big blue &#8216;Regenerate this QP&#8217; button. The &#8216;Create&#8217; page will open and QueryPic will retrieve a new dataset for all of the queries in the original graph. You can then save the new version.</p>
+
+            <h4 id="saving">Saving your QueryPic</h4>
+
+            <p>Once you&#8217;re happy with your QueryPic you&#8217;ll want to save it. It&#8217;s easy &#8211; just click the big blue &#8216;Save&#8217; button. A form will pop up and ask you for a few details. There are only two required fields:</p>
+
+            <ul>
+            <li>your email</li>
+            <li>a title for your QueryPic</li>
+            </ul>
+
+            <p>Note that your email will not be displayed or shared.</p>
+
+            <p>The optional fields are:</p>
+
+            <ul>
+            <li>your name (or your avatar&#8217;s name)</li>
+            <li>your web page (it could be a personal home page or a project page)</li>
+            <li>a description of your QueryPic</li>
+            </ul>
+
+            <p>Just fill in the fields and click on &#8216;Save&#8217;. Your details will be added to the database and you&#8217;ll be redirected to a freshly-minted, persistent url for your saved QueryPic. You can cite or share this url &#8211; tell the world!</p>
+
+            <h3>Sharing and using QueryPics</h3>
+
+            <h4 id="exploring">Exploring saved QueryPics</h4>
+
+            <p>Saved QueryPics are stored in a database. Just visit the <a href="/querypic/explore">explore</a> page to browse. Limit the number of results displayed by entering a keyword in the filter box. Click on the arrows in the column headings to change the order of the results.</p>
+
+            <h4 id="sharing">Sharing QueryPics</h4>
+
+            <p>Each saved QueryPic is assigned a persistent url that can be cited or shared. You can find the url under the graph, or in your browser&#8217;s address bar.</p>
+
+            <p>A number of standard social network buttons have been included for easy sharing.</p>
+
+            <h4 id="articles">Previewing articles</h4>
+
+            <p>QueryPic&#8217;s graphs give you a new perspective on your newspaper searches, but eventually you&#8217;ll want to go back to the articles themselves &#8211; to find out what&#8217;s actually lurking under each point on the graph.</p>
+
+            <p>To retrieve a list of the first twenty matching articles for each year, just click on that point on the graph. QueryPic will once again fire off a request to the API and return the articles ordered by relevance. Click on an article to open it in Trove or Papers Past. To dig deeper just click on the &#8216;View more in&#8230;&#8217; button at the bottom of the list of articles to view all the matching results.</p>
+
+            <h4 id="metadata">Viewing query metadata</h4>
+
+            <p>To view a summary of a query just click on the appropriate tab in the right-hand side bar &#8211; they&#8217;re labelled &#8216;Query 1&#8217;, &#8216;Query 2&#8217; etc.</p>
+
+            <p>The query summary displays some basic metadata about the query, including:</p>
+
+            <ul>
+            <li>the source (either Australia or New Zealand)</li>
+            <li>the search keywords</li>
+            <li>the date range</li>
+            <li>any other limits (such as newspaper titles)</li>
+            </ul>
+
+            <p>There are also two buttons, one opens up that query in either Trove or DigitalNZ. The other button uses the query to <a href="#copying">generate a new QueryPic</a>.</p>
+
+            <h4 id="graph">Features of the graph</h4>
+
+            <p>The graphs created by the <a href="http://www.highcharts.com/">HighCharts</a> javascript library include a number of clever features.</p>
+
+            <p>By clicking and dragging you can zoom into any section of the graph. Click the &#8216;Reset zoom&#8217; button to return to the original view.</p>
+
+            <p>Click on a label in the legend to temporarily hide a query. This can be useful if you&#8217;re comparing multiple queries. Note that when you hide a query the vertical scale is reset to suit the remaining data. This makes it easier to study queries with fewer results.</p>
+
+            <p>There are two buttons in the top right-hand corner or every graph. One prints the graph, while the other lets you download the graph as an image in a choice of file formats.</p>
+
+            <h3>Hints and tips</h3>
+
+            <h4 id="fuzzy">Fuzzy searches</h4>
+
+            <p>Fuzzy searches expand the number of results returned by truncating or stemming your keywords to match a variety of possible endings. So a search for &#8216;smile&#8217; would return &#8216;smiles&#8217;, &#8216;smiling&#8217; and &#8216;smiley&#8217;.</p>
+
+            <p>This is great if you&#8217;re not exactly sure what you&#8217;re looking for &#8211; it maximises your chances of discovery. But if you want to track the occurrence of a particular word or phrase it can be rather annoying.</p>
+
+            <p>Both Trove and DigitalNZ include some degree of fuzziness by default. In Trove, the situation is further complicated by the way the indexing handles hyphenated words.</p>
+
+            <p>Fuzzy searching can be switched off in Trove by using the <a href="http://trove.nla.gov.au/general/finding-articles-in-digitised-newspapers-faq/searchTips#finding_word">&#8216;fulltext:&#8217; modifier</a>, but it can take a fair bit of trial and error to find out what actually works. The <a href="http://trove.nla.gov.au/forum/forumdisplay.php?3-Digitised-newspapers-and-more">Trove Forum</a> is a useful source of guidance and tips, see for example:</p>
+
+            <ul>
+            <li><a href="http://trove.nla.gov.au/forum/showthread.php?731-how-do-i-ask-for-Fuzzy-search-instead-of-Exact-search">How do i ask for Fuzzy search instead of Exact search</a></li>
+            <li><a href="http://trove.nla.gov.au/forum/showthread.php?799-Exact-text">Exact text</a></li>
+            <li><a href="http://trove.nla.gov.au/forum/showthread.php?558-fulltext-versus-exactPhrase">Fulltext versus exact phrase</a></li>
+            </ul>
+
+            <p>Another trap is that, by default, Trove searches include user-contributed tags and comments. So if you search for &#8216;World War I&#8217; you&#8217;ll get some matches from the period 1914&#8211;18 (think about it). This is because some diligent user has added the tag &#8216;World War I&#8217; to a number of articles from the period. There&#8217;s no easy way of avoiding these sorts of anachronisms. Once you become aware of such cases you can explicitly exclude matching tags, but it&#8217;s not a wholly satisfactory solution.</p>
+
+            <p>The only answer to the problems of fuzzy searching is to experiment with your queries and remain critical of the results.</p>
+
+            <h4 id="installingbookmarklet">Installing the bookmarklet</h4>
+
+            <ol>
+            <li><p>Make sure your browser&#8217;s bookmarks toolbar is visible.</p>
+
+            <p><strong>Chrome:</strong> View -&gt; Always show bookmarks bar<br/>
+            <strong>Firefox:</strong> Views -&gt; Toolbars -&gt; Bookmarks toolbar<br/>
+            <strong>Safari:</strong> Views -&gt; Show bookmarks bar<br/>
+            <strong>IE:</strong> Tools -&gt; Toolbars -&gt; Favourites</p></li>
+            <li><p>For <strong>Chrome</strong>, <strong>Firefox</strong> or <strong>Safari</strong>, simply click and drag this link &#8211; QueryPic &#8211; to your bookmarks bar.</p>
+
+            <p>For <strong>IE</strong>:</p>
+
+            <ol>
+            <li>Right click on the link above.</li>
+            <li>Choose &#8216;Add to favourites&#8217;.</li>
+            <li>If a security warning pops up, click on &#8216;Yes&#8217; to proceed.</li>
+            <li>Select location Favourites -&gt; Favourites bar.</li>
+            <li>Click &#8216;Add&#8217;.</li>
+            </ol></li>
+            </ol>
+
         </div>
     </div>
 </div>

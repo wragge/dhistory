@@ -339,6 +339,10 @@ $(function(){
             if (trove_params['toyyyy']) {
                 year_end = trove_params['toyyyy'];
             }
+        } else if (trove_params['l-decade']) {
+            var decade = parseInt(trove_params['l-decade'], 10);
+            year_start = (decade * 10) + 1;
+            year_end = year_start + 8;
         } else {
             year_start = 1803;
             year_end = 1954;
@@ -382,6 +386,13 @@ $(function(){
 
                 facets.push("&l-word=" + words.join("&l-word="));
                 limits['Words'] = words;
+            }
+        }
+        if (trove_params['l-illustrated']) {
+            var illustrated = trove_params['l-illustrated'];
+            if (illustrated.match(/(^y|^Illustrated)/)) {
+                facets.push("&l-illustrated=Y");
+                limits['Illustrated'] = ['yes'];
             }
         }
         qstring = keywords.join('+');
