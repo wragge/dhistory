@@ -202,15 +202,17 @@ $(function(){
                 });
             }
         } else if (query_type == "ratio") {
-            $.each(results.response.zone[0].facets.facet.term, function(index, value) {
-                current_year = parseInt(value.display, 10);
-                if (current_year >= year_start && current_year <= year_end) {
-                    current_series.data[current_year] = {};
-                    current_series.data[current_year]['all'] = parseInt(value.count, 10);
-                    current_series.data[current_year]['total'] = 0;
-                    current_series.data[current_year]['ratio'] = 0;
-                }
-            });
+            if (parseInt(results.response.zone[0].records.total, 10) > 0) {
+                $.each(results.response.zone[0].facets.facet.term, function(index, value) {
+                    current_year = parseInt(value.display, 10);
+                    if (current_year >= year_start && current_year <= year_end) {
+                        current_series.data[current_year] = {};
+                        current_series.data[current_year]['all'] = parseInt(value.count, 10);
+                        current_series.data[current_year]['total'] = 0;
+                        current_series.data[current_year]['ratio'] = 0;
+                    }
+                });
+            }
         }
     }
 
