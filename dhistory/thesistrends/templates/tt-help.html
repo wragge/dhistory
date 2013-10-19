@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block page_title %} :: Research Trends :: Help{% endblock %}
+{% block body_attrs %} data-spy="scroll" data-target="#side-nav" data-offset="50" {% endblock %}
+{% block extra_scripts %}
+    <script src="{{ STATIC_URL}}js/highcharts.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/showLoading/js/jquery.showLoading.min.js"></script>
+    <script src="{{ STATIC_URL}}js/purl.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL}}js/jquery.dateFormat-1.0.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/qp-help-script.js"></script>
+{% endblock %}
+{% block extra_styles %}
+    <link href="{{ STATIC_URL }}css/qp-style.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row-fluid">
+        <header class="span12">
+            <h1>Research Trends <small class="muted">Exploring Australian theses, 1950 &ndash; 2012</small></h1>
+            <ul class="nav nav-pills">
+              <li><a href="/thesistrends/">Create</a></li>
+              <li class="active"><a href="/thesistrends/help/">Help</a></li>
+            </ul>
+        </header>
+    </div>
+    <div>
+        <div class="span9">
+            <h3>About Research Trends</h3>
+            <p>This is just a quick experiment using Trove to explore some trends in Australian research by visualising thesis numbers over time.</p>
+            <p>It's suggestive rather than statistical as some of the date metadata is not really up to the task.</p>
+            <h3>Query options</h3>
+            <p>You can use any search string that works in the simple search box in Trove. This includes some fielded and boolean searching.</p>
+            <p>Examples:
+                <ul>
+                    <li>Search in titles only &ndash; title:(adelaide)</li>
+                    <li>Search for a particular subject &ndash; subject:(history)</li>
+                    <li>Combine them! &ndash; title:(adelaide) AND subject:(history)</li>
+                </ul>
+            </p>
+
+
+            <hr>
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+                var disqus_shortname = 'querypic'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block footer %}
+{% include "tt-footer.html" %}
+{% endblock %}

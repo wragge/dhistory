@@ -62,6 +62,12 @@ urlpatterns += patterns('dhistory.querypic.views',
     ), name='haystack_search'),
     url(r'^querypic/(?P<short_url>[a-z0-9]+)/$', 'show_querypic'),
 )
+urlpatterns += patterns('dhistory.thesistrends.views',
+    #url(r'^querypic/$', 'show_home'),
+    url(r'^thesistrends/help/$', 'show_help'),
+    url(r'^thesistrends/$', 'show_querypic_form'),
+    url(r'^thesistrends/(?P<short_url>[a-z0-9]+)/$', 'show_querypic'),
+)
 urlpatterns += patterns('django.views.generic.simple',
     url(r'^$', 'direct_to_template', {'template': 'home.html'}, name='home'),
 )

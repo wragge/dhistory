@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block page_title %} :: QueryPic :: Create{% endblock %}
+{% block extra_scripts %}
+    <script src="{{ STATIC_URL}}js/highcharts.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/highcharts/exporting.js"></script>
+    <script src="{{ STATIC_URL }}js/showLoading/js/jquery.showLoading.min.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery.jsonp-2.4.0.min.js"></script>
+    <script src="{{ STATIC_URL}}js/purl.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL}}js/jquery.dateFormat-1.0.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/jquery.scrollto.min.js"></script>
+    <script src="{{ STATIC_URL }}js/tt-script.js?v=1.2"></script>
+    <script id="series_data">
+        var series_data = [];
+    </script>
+{% endblock %}
+{% block extra_styles %}
+    <link href="{{ STATIC_URL }}css/qp-style.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row-fluid">
+        <header class="span12">
+            <h1>Research Trends <small class="muted">Exploring Australian theses, 1950 &ndash; 2012</small></h1>
+            <ul class="nav nav-pills">
+              <li class="active"><a href="/thesistrends/">Create</a></li>
+              <li><a href="/thesistrends/help/">Help</a></li>
+            </ul>
+            
+            <p class="form-inline">
+                Word or phrase: <input type="text" id="query"> <i title="Tip" data-content="Enclose phrases in double quotes." class="icon-question-sign tip-popover"></i>
+                <button class="btn" id="do_keyword_query">Show</button>
+                <button class="btn" id="clear_last1">Clear last</button>
+                <button class="btn" id="clear_all1">Clear all</button>
+            </p>
+
+        </header>
+    </div>
+    <div class="row-fluid">
+        <div class="span10">
+            <div class="modal hide" id="save-graph">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3>Save this QueryPic</h3>
+                </div>
+                <div class="modal-body">
+                    <form id="save-form" action="/querypic/create/" method="post">{% csrf_token %}
+                            <label class="control-label" for="id_creator"><small>Your name (optional)</small></label>
+                            <div class="controls">{{ form.creator }}</div>
+                            <label class="control-label" for="id_creator_email"><small>Your email (required, but not displayed)</small></label>
+                            <div class="controls">{{ form.creator_email }}</div>
+                            <label class="control-label" for="id_creator_url"><small>Your website (optional)</small></label>
+                            <div class="controls">{{ form.creator_url }}</div>
+                            <label class="control-label" for="id_title"><small>Give your QueryPic a title (required)</small></label>
+                            <div class="controls">{{ form.title }}</div>
+                            <label class="control-label" for="id_description"><small>Describe your graph (optional)</small></label>
+                            <div class="controls">{{ form.description }}</div>
+                            <div class="controls">{{ form.sources }}</div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal">Close</button>
+                    <button id="submit-form" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+            <div id="status"></div>
+            <div id="graph" style="height:600px;width:100%; "></div>
+            <div id="trove-results">
+            <div id="articles"></div>
+        </div>
+        </div>
+        <div class="span2">
+            <div id="metadata">
+                <h4>View</h4>
+                <div id="type_selector"><select class="input-medium" id="graph_type"><option value="ratio">proportion of total articles</option><option value="total">number of articles</option></select></div>
+                <h4>Data</h4>
+                <div id="series-details" class="accordion">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block footer %}
+{% include "tt-footer.html" %}
+{% endblock %}
