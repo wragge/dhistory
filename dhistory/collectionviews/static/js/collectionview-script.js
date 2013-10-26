@@ -390,6 +390,13 @@ $(function(){
         });
     }
 
+    function checkOnLoad() {
+        if ($('input:checked').length > 0) {
+            history.pushState('data', '', '/troveprofiler/');
+            get_query();
+        }
+    }
+
     $(".tip-popover").popover();
     $("#loading-indicator-graph-overlay").click(function() {
         alert("hello");
@@ -411,6 +418,7 @@ $(function(){
     $('#panes a:first').tab('show');
     //get_query();
     //load_nucs();
+    checkOnLoad();
 });
 
 

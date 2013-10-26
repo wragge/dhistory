@@ -68,7 +68,7 @@
                             {% if library.tholdings > 0 %}
                                 <div class="level0">
                                     <div class="checkbox">
-                                        <label><input type="checkbox" name="nucs" value="{{ library.nuc }}"> {{ library.fname }}</label>
+                                        <label><input type="checkbox" name="nucs" value="{{ library.nuc }}"{% if library.nuc in selected_nucs %} checked{% endif %}> {{ library.fname }}</label>
                                     </div>
                                     {% for child1 in library.childlibs %}
                                         {% if child1.tholdings > 0 %}

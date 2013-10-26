@@ -2,7 +2,7 @@
 import urllib2
 import json
 import validictory
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
 from haystack.views import SearchView
@@ -47,9 +47,10 @@ JSON_SCHEMA = {
 
 
 def create_collectionview(request):
+    selected_nucs = request.GET.getlist('nuc')
     response = urllib2.urlopen('http://trove.nla.gov.au/general/libraries')
     nucs = json.load(response)
-    return render(request, 'collectionview-create.html', {'nucs': nucs, 'years': range(1800, 2014)})
+    return render(request, 'collectionview-create.html', {'nucs': nucs, 'selected_nucs': selected_nucs, 'years': range(1800, 2014)})
 
 
 def show_querypic_form(request):
