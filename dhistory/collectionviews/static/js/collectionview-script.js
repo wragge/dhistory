@@ -309,9 +309,10 @@ $(function(){
     function showArticles(query_date, series) {
             $('#articles').empty().height('50px');
             $('#graph').showLoading();
-            var this_query = dataSources.sources[0].api_query;
+            var qstring = dataSources.sources[0].web_query;
+            var this_query = trove_api_url + "q=" + qstring + "+date:[" + query_date + "+TO+" + query_date + "]&n=20&encoding=json&key=" + trove_api_key;
             var zone = dataSources.getZone(series.name);
-            this_query = this_query + "&l-year=" + query_date + "&zone=" + zone;
+            this_query = this_query + "&zone=" + zone;
             var callback = "callback";
             $.jsonp({
                     //"dataType": "jsonp",
