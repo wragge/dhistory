@@ -93,10 +93,7 @@ function graphData() {
 
 $(function(){
     reset();
-    var digitalnz_api_key = "9yXNTynMDb3TUQws7QuD";
-    var digitalnz_api_url = "http://api.digitalnz.org/v3/records.json?api_key=" + digitalnz_api_key + "&and[display_collection][]=Papers+Past";
-    var digitalnz_html_url = "http://digitalnz.org.nz/records?i[display_collection]=Papers+Past";
-    var trove_api_key = "6pi5hht0d2umqcro";
+    var trove_api_key = "1g8lo7p9vtj0b89";
     var trove_api_url = "http://api.trove.nla.gov.au/result?";
     var trove_html_url = "http://trove.nla.gov.au/book/result?l-format=Thesis&l-australian=y&q=";
     var trove_api_title_url = "http://api.trove.nla.gov.au/newspaper/title/";
@@ -393,6 +390,7 @@ $(function(){
     function checkOnLoad() {
         if ($('input:checked').length > 0) {
             history.pushState('data', '', '/troveprofiler/');
+            showSelected();
             get_query();
         }
     }

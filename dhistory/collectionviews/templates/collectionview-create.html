@@ -68,19 +68,19 @@
                             {% if library.tholdings > 0 %}
                                 <div class="level0">
                                     <div class="checkbox">
-                                        <label><input type="checkbox" name="nucs" value="{{ library.nuc }}"{% if library.nuc in selected_nucs %} checked{% endif %}> {{ library.fname }}</label>
+                                        <label><input type="checkbox" name="nucs" value="{{ library.nuc }}"{% if library.nuc in selected_nucs %} checked{% endif %}> {{ library.fname }} ({{ library.nuc }})</label>
                                     </div>
                                     {% for child1 in library.childlibs %}
                                         {% if child1.tholdings > 0 %}
                                             <div class="level1">
                                                 <div class="checkbox">
-                                                    <label> &mdash; <input type="checkbox" name="nucs" value="{{ child1.nuc }}"> {{ child1.fname }}</label>
+                                                    <label> &mdash; <input type="checkbox" name="nucs" value="{{ child1.nuc }}" {% if child1.nuc in selected_nucs %} checked{% endif %}> {{ child1.fname }} ({{ child1.nuc }})</label>
                                                 </div>
                                                 {% for child2 in child1.childlibs %}
                                                     {% if child2.tholdings > 0 %}
                                                         <div class="level2">
                                                             <div class="checkbox">
-                                                                <label> &mdash; &mdash; <input type="checkbox" name="nucs" value="{{ child2.nuc }}"> {{ child2.fname }}</label>
+                                                                <label> &mdash; &mdash; <input type="checkbox" name="nucs" value="{{ child2.nuc }}" {% if child2.nuc in selected_nucs %} checked{% endif %}> {{ child2.fname }} ({{child2.nuc }})</label>
                                                             </div>
                                                         </div>
                                                     {% endif %}
