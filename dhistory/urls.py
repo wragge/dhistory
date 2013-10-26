@@ -68,6 +68,12 @@ urlpatterns += patterns('dhistory.thesistrends.views',
     url(r'^thesistrends/$', 'show_querypic_form'),
     url(r'^thesistrends/(?P<short_url>[a-z0-9]+)/$', 'show_querypic'),
 )
+urlpatterns += patterns('dhistory.collectionviews.views',
+    #url(r'^querypic/$', 'show_home'),
+    #url(r'^collectionview/help/$', 'show_help'),
+    url(r'^troveprofiler/$', 'create_collectionview'),
+    #url(r'^collectionview/(?P<short_url>[a-z0-9]+)/$', 'show_querypic'),
+)
 urlpatterns += patterns('django.views.generic.simple',
     url(r'^$', 'direct_to_template', {'template': 'home.html'}, name='home'),
 )

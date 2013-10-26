@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block page_title %} :: Trove Collection Profiler{% endblock %}
+{% block extra_scripts %}
+    <script src="{{ STATIC_URL}}js/highcharts.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/highcharts/exporting.js"></script>
+    <script src="{{ STATIC_URL }}js/showLoading/js/jquery.showLoading.min.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery.jsonp-2.4.0.min.js"></script>
+    <script src="{{ STATIC_URL}}js/purl.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL}}js/jquery.dateFormat-1.0.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/jquery.scrollto.min.js"></script>
+    <script src="{{ STATIC_URL }}js/collectionview-script.js?v=1.2"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script id="series_data">
+        var series_data = [];
+    </script>
+{% endblock %}
+{% block extra_styles %}
+    <link href="{{ STATIC_URL }}css/qp-style.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row-fluid">
+        <header class="span12">
+            <h1>Trove Collection Profiler <small class="muted"></small></h1>
+
+        </header>
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
+            <ul class="nav nav-tabs" id="panes">
+              <li><a href="#filter" data-toggle="tab">Filters</a></li>
+              <li><a href="#display" data-toggle="tab">Display</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active row-fluid" id="filter">
+                    <div class="span8 form-horizontal">
+                        <div class="control-group">
+                            <label class="control-label" for="start_year">Word or phrase: </label>
+                            <div class="controls">
+                                <input class="input-xlarge" type="text" id="query"> <i title="Tip" data-content="Enclose phrases in double quotes. Boolean operators are ok." class="icon-question-sign tip-popover"></i>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="start_year">Start year: </label> 
+                            <div class="controls">
+                                <select class="input-small" id="start_year">
+                                {% for year in years %}
+                                    <option value="{{ year }}" {% if year == 1900 %} selected="selected"{% endif %}>{{ year }}</option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="end_year">End year: </label>
+                            <div class="controls">
+                                <select class="input-small" id="end_year">
+                                {% for year in years %}
+                                    <option value="{{ year }}" {% if year == 2013 %} selected="selected"{% endif %}>{{ year }}</option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="collections">Collections: </label>
+                            <div class="controls" id="collections">
+                            {% for library in nucs.libraryList %}
+                            {% if library.tholdings > 0 %}
+                                <div class="level0">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" name="nucs" value="{{ library.nuc }}"> {{ library.fname }}</label>
+                                    </div>
+                                    {% for child1 in library.childlibs %}
+                                        {% if child1.tholdings > 0 %}
+                                            <div class="level1">
+                                                <div class="checkbox">
+                                                    <label> &mdash; <input type="checkbox" name="nucs" value="{{ child1.nuc }}"> {{ child1.fname }}</label>
+                                                </div>
+                                                {% for child2 in child1.childlibs %}
+                                                    {% if child2.tholdings > 0 %}
+                                                        <div class="level2">
+                                                            <div class="checkbox">
+                                                                <label> &mdash; &mdash; <input type="checkbox" name="nucs" value="{{ child2.nuc }}"> {{ child2.fname }}</label>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span4">
+                        <button class="btn btn-primary" id="do_keyword_query">Display</button>
+                        <button class="btn" id="clear_all">Clear all</button>
+                        <h4 id="selected-heading">Currently selected</h4>
+                        <ul id="selected-collections" class="muted">
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-pane" id="display">
+                    <div id="status"></div>
+                    <div id="graph" style="height:600px;width:100%; "></div>
+                    <div id="trove-results">
+                        <div id="articles"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block footer %}
+{% include "cv-footer.html" %}
+{% endblock %}
