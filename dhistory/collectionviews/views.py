@@ -8,6 +8,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Invali
 from haystack.views import SearchView
 from dhistory.querypic.forms import QPForm
 from dhistory.querypic.models import QPGraph
+from django.views.decorators.cache import cache_page
 
 JSON_SCHEMA = {
                 "type": "object",
@@ -46,6 +47,7 @@ JSON_SCHEMA = {
             }
 
 
+@cache_page(60 * 60 * 6)
 def create_collectionview(request):
     selected_nucs = request.GET.getlist('nuc')
     response = urllib2.urlopen('http://trove.nla.gov.au/general/libraries')
