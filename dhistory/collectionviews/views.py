@@ -46,13 +46,33 @@ JSON_SCHEMA = {
                 },
             }
 
+START_YEAR = 1900
+END_YEAR = 2013
 
 @cache_page(60 * 60 * 6)
 def create_collectionview(request):
+    preset = "false"
     selected_nucs = request.GET.getlist('nuc')
+    query = request.GET.get('q')
+    year_start = request.GET.get('start')
+    year_end = request.GET.get('end')
+    if selected_nucs or query or year_start or year_end:
+        preset = "true"
+    if not year_start:
+        year_start = START_YEAR
+    if not year_end:
+        year_end = END_YEAR
     response = urllib2.urlopen('http://trove.nla.gov.au/general/libraries')
     nucs = json.load(response)
-    return render(request, 'collectionview-create.html', {'nucs': nucs, 'selected_nucs': selected_nucs, 'years': range(1800, 2014)})
+    return render(request, 'collectionview-create.html', {
+        'nucs': nucs, 
+        'selected_nucs': selected_nucs, 
+        'years': range(1800, 2014),
+        'query': query,
+        'start': year_start,
+        'end': year_end,
+        'preset': preset
+        })
 
 
 def show_querypic_form(request):

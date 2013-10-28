@@ -121,7 +121,7 @@ $(function(){
 
     function get_query() {
         $('#panes a:last').tab('show');
-        var qstring;
+        var qstring, params = [];
         if ($("#query").val() !== "") {
             var keywords = $("#query").val();
             if (keywords.match(/^[a-zA-Z\d"\(\)\~\:\- ]+$/)) {
@@ -135,18 +135,20 @@ $(function(){
                 $("#status").empty().html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>That&rsquo;s not a valid query...</div>');
                 return;
             }
+            params.push('q=' + keywords);
         } else {
             qstring = '%20';
         }
         var nucs = [];
         $('input:checked').each(function() {
             nucs.push($(this).val());
+            params.push('nuc=' + $(this).val());
         });
         if (nucs.length > 0) {
             qstring += '+(nuc:"' + nucs.join('"+OR+nuc:"') + '")';
         }
         console.log(qstring);
-        do_query(qstring);
+        do_query(qstring, params);
     }
 
 
@@ -217,10 +219,13 @@ $(function(){
         }
     }
 
-    function do_query(qstring) {
+    function do_query(qstring, params) {
         reset();
         year_start = $('#start_year').val();
         year_end = $('#end_year').val();
+        params.push('start=' + year_start);
+        params.push('end=' + year_end);
+        history.pushState('data', '', '/troveprofiler/?' + params.join('&'));
         $("#graph").show().showLoading();
         //qstring = encodeURIComponent(qstring);
         query = trove_api_url + "zone=book,article,collection,map,music,collection,picture&q=" + qstring + "&facet=year&n=0&encoding=json&key=" + trove_api_key;
@@ -389,8 +394,8 @@ $(function(){
     }
 
     function checkOnLoad() {
-        if ($('input:checked').length > 0) {
-            history.pushState('data', '', '/troveprofiler/');
+        if ($('#preset').val() == "true") {
+            //history.pushState('data', '', '/troveprofiler/');
             showSelected();
             get_query();
         }
