@@ -46,7 +46,7 @@
                             <div class="controls">
                                 <select class="input-small" id="start_year">
                                 {% for year in years %}
-                                    <option value="{{ year }}" {% if year|slugify == start %} selected="selected"{% endif %}>{{ year }}</option>
+                                    <option value="{{ year }}" {% if year == start %} selected="selected"{% endif %}>{{ year }}</option>
                                 {% endfor %}
                                 </select>
                             </div>
@@ -56,7 +56,7 @@
                             <div class="controls">
                                 <select class="input-small" id="end_year">
                                 {% for year in years %}
-                                    <option value="{{ year }}" {% if year|slugify == end %} selected="selected"{% endif %}>{{ year }}</option>
+                                    <option value="{{ year }}" {% if year == end %} selected="selected"{% endif %}>{{ year }}</option>
                                 {% endfor %}
                                 </select>
                             </div>
