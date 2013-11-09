@@ -1,0 +1,13 @@
+body { padding-top: 40px;}
+footer {
+    margin-top:40px;
+    padding-top: 10px;
+border-top: 5px solid #949AA2;
+border-bottom: 1px solid #CACACA;
+}
+.fb-like, .twitter-share-button { vertical-align:top;}
+.ms-container { width: 100%;}
+.ms-optgroup .ms-elem-selectable, .ms-optgroup .ms-elem-selection { margin-left: 20px;}
+.ms-selectable .ms-list, .ms-selection .ms-list { height: 300px; }
+.ms-selectable .search-input, .ms-selection .search-input { width: auto; margin-bottom: 5px;}
+.selected-header { margin-bottom: 10px; padding-top: 4px;}

@@ -42,6 +42,7 @@ function graphData() {
     this.data.music = {};
     this.data.map = {};
     this.data.collection = {};
+    this.data.tree = {};
     this.interval = 'year';
     this.country = '';
     this.dates = [];
@@ -140,10 +141,12 @@ $(function(){
             qstring = '%20';
         }
         var nucs = [];
-        $('input:checked').each(function() {
-            nucs.push($(this).val());
-            params.push('nuc=' + $(this).val());
-        });
+        if ($('#nucs').val() !== null) {
+            $.each($('#nucs').val(), function(index, nuc) {
+                nucs.push(nuc);
+                params.push('nuc=' + nuc);
+            });
+        }
         if (nucs.length > 0) {
             qstring += '+(nuc:"' + nucs.join('"+OR+nuc:"') + '")';
         }
@@ -362,7 +365,7 @@ $(function(){
     }
 
     function clear_all() {
-        $("input[type='checkbox']").prop('checked', false);
+        $('#nucs').multiSelect('deselect_all');
         $('#start_year').val('1800');
         $('#end_year').val('2013');
         $('#query').val('');
@@ -422,6 +425,46 @@ $(function(){
     $('#panes a:first').tab('show');
     //get_query();
     //load_nucs();
+    $('#nucs').multiSelect({
+        selectableOptgroup: true,
+        selectableHeader: "<input type='text' class='search-input' autocomplete='off' placeholder='Filter'>",
+        selectionHeader: "<div class='selected-header muted'>Currently selected</div>",
+        afterInit: function(ms){
+            var that = this,
+                $selectableSearch = that.$selectableUl.prev(),
+                //$selectionSearch = that.$selectionUl.prev(),
+                selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)';
+                //selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
+
+            that.qs1 = $selectableSearch.quicksearch(selectableSearchString,
+                {
+                    onAfter: function() {
+                        $('.ms-optgroup', $('.ms-selectable')).each(function() {
+                            $(this).parent().show();
+                            if ($(this).children('.ms-elem-selectable:visible').length === 0) {
+                                $(this).parent().hide();
+                            }
+                        });
+                    },
+                })
+            .on('keydown', function(e){
+              if (e.which === 40){
+                that.$selectableUl.focus();
+                console.log(that);
+                return false;
+              }
+            });
+
+        },
+        afterSelect: function(){
+            this.qs1.cache();
+            this.qs2.cache();
+        },
+        afterDeselect: function(){
+            this.qs1.cache();
+            this.qs2.cache();
+        }
+    });
     checkOnLoad();
 });
 

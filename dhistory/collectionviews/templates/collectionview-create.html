@@ -8,6 +8,8 @@
     <script src="{{ STATIC_URL}}js/purl.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL}}js/jquery.dateFormat-1.0.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/jquery.scrollto.min.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery.multi-select.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery.quicksearch.js"></script>
     <script src="{{ STATIC_URL }}js/collectionview-script.js?v=1.2"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <script id="series_data">
@@ -15,7 +17,8 @@
     </script>
 {% endblock %}
 {% block extra_styles %}
-    <link href="{{ STATIC_URL }}css/qp-style.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/multi-select.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/cv-style.css" rel="stylesheet">
 {% endblock %}
 {% block content %}
 <div class="container-fluid">
@@ -32,8 +35,16 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active row-fluid" id="filter">
-                    <div class="span8 form-horizontal">
-                        <p class="muted">All filters are optional.</p>
+                    <div class="span11 form-horizontal">
+                        <div class="row-fluid">
+                            <div class="span9">
+                                <p class="muted">All filters are optional.</p>
+                            </div>
+                            <div class="span2">
+                                <button class="btn btn-primary btn-large" id="do_keyword_query">Display</button>
+                                <button class="btn btn-large" id="clear_all">Clear all</button>
+                            </div>
+                        </div>
                         <div class="control-group">
                             <input type="hidden" id="preset" value="{{ preset }}">
                             <label class="control-label" for="start_year">Word or phrase: </label>
@@ -64,42 +75,31 @@
                         <div class="control-group">
                             <label class="control-label" for="collections">Collections: </label>
                             <div class="controls" id="collections">
-                            {% for library in nucs.libraryList %}
-                            {% if library.tholdings > 0 %}
-                                <div class="level0">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" name="nucs" value="{{ library.nuc }}"{% if library.nuc in selected_nucs %} checked{% endif %}> {{ library.fname }} ({{ library.nuc }})</label>
-                                    </div>
+                            <select class="level0 input-xxlarge" id="nucs" multiple>
+                                {% for library in nucs.libraryList %}
+                                    {% if library.childlibs|length > 0 %}
+                                        <optgroup label="{{ library.fname }}">
+                                    {% endif %}
+                                    {% if library.tholdings > 0 and not library.nuc.isdigit %}
+                                        <option value="{{ library.nuc }}" {% if library.nuc in selected_nucs %}selected {% endif %}>{{ library.fname }} ({{ library.nuc }})</option>
+                                    {% endif %}
                                     {% for child1 in library.childlibs %}
-                                        {% if child1.tholdings > 0 %}
-                                            <div class="level1">
-                                                <div class="checkbox">
-                                                    <label> &mdash; <input type="checkbox" name="nucs" value="{{ child1.nuc }}" {% if child1.nuc in selected_nucs %} checked{% endif %}> {{ child1.fname }} ({{ child1.nuc }})</label>
-                                                </div>
+                                        {% if child1.tholdings > 0 and not child1.nuc.isdigit %}
+                                            <option value="{{ child1.nuc }}" {% if child1.nuc in selected_nucs %}selected {% endif %}>{{ child1.name }} ({{ child1.nuc }})</option>
                                                 {% for child2 in child1.childlibs %}
-                                                    {% if child2.tholdings > 0 %}
-                                                        <div class="level2">
-                                                            <div class="checkbox">
-                                                                <label> &mdash; &mdash; <input type="checkbox" name="nucs" value="{{ child2.nuc }}" {% if child2.nuc in selected_nucs %} checked{% endif %}> {{ child2.fname }} ({{child2.nuc }})</label>
-                                                            </div>
-                                                        </div>
+                                                    {% if child2.tholdings > 0 and not child2.nuc.isdigit %}
+                                                        <option value="{{ child2.nuc }}" {% if child2.nuc in selected_nucs %}selected {% endif %}>{{ child2.name }}  ({{ child2.nuc }})</option>
                                                     {% endif %}
                                                 {% endfor %}
-                                            </div>
                                         {% endif %}
                                     {% endfor %}
-                                </div>
+                                {% if library.childlibs|length > 0 %}
+                                     </optgroup>
                                 {% endif %}
                             {% endfor %}
+                            </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="span4">
-                        <button class="btn btn-primary" id="do_keyword_query">Display</button>
-                        <button class="btn" id="clear_all">Clear all</button>
-                        <h4 id="selected-heading">Currently selected</h4>
-                        <ul id="selected-collections" class="muted">
-                        </ul>
                     </div>
                 </div>
                 <div class="tab-pane" id="display">
