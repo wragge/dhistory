@@ -25,10 +25,7 @@ form {
 }
 
 </style>
-<form>
-  <label><input type="radio" name="mode" value="size" checked> Size</label>
-  <label><input type="radio" name="mode" value="count"> Count</label>
-</form>
+<body></body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="{{ STATIC_URL }}js/jquery.js"></script>
 <script src="{{ STATIC_URL }}js/jquery.jsonp-2.4.0.min.js"></script>
@@ -37,14 +34,14 @@ var api_key = "1g8lo7p9vtj0b89";
 
 var width = 960,
     height = 700,
-    radius = Math.min(width, height) / 2,
+    radius = Math.min(width, height) / 2.1,
     color = d3.scale.category20c();
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height)
     .append("g")
-    .attr("transform", "translate(" + width / 2 + "," + height * .52 + ")");
+    .attr("transform", "translate(" + width / 2 + "," + height * .5 + ")");
 
 var partition = d3.layout.partition()
     .sort(null)
