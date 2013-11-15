@@ -73,6 +73,14 @@ def create_collectionview(request):
         })
 
 
+def show_tree(request):
+    return render(request, 'tree.html', {})
+
+
+def show_sunburst(request):
+    return render(request, 'sunburst.html', {})
+
+
 def show_querypic_form(request):
     if request.method == 'POST':
         form = QPForm(request.POST)

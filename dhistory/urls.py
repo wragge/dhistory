@@ -70,7 +70,8 @@ urlpatterns += patterns('dhistory.thesistrends.views',
 )
 urlpatterns += patterns('dhistory.collectionviews.views',
     #url(r'^querypic/$', 'show_home'),
-    #url(r'^collectionview/help/$', 'show_help'),
+    url(r'^troveprofiler/tree/$', 'show_tree'),
+    url(r'^troveprofiler/sunburst/$', 'show_sunburst'),
     url(r'^troveprofiler/$', 'create_collectionview'),
     #url(r'^collectionview/(?P<short_url>[a-z0-9]+)/$', 'show_querypic'),
 )
