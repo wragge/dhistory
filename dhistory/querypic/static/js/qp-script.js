@@ -247,7 +247,7 @@ $(function(){
                 process_url_query();
             } else {
                 var query_parts = decodeURIComponent(queries.shift()).split('|');
-                keywords = query_parts[0];
+                var keywords = query_parts[0];
                 var qstring, api_query, web_query, series_name, abbr;
                 if (keywords.match(/(AND|OR|NOT|\(|"|\-|\*)/)) {
                 //if (keywords.indexOf('"') == -1) {
