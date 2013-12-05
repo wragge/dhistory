@@ -191,7 +191,7 @@ $(function(){
             $.each(results.response.zone, function(index, zone) {
                 console.log(zone.name);
                 console.log(zone.records.total);
-                if (typeof zone.facets.facet.term !== 'undefined') {
+                if (typeof zone.facets.facet !== 'undefined') {
                     var zone_name = zone.name;
                     $.each(zone.facets.facet.term, function(index, value) {
                         current_year = parseInt(value.display, 10);
