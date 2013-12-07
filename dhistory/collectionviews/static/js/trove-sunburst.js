@@ -1,51 +1,3 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<html>
-<head>
-<style>
-
-body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-#svg {
-  margin: auto;
-  position: relative;
-  width: 960px;
-}
-
-.tooltip {
-  font-size: 12px;
-}
-
-path {
-  stroke: #fff;
-  fill-rule: evenodd;
-}
-
-form {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-}
-
-.node {
-  border: solid 1px white;
-  font: 10px sans-serif;
-  line-height: 12px;
-  overflow: hidden;
-  position: absolute;
-  text-indent: 2px;
-}
-
-</style>
-</head>
-<body>
-<div id="svg"></div>
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="{{ STATIC_URL }}js/jquery.js"></script>
-<script src="{{ STATIC_URL }}js/jquery.jsonp-2.4.0.min.js"></script>
-<script>
 $(function(){
   var facets = [
     'Abstract',
@@ -73,7 +25,15 @@ $(function(){
     'Other sound',
     'Recorded music',
     'Captioned',
-  ]
+  ];
+  var zone_names = {
+    'book': 'Books',
+    'article': 'Journals, articles and data sets',
+    'picture': 'Pictures, photos, objects',
+    'music': 'Music, sound, video',
+    'map': 'Maps',
+    'collection': 'Diaries, letters, archives'
+  };
   var api_key = "1g8lo7p9vtj0b89";
 
   var width = 960,
@@ -109,6 +69,18 @@ $(function(){
     .style("z-index", "10")
     .style("opacity", 0);
 
+  function format_number(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  function format_name(d) {
+    var name = d.name;
+    if (name in zone_names) {
+      name = zone_names[name];
+    }
+    return  '<b>' + name + '</b><br>' + format_number(d.value) + ' resources';
+  }
+
   function display_sunburst(data) {
 
     var path = svg.selectAll("path")
@@ -118,11 +90,15 @@ $(function(){
         .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
         .on("click", click)
         .on("mouseover", function(d) {
+          tooltip.html(function() {
+              var name = format_name(d);
+              return name;
+          });
           return tooltip.transition()
-            .duration(50).style("opacity", .9)
-            .text(function() { return d.name; });
+            .duration(50)
+            .style("opacity", 0.9);
         })
-        .on("mousemove", function(d) { 
+        .on("mousemove", function(d) {
           return tooltip
             .style("top", (d3.event.pageY-10)+"px")
             .style("left", (d3.event.pageX+10)+"px");
@@ -130,12 +106,13 @@ $(function(){
         .on("mouseout", function(){return tooltip.style("opacity", 0);});
 
     function click(d) {
+      $('.results').empty();
       if (typeof d.children === "undefined" && d.name != 'Other') {
         get_zone(d);
       }
       path.transition()
         .duration(750)
-        .attrTween("d", arcTween(d))
+        .attrTween("d", arcTween(d));
     }
   }
 
@@ -155,7 +132,7 @@ $(function(){
 
   function get_zone(d, leaf) {
     if (typeof leaf === 'undefined') {
-      var leaf = d;
+      leaf = d;
     }
     if(d.depth !== 1) {
       get_zone(d.parent, leaf);
@@ -166,26 +143,63 @@ $(function(){
   }
 
   function get_resources(leaf, zone) {
+    $('.results').append('<p id="loading" class="muted">Loading resources...</p>');
     if ($.inArray(leaf.name, facets) > -1) {
       facet = leaf.parent.name + '/' + leaf.name;
     } else {
       facet = leaf.name;
     }
-    console.log(facet);
+    start = Math.floor(Math.random() * (leaf.value - 10));
+    console.log(start);
+    get_results(zone, facet);
+  }
+
+  function get_results(zone, facet, start) {
+    var url;
+    if (typeof start === 'undefined') {
+      //url = "http://api.trove.nla.gov.au/result?q=date:[* TO *] NOT nuc:SUSA&zone=" + zone + "&l-format=" + facet + "&n=0&encoding=json&key=" + api_key;
+      url = "http://api.trove.nla.gov.au/result?q= &zone=" + zone + "&l-format=" + facet + "&n=0&encoding=json&key=" + api_key;
+
+    } else {
+      //url = "http://api.trove.nla.gov.au/result?q=date:[* TO *] NOT nuc:SUSA&zone=" + zone + "&l-format=" + facet + "&s=" + start + "&n=10&encoding=json&key=" + api_key;
+      url = "http://api.trove.nla.gov.au/result?q= &zone=" + zone + "&l-format=" + facet + "&s=" + start + "&n=10&encoding=json&key=" + api_key;
+    }
     $.jsonp({
       //"dataType": "jsonp",
       //"jsonp": callback,
       "callbackParameter": 'callback',
-      "url": "http://api.trove.nla.gov.au/result?q=date:[* TO *] NOT nuc:SUSA&zone=" + zone + "&l-format=" + facet + "&n=20&encoding=json&key=" + api_key,
-      "timeout": 20000,
+      "url": url,
+      "timeout": 30000,
       "success": function(results) {
-          show_resources(results);
+        prepare_results(zone, facet, start, results);
+      },
+      "error": function() {
+        $('.results').empty().append('<p id="loading" class="muted">Botheration, something bad happened...</p>');
       }
     });
   }
 
-  function show_resources(results) {
-    console.log(results);
+  function prepare_results(zone, facet, start, results) {
+    if (typeof start === 'undefined') {
+      var total = results.response.zone[0].records.total;
+      start = Math.floor(Math.random() * total);
+      get_results(zone, facet, start);
+    } else {
+      var web_url = "http://trove.nla.gov.au/" + zone + "/result?q&l-format=" + facet;
+      show_resources(results, web_url);
+    }
+  }
+
+  function show_resources(results, web_url) {
+    var list = $('<ul></ul>');
+    $.each(results.response.zone[0].records.work, function(key, record) {
+      var item = $('<li></li>');
+      item.append('<a target="_blank" href="' + record.troveUrl + '">' + record.title + '</a>');
+      list.append(item);
+    });
+    $('#loading').remove();
+    $('.results').append(list);
+    $('.results').append('<a target="_blank" id="more" class="pull-right btn btn-small" href="' + web_url + '">View more results</a>');
   }
 
   function get_data() {
@@ -216,7 +230,7 @@ $(function(){
 
   function process_term(term) {
     var term_count = parseInt(term.count, 10);
-    var this_term = {'name': term.display}
+    var this_term = {'name': term.display};
     var count = 0;
     if (typeof term.term !== 'undefined') {
       this_term.children = [];
@@ -237,8 +251,3 @@ $(function(){
   }
   get_data();
 });
-
-
-</script>
-</body>
-</html>

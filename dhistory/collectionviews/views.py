@@ -78,7 +78,7 @@ def show_tree(request):
 
 
 def show_sunburst(request):
-    return render(request, 'sunburst.html', {})
+    return render(request, 'trove-sunburst.html', {})
 
 
 def show_querypic_form(request):

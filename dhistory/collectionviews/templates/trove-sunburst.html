@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block page_title %} :: Trove Collection Profiler{% endblock %}
+{% block extra_scripts %}
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="{{ STATIC_URL }}js/jquery.jsonp-2.4.0.min.js"></script>
+<script src="{{ STATIC_URL }}js/trove-sunburst.js"></script>
+{% endblock %}
+{% block extra_styles %}
+    <link href="{{ STATIC_URL }}css/trove-sunburst.css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+  <div class="row-fluid">
+        <header class="span12">
+            <h1>Trove Zone Explorer<small class="muted"></small></h1>
+        </header>
+  </div>
+  <div class="row-fluid">
+    <div class="span3">
+      <p>Trove is made up of twelve zones. These are groupings of similar types of content.</p>
+      <p>This zone explorer helps you find out what's in six of the zones:
+      <ul>
+        <li><a href="http://trove.nla.gov.au/article?q=">Journals, articles and data sets</a></li>
+        <li><a href="http://trove.nla.gov.au/book?q=">Books</a></li>
+        <li><a href="http://trove.nla.gov.au/picture?q=">Pictures, photos, objects</a></li>
+        <li><a href="http://trove.nla.gov.au/music?q=">Music, sound, video</a></li>
+        <li><a href="http://trove.nla.gov.au/map?q=">Maps</a></li>
+        <li><a href="http://trove.nla.gov.au/collection?q=">Diaries, letters, archives</a></li>
+      </ul>
+      <p>
+        Just click on the coloured bands to zoom in and out of the zones and explore the different types of content and formats available.
+      </p>
+      <p>
+        Clicking one of the outermost bands (unless it's labelled 'Other') will load a random sample of relevant resources with links back to Trove.
+      </p>
+      <p>
+        Click in the centre of the circle to go back a level.
+      </p>
+    </div>
+    <div class="span8" id="svg">
+      <div class="span5 offset1 results"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block footer %}
+{% include "cv-footer.html" %}
+{% endblock %}
+
