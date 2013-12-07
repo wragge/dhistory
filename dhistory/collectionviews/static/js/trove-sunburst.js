@@ -151,7 +151,7 @@ $(function(){
     }
     start = Math.floor(Math.random() * (leaf.value - 10));
     console.log(start);
-    get_results(zone, facet);
+    get_results(zone, facet, start);
   }
 
   function get_results(zone, facet, start) {
