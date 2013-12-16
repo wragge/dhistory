@@ -36,7 +36,7 @@ form {
   position: absolute;
   width: 40%;
   max-height: 700px;
-  overflow: scroll;
+  overflow: auto;
   padding-top: 20px;
 }
 
