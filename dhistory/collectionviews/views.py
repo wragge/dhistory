@@ -80,6 +80,9 @@ def show_tree(request):
 def show_sunburst(request):
     return render(request, 'trove-sunburst.html', {})
 
+def show_sunburst_embed(request):
+    return render(request, 'trove-sunburst-iframe.html', {})
+
 
 def show_querypic_form(request):
     if request.method == 'POST':
