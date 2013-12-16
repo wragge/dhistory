@@ -1,3 +1,4 @@
+var width = 960, height = 700;
 $(function(){
   var facets = [
     'Abstract',
@@ -36,9 +37,7 @@ $(function(){
   };
   var api_key = "1g8lo7p9vtj0b89";
 
-  var width = 960,
-      height = 700,
-      radius = Math.min(width, height) / 2.1,
+  var radius = Math.min(width, height) / 2.1,
       color = d3.scale.category20c();
 
   var x = d3.scale.linear()
