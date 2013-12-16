@@ -1,5 +1,6 @@
 body {
   width: 700px;
+  height: 700px;
   margin: 0;
 }
 #svg {
@@ -34,6 +35,9 @@ form {
 .results {
   position: absolute;
   width: 40%;
+  max-height: 700px;
+  overflow: scroll;
+  padding-top: 20px;
 }
 
 .results a {
