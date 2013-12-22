@@ -534,8 +534,14 @@ $(function(){
              renderTo: 'graph',
              type: 'spline',
              zoomType: 'x'
-          },
-           xAxis: {
+            },
+            title: {
+                text: '',
+                style: {
+                    display: 'none'
+                }
+            },
+            xAxis: {
                     title: {
                             text: xLabel
                     },
