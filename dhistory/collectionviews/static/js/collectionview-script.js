@@ -44,9 +44,6 @@ function graphData() {
     this.data.collection = {};
     this.data.tree = {};
     this.interval = 'year';
-    this.country = '';
-    this.dates = [];
-    this.limits = {};
 	this.getYears = function(zone) {
 		var years = [];
 		$.each(this.data[zone], function(year, value) {
@@ -93,6 +90,7 @@ function graphData() {
 }
 
 $(function(){
+    var height = 700;
     reset();
     var trove_api_key = "1g8lo7p9vtj0b89";
     var trove_api_url = "http://api.trove.nla.gov.au/result?";
@@ -113,6 +111,277 @@ $(function(){
     var query_type = 'ratio';
     var current_series;
 
+    var SUNBURST = function() {
+
+        var facets = [
+            'Article/Abstract',
+            'Article/Book chapter',
+            'Article/Conference paper',
+            'Article/Journal or magazine article',
+            'Article/Other article',
+            'Article/Report',
+            'Article/Review',
+            'Article/Working paper',
+            'Book/Braille',
+            'Book/Illustrated',
+            'Book/Large print',
+            'Map/Aerial photograph',
+            'Map/Atlas',
+            'Map/Braille',
+            'Map/Electronic',
+            'Map/Globe or object',
+            'Map/Large print',
+            'Map/Map series',
+            'Map/Microform',
+            'Map/Single map',
+            'Periodical/Journal, magazine, other',
+            'Periodical/Newspaper',
+            'Sound/Interview, lecture, talk',
+            'Sound/Other sound',
+            'Sound/Recorded music',
+            'Viceo/Captioned',
+            ];
+          var zone_names = {
+            'book': 'Books',
+            'article': 'Journals, articles and data sets',
+            'picture': 'Pictures, photos, objects',
+            'music': 'Music, sound, video',
+            'map': 'Maps',
+            'collection': 'Diaries, letters, archives'
+            };
+
+        var api_key = "1g8lo7p9vtj0b89";
+
+        var format_number = function(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        };
+
+        var format_name = function(d) {
+            var name = d.name;
+            if (name in zone_names) {
+              name = zone_names[name];
+            }
+            return  '<b>' + name + '</b><br>' + format_number(d.value) + ' resources';
+        };
+
+        var display_sunburst = function(data) {
+            var width = $("#graph").width();
+
+            var radius = Math.min(width, height) / 2;
+
+            var color = d3.scale.category20c();
+
+            var x = d3.scale.linear()
+              .range([0, 2 * Math.PI]);
+
+            var y = d3.scale.linear()
+              .range([0, radius]);
+
+            d3.select(".tooltip").remove();
+            d3.select("#sunburst-svg").remove();
+            var svg = d3.select("#sunburst-container").append("svg")
+              .attr("width", width)
+              .attr("height", height)
+              .attr("id", "sunburst-svg")
+            .append("g")
+              .attr("transform", "translate(" + width / 2 + "," + (height / 2) + ")");
+
+            var arc = d3.svg.arc()
+              .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
+              .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx))); })
+              .innerRadius(function(d) { return Math.max(0, y(d.y)); })
+              .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
+
+            var partition = d3.layout.partition()
+              .value(function(d) { return d.size; });
+
+            var tooltip = d3.select("body")
+                .append("div")
+                .attr("class", "tooltip")
+                .style("position", "absolute")
+                .style("z-index", "10")
+                .style("opacity", 0);
+
+            var path = svg.selectAll("path").data(partition.nodes(data))
+            
+            .enter().append("path")
+                .attr("d", function(d) { return arc(d); })
+                .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+                .on("click", click)
+                .on("mouseover", function(d) {
+                  tooltip.html(function() {
+                      var name = format_name(d);
+                      return name;
+                  });
+                  return tooltip.transition()
+                    .duration(50)
+                    .style("opacity", 0.9);
+                })
+                .on("mousemove", function(d) {
+                  return tooltip
+                    .style("top", (d3.event.pageY-10)+"px")
+                    .style("left", (d3.event.pageX+10)+"px");
+                })
+                .on("mouseout", function(){return tooltip.style("opacity", 0);});
+
+            function click(d) {
+                $('#format-articles').empty();
+                console.log(d.name);
+                if (d.name != 'Other') {
+                    if (d.depth > 0) {
+                        get_zone(d);
+                    }
+                    path.transition()
+                        .duration(750)
+                        .attrTween("d", arcTween(d));
+                }
+            }
+
+            // Interpolate the scales!
+            var arcTween = function(d) {
+                var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
+                    yd = d3.interpolate(y.domain(), [d.y, 1]),
+                    yr = d3.interpolate(y.range(), [d.y ? 20 : 0, radius]);
+                return function(d, i) {
+                  return i ? function(t) { return arc(d); }
+                      : function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
+                };
+            };
+            $('#graph').hideLoading();
+        };
+
+      //d3.select(self.frameElement).style("height", height + "px");
+
+      var get_zone = function(d, leaf) {
+        console.log(d);
+        if (typeof leaf === 'undefined') {
+          leaf = d;
+        }
+        if (d.depth !== 1) {
+          get_zone(d.parent, leaf);
+        } else {
+          console.log(d.name);
+          get_resources(leaf, d.name);
+        }
+      };
+
+      var get_resources = function(leaf, zone) {
+        $("#sunburst-info").hide();
+        $('#format-articles').append('<p id="loading" class="muted">Loading resources...</p>');
+        if (leaf.depth == 1) {
+            facet = null;
+        } else if ($.inArray((leaf.parent.name + '/' + leaf.name), facets) > -1) {
+            facet = leaf.parent.name + '/' + leaf.name;
+        } else {
+            facet = leaf.name;
+        }
+        var start = 0;
+        if (leaf.value > 10) {
+            start = Math.floor(Math.random() * (leaf.value -10)) + 1;
+        }
+        console.log(start);
+        get_results(zone, facet, start);
+      };
+
+      var get_results = function(zone, facet, start) {
+        var qstring = dataSources.sources[0].web_query;
+        var url = "http://api.trove.nla.gov.au/result?q=" + qstring + " date:[" + year_start + "+TO+" + year_end + "]&zone=" + zone + "&s=" + start + "&n=10&encoding=json&key=" + api_key;
+        if (facet !== null) {
+            url += "&l-format=" + facet;
+        }
+        $.jsonp({
+          //"dataType": "jsonp",
+          //"jsonp": callback,
+          "callbackParameter": 'callback',
+          "url": url,
+          "timeout": 30000,
+          "success": function(results) {
+            show_resources(zone, facet, qstring, results);
+          },
+          "error": function() {
+            $("#loading").remove();
+            $('#format-articles').empty().append('<p id="loading" class="muted">Botheration, something bad happened...</p>');
+          }
+        });
+      };
+
+      var show_resources = function(zone, facet, qstring, results) {
+        var web_url = "http://trove.nla.gov.au/" + zone + "/result?q=" + qstring + " date:[" + year_start + "+TO+" + year_end + "]";
+        var heading;
+        if (facet !== null) {
+            web_url += "&l-format=" + facet;
+        }
+        $('#format-articles').append("<h3>" + zone_names[zone] + "</h3>");
+        if ( facet !== null ) {
+           $('#format-articles').append("<h4>" + facet + "</h4>");
+        }
+        var list = $('<ul></ul>');
+        $.each(results.response.zone[0].records.work, function(key, record) {
+          var item = $('<li></li>');
+          item.append('<a target="_blank" href="' + record.troveUrl + '">' + record.title + '</a>');
+          list.append(item);
+        });
+        $('#loading').remove();
+        $('#format-articles').append(list);
+        $('#format-articles').append("<a class='pull-right btn btn-small' target='_blank' href='" + web_url + "'>View more in Trove</a>");
+      };
+
+      var get_data = function(qstring) {
+        $.jsonp({
+          //"dataType": "jsonp",
+          //"jsonp": callback,
+          "callbackParameter": 'callback',
+          "url": "http://api.trove.nla.gov.au/result?zone=book,article,collection,picture,map,music&q=" + qstring + " date:[" + year_start + "+TO+" + year_end + "]" + "&facet=format&n=0&encoding=json&key=" + api_key,
+          "timeout": 30000,
+          "success": function(results) {
+              process_results(results);
+          },
+          "error": function() {
+                $("#graph").hideLoading();
+                $('#format-articles').empty().append('<p id="loading" class="muted">Botheration, something bad happened...</p>');
+          }
+        });
+      };
+
+      var process_results = function(results) {
+        var data = {'name': 'All', 'children': []};
+        $.each(results.response.zone, function(index, zone) {
+            if (typeof zone.facets !== 'undefined' && typeof zone.facets.facet !== 'undefined') {
+                var this_zone = {'name': zone.name, 'children': []};
+                $.each(zone.facets.facet.term, function(index, term) {
+                    var this_child = process_term(term);
+                    this_zone.children.push(this_child.term);
+                });
+                data.children.push(this_zone);
+            }
+        });
+        display_sunburst(data);
+      };
+
+      var process_term = function(term) {
+        var term_count = parseInt(term.count, 10);
+        var this_term = {'name': term.display};
+        var count = 0;
+        if (typeof term.term !== 'undefined') {
+          this_term.children = [];
+          $.each(term.term, function(index, child) {
+            var this_child = process_term(child);
+            this_term.children.push(this_child.term);
+            count = count + this_child.term.size;
+            console.log(count);
+          });
+          if (term_count > count) {
+            other_count = term_count - count;
+            this_term.children.push({'name': 'Other', 'size': other_count});
+          }
+        } else {
+          this_term.size = term_count;
+        }
+        return {'term': this_term, 'count': count};
+      };
+      return { get_data: get_data};
+    }();
+
     function reset_query() {
         query = '';
         interval = "year";
@@ -121,7 +390,8 @@ $(function(){
     }
 
     function get_query() {
-        $('#panes a:last').tab('show');
+        reset();
+        $('#panes a').eq(1).tab('show');
         var qstring, params = [];
         if ($("#query").val() !== "") {
             var keywords = $("#query").val();
@@ -177,7 +447,8 @@ $(function(){
                 } else {
                     message = "Sorry, something went wrong.";
                 }
-                $("#status").empty().html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>' + message + '</div>');
+                $("#loading").remove();
+                $('#articles').empty().append('<p id="loading" class="muted">Botheration, something bad happened...</p>');
                 $("#graph").hideLoading();
                 if (dataSources.sources.length === 0) {
                     $("#graph").hide();
@@ -192,8 +463,8 @@ $(function(){
                 console.log(zone.name);
                 console.log(zone.records.total);
                 if (typeof zone.facets.facet !== 'undefined') {
-                    var zone_name = zone.name;
                     $.each(zone.facets.facet.term, function(index, value) {
+                        var zone_name = zone.name;
                         current_year = parseInt(value.display, 10);
                         if (current_year >= year_start && current_year <= year_end) {
                             current_series.data[zone_name][current_year] = {};
@@ -207,9 +478,8 @@ $(function(){
             decade_current++;
             api_request();
         } else {
-            console.log(current_series);
             dataSources.sources.push(current_series);
-            $("#graph").hideLoading();
+            //$("#graph").hideLoading();
             if (dataSources.sources.length > 0) {
                 makeChart('total');
                 $('#clear_last1').show();
@@ -219,16 +489,16 @@ $(function(){
                     $('#clear_all2').show();
                 }
             }
+            SUNBURST.get_data(current_series.web_query);
         }
     }
 
     function do_query(qstring, params) {
-        reset();
         year_start = $('#start_year').val();
         year_end = $('#end_year').val();
         params.push('start=' + year_start);
         params.push('end=' + year_end);
-        history.pushState('data', '', '/troveprofiler/?' + params.join('&'));
+        history.pushState('data', '', '/trove/profiler/?' + params.join('&'));
         $("#graph").show().showLoading();
         //qstring = encodeURIComponent(qstring);
         query = trove_api_url + "zone=book,article,collection,map,music,collection,picture&q=" + qstring + "&facet=year&n=0&encoding=json&key=" + trove_api_key;
@@ -265,9 +535,6 @@ $(function(){
              type: 'spline',
              zoomType: 'x'
           },
-          title: {
-              text: 'Resources by date'
-           },
            xAxis: {
                     title: {
                             text: xLabel
@@ -306,7 +573,7 @@ $(function(){
                         click: function() {
                             date = new Date(this.x);
                             query_date = date.getFullYear();
-                            showArticles(query_date, this.series);
+                            showArticles(query_date, this);
                         }
                      }
                   }
@@ -314,28 +581,33 @@ $(function(){
             }
         });
     }
-    function showArticles(query_date, series) {
-            $('#articles').empty().height('50px');
-            $('#graph').showLoading();
+    function showArticles(query_date, point) {
+        console.log(dataSources.getZone(point.series.name));
+        $('#articles').empty().height('50px');
+            //$('#graph').showLoading();
+            $("#graph-info").hide();
+            $('#articles').append('<p id="loading" class="muted">Loading resources...</p>');
             var qstring = dataSources.sources[0].web_query;
-            var this_query = trove_api_url + "q=" + qstring + "+date:[" + query_date + "+TO+" + query_date + "]&n=20&encoding=json&key=" + trove_api_key;
-            var zone = dataSources.getZone(series.name);
+            var this_query = trove_api_url + "q=" + qstring + "+date:[" + query_date + "+TO+" + query_date + "]&n=10&encoding=json&key=" + trove_api_key;
+            var zone = dataSources.getZone(point.series.name);
             this_query = this_query + "&zone=" + zone;
+            start = Math.floor(Math.random() * (point.y -10)) + 1;
+            this_query = this_query + "&s=" + start;
             var callback = "callback";
             $.jsonp({
-                    //"dataType": "jsonp",
-                    //"jsonp": callback,
                     "callbackParameter": callback,
                     "timeout": 20000,
                     "url": this_query,
                     "success": function(results) {
                         $('#articles').height('');
-                        $('#articles').append('<h3>' + series.name + '</h3>');
-                            show_trove_articles(results, query_date, series, zone);
-                        $('#graph').hideLoading();
-                        $('#articles').ScrollTo();
+                        $('#articles').append('<h3>' + point.series.name + '</h3>');
+                        $('#articles').append('<h4>' + query_date + '</h4>');
+                            show_trove_articles(results, query_date, point.series, zone);
+                        //$('#graph').hideLoading();
+                        //$('#articles').ScrollTo();
                     },
                     "error": function(d, status) {
+
                         if (status == "timeout") {
                             message = "Sorry, the server took too long to respond.";
                         } else if (status == "error") {
@@ -343,8 +615,8 @@ $(function(){
                         } else {
                             message = "Sorry, something went wrong.";
                         }
-                        $("#status").empty().html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>' + message + '</div>');
-                        $("#graph").hideLoading();
+                        $("#loading").remove();
+                        $('#format-articles').empty().append('<p id="loading" class="muted">Botheration, something bad happened...</p>');                        //$("#graph").hideLoading();
                     }
             });
     }
@@ -360,8 +632,8 @@ $(function(){
         }
         console.log(dataSources.sources[0].web_query);
         var web_query = 'http://trove.nla.gov.au/' + zone + '/result?q=' + dataSources.sources[0].web_query + '+date%3A%5B' + query_date + '+TO+' + query_date + '%5D';
-        $('#articles').append("<div class='more'><p><a class='btn' target='_blank' href='" + web_query + "'>&gt; View more in Trove</a></p></div>");
-
+        $('#articles').append("<a class='btn btn-small pull-right' target='_blank' href='" + web_query + "'>View more in Trove</a>");
+        $("#loading").remove();
     }
 
     function clear_all() {
@@ -376,9 +648,11 @@ $(function(){
     function reset() {
         dataSources.sources = [];
         decade_current = decade_start;
-        $("#graph").hide();
+        $("#graph").empty();
         $("#trove-results").hide();
         $("#articles").empty();
+        $("#format-articles").empty();
+        $("#svg").remove();
     }
 
     $("#do_keyword_query").button().click(function(){ get_query(); });
@@ -405,10 +679,6 @@ $(function(){
     }
 
     $(".tip-popover").popover();
-    $("#loading-indicator-graph-overlay").click(function() {
-        alert("hello");
-        $("#graph").hideLoading();
-    });
     $( "input[type='checkbox']" ).change(function() {
         if (this.checked) {
             $(this).parent().parent().parent().find("input[type='checkbox']").prop('checked', true);
@@ -420,6 +690,7 @@ $(function(){
     $('#selected-heading').hide();
     $('#panes a').click(function (e) {
         e.preventDefault();
+        $(".tooltip").css("opacity", 0);
         $(this).tab('show');
     });
     $('#panes a:first').tab('show');

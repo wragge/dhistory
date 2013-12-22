@@ -7,7 +7,7 @@
   font-size: 12px;
 }
 
-path {
+#sunburst-svg path {
   stroke: #fff;
   fill-rule: evenodd;
 }
@@ -27,10 +27,10 @@ form {
   text-indent: 2px;
 }
 
-.results {
+.format-results {
   position: absolute;
 }
 
-.results a {
+.format-results a {
   color: inherit;
 }

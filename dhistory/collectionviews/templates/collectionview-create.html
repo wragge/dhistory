@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block page_title %} :: Trove Collection Profiler{% endblock %}
 {% block extra_scripts %}
-    <script src="{{ STATIC_URL}}js/highcharts.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/highcharts/exporting.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js" type="text/javascript"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
     <script src="{{ STATIC_URL }}js/showLoading/js/jquery.showLoading.min.js"></script>
     <script src="{{ STATIC_URL }}js/jquery.jsonp-2.4.0.min.js"></script>
     <script src="{{ STATIC_URL}}js/purl.js" type="text/javascript"></script>
@@ -10,6 +10,7 @@
     <script src="{{ STATIC_URL }}js/jquery.scrollto.min.js"></script>
     <script src="{{ STATIC_URL }}js/jquery.multi-select.js"></script>
     <script src="{{ STATIC_URL }}js/jquery.quicksearch.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="{{ STATIC_URL }}js/collectionview-script.js?v=1.2"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <script id="series_data">
@@ -30,8 +31,9 @@
     <div class="row-fluid">
         <div class="span12">
             <ul class="nav nav-tabs" id="panes">
-              <li><a href="#filter" data-toggle="tab">Filters</a></li>
-              <li><a href="#display" data-toggle="tab">Display</a></li>
+              <li><a href="#filter" data-toggle="tab">Set filters</a></li>
+              <li><a href="#display" data-toggle="tab">Explore zones by year</a></li>
+              <li><a href="#sunburst" data-toggle="tab">Explore zones by format</a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active row-fluid" id="filter">
@@ -102,11 +104,27 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane" id="display">
-                    <div id="status"></div>
-                    <div id="graph" style="height:600px;width:100%; "></div>
-                    <div id="trove-results">
+                <div class="tab-pane row-fluid" id="display">
+                    <div class="span9">
+                        <div id="status"></div>
+                        <div id="graph" style="height:700px;width:100%; "></div>
+                    </div>
+                    <div class="span3" id="trove-results">
+                        <div class="muted" id="graph-info">
+                            <p>Each line represents a Trove zone.</p>
+                            <p>Click on a point to retrieve some sample records.</p>
+                        </div>
                         <div id="articles"></div>
+                    </div>
+                </div>
+                <div class="tab-pane row-fluid" id="sunburst">
+                    <div id="sunburst-container" class="span9"></div>
+                    <div class="format-results span3">
+                        <div class="muted" id="sunburst-info">
+                            <p>Mouseover to view formats.</p>
+                            <p>Click to zoom in and out, and retrieve sample records.</p>
+                        </div>
+                        <div id="format-articles"></div>
                     </div>
                 </div>
             </div>

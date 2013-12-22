@@ -49,6 +49,7 @@ $(function(){
   var svg = d3.select("#svg").append("svg")
       .attr("width", width)
       .attr("height", height)
+      .attr("id", "sunburst-svg")
     .append("g")
       .attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
 
@@ -105,7 +106,7 @@ $(function(){
         .on("mouseout", function(){return tooltip.style("opacity", 0);});
 
     function click(d) {
-      $('.results').empty();
+      $('.format-results').empty();
       if (typeof d.children === "undefined" && d.name != 'Other') {
         get_zone(d);
       }
@@ -142,7 +143,7 @@ $(function(){
   }
 
   function get_resources(leaf, zone) {
-    $('.results').append('<p id="loading" class="muted">Loading resources...</p>');
+    $('.format-results').append('<p id="loading" class="muted">Loading resources...</p>');
     if ($.inArray(leaf.name, facets) > -1) {
       facet = leaf.parent.name + '/' + leaf.name;
     } else {
@@ -173,7 +174,7 @@ $(function(){
         prepare_results(zone, facet, start, results);
       },
       "error": function() {
-        $('.results').empty().append('<p id="loading" class="muted">Botheration, something bad happened...</p>');
+        $('.format-results').empty().append('<p id="loading" class="muted">Botheration, something bad happened...</p>');
       }
     });
   }
@@ -197,8 +198,8 @@ $(function(){
       list.append(item);
     });
     $('#loading').remove();
-    $('.results').append(list);
-    $('.results').append('<a target="_blank" id="more" class="pull-right btn btn-small" href="' + web_url + '">View more results</a>');
+    $('.format-results').append(list);
+    $('.format-results').append('<a target="_blank" id="more" class="pull-right btn btn-small" href="' + web_url + '">View more results</a>');
   }
 
   function get_data() {

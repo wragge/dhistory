@@ -12,3 +12,31 @@ border-bottom: 1px solid #CACACA;
 .ms-selectable .search-input, .ms-selection .search-input { width: auto; margin-bottom: 5px;}
 .selected-header { margin-bottom: 10px; padding-top: 4px;}
 .ms-container .ms-optgroup-label { padding: 2px 0 2px 10px; border-bottom: 1px #eee solid;}
+
+#sunburst-container {
+
+}
+
+.tooltip {
+  font-size: 12px;
+}
+
+#sunburst-svg path {
+  stroke: #fff;
+  fill-rule: evenodd;
+}
+
+form {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.node {
+  border: solid 1px white;
+  font: 10px sans-serif;
+  line-height: 12px;
+  overflow: hidden;
+  position: absolute;
+  text-indent: 2px;
+}
