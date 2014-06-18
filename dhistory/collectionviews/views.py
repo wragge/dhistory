@@ -65,7 +65,7 @@ def create_collectionview(request):
     return render(request, 'collectionview-create.html', {
         'nucs': nucs, 
         'selected_nucs': selected_nucs, 
-        'years': range(1800, 2014),
+        'years': range(1800, 2015),
         'query': query,
         'start': year_start,
         'end': year_end,
