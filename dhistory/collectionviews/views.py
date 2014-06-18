@@ -47,7 +47,7 @@ JSON_SCHEMA = {
             }
 
 START_YEAR = 1900
-END_YEAR = 2013
+END_YEAR = 2014
 
 @cache_page(60 * 60 * 6)
 def create_collectionview(request):
