@@ -139,7 +139,7 @@ $(function(){
             'Sound/Interview, lecture, talk',
             'Sound/Other sound',
             'Sound/Recorded music',
-            'Viceo/Captioned',
+            'Video/Captioned',
             ];
           var zone_names = {
             'book': 'Books',
@@ -395,7 +395,7 @@ $(function(){
         var qstring, params = [];
         if ($("#query").val() !== "") {
             var keywords = $("#query").val();
-            if (keywords.match(/^[a-zA-Z\d"\(\)\~\:\- ]+$/)) {
+            if (keywords.match(/^[a-zA-Z0-9\d"\(\)\~\:\-\/\. ]+$/)) {
                 if (keywords.match(/(AND|OR|NOT|\(|"|\-|\*)/)) {
                 //if (keywords.indexOf('"') == -1) {
                     qstring = keywords;
