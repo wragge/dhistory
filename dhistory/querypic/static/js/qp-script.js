@@ -344,6 +344,13 @@ $(function(){
             if (trove_params['toyyyy']) {
                 year_end = trove_params['toyyyy'];
             }
+        } else if (trove_params['dateFrom'] || trove_params['dateTo']) {
+            if (trove_params['dateFrom']) {
+                year_start = trove_params['dateFrom'].substr(0, 4);
+            }
+            if (trove_params['dateTo']) {
+                year_end = trove_params['dateTo'].substr(0, 4);
+            }
         } else if (trove_params['l-decade']) {
             var decade = parseInt(trove_params['l-decade'], 10);
             year_start = (decade * 10) + 1;
