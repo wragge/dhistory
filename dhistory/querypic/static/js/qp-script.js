@@ -402,10 +402,16 @@ $(function(){
         }
         if (trove_params['l-illustrated']) {
             var illustrated = trove_params['l-illustrated'];
-            if (illustrated.match(/(^y|^Illustrated)/)) {
-                facets.push("&l-illustrated=Y");
+            if (illustrated.match(/(^true|^y|^Illustrated)/)) {
+                facets.push("&l-illustrated=y");
                 limits['Illustrated'] = ['yes'];
             }
+            if (trove_params['l-illtype']) {
+                var ill_type = trove_params['l-illtype'];
+                facets.push("&l-illtype=" + trove_params['l-illtype']);
+                limits['Illustration type'] = trove_params['l-illtype'];
+            }
+
         }
         qstring = keywords.join('+');
         query['total'] = trove_api_url + "&q=" + qstring + facets.join("") + "&facet=year&n=0&encoding=json&key=" + trove_api_key;
