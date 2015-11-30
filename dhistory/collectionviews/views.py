@@ -64,9 +64,9 @@ def create_collectionview(request):
     response = urllib2.urlopen('http://trove.nla.gov.au/general/libraries')
     nucs = json.load(response)
     return render(request, 'collectionview-create.html', {
-        'nucs': nucs, 
-        'selected_nucs': selected_nucs, 
-        'years': range(1800, END_YEAR),
+        'nucs': nucs,
+        'selected_nucs': selected_nucs,
+        'years': range(1800, END_YEAR+1),
         'query': query,
         'start': year_start,
         'end': year_end,

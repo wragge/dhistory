@@ -645,7 +645,7 @@ $(function(){
     function clear_all() {
         $('#nucs').multiSelect('deselect_all');
         $('#start_year').val('1800');
-        $('#end_year').val('2013');
+        $('#end_year').val('2015');
         $('#query').val('');
         $('#selected-heading').hide();
         $('#selected-collections').empty();
