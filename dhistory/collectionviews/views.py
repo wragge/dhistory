@@ -1,6 +1,7 @@
 # Create your views here.
 import urllib2
 import json
+from datetime import datetime
 import validictory
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, Http404
@@ -47,7 +48,7 @@ JSON_SCHEMA = {
             }
 
 START_YEAR = 1900
-END_YEAR = 2014
+END_YEAR = datetime.now().year
 
 @cache_page(60 * 60 * 6)
 def create_collectionview(request):
@@ -65,7 +66,7 @@ def create_collectionview(request):
     return render(request, 'collectionview-create.html', {
         'nucs': nucs, 
         'selected_nucs': selected_nucs, 
-        'years': range(1800, 2015),
+        'years': range(1800, END_YEAR),
         'query': query,
         'start': year_start,
         'end': year_end,
