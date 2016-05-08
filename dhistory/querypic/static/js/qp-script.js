@@ -145,7 +145,7 @@ $(function(){
             //"jsonp": callback,
             "callbackParameter": callback,
             "url": this_query,
-            "timeout": 20000,
+            "timeout": 60000,
             "success": function(results) {
                 process_results(results);
             },
