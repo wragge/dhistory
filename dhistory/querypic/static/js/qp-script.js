@@ -594,7 +594,7 @@ $(function(){
                     //"dataType": "jsonp",
                     //"jsonp": callback,
                     "callbackParameter": callback,
-                    "timeout": 20000,
+                    "timeout": 60000,
                     "url": this_query,
                     "success": function(results) {
                         $('#articles').height('');
