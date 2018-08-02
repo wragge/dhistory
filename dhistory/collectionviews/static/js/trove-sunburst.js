@@ -35,7 +35,7 @@ $(function(){
     'map': 'Maps',
     'collection': 'Diaries, letters, archives'
   };
-  var api_key = "1g8lo7p9vtj0b89";
+  var api_key = "90o811fagvrfrlc5";
 
   var radius = Math.min(width, height) / 2.1,
       color = d3.scale.category20c();

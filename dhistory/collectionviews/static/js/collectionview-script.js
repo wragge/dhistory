@@ -92,7 +92,7 @@ function graphData() {
 $(function(){
     var height = 700;
     reset();
-    var trove_api_key = "1g8lo7p9vtj0b89";
+    var trove_api_key = "90o811fagvrfrlc5";
     var trove_api_url = "http://api.trove.nla.gov.au/result?";
     var trove_html_url = "http://trove.nla.gov.au/book/result?l-format=Thesis&l-australian=y&q=";
     var trove_api_title_url = "http://api.trove.nla.gov.au/newspaper/title/";
@@ -150,7 +150,7 @@ $(function(){
             'collection': 'Diaries, letters, archives'
             };
 
-        var api_key = "1g8lo7p9vtj0b89";
+        var api_key = "90o811fagvrfrlc5";
 
         var format_number = function(x) {
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -203,7 +203,7 @@ $(function(){
                 .style("opacity", 0);
 
             var path = svg.selectAll("path").data(partition.nodes(data))
-            
+
             .enter().append("path")
                 .attr("d", function(d) { return arc(d); })
                 .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
@@ -744,23 +744,3 @@ $(function(){
     });
     checkOnLoad();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
