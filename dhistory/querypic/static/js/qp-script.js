@@ -68,14 +68,14 @@ function graphData() {
 $(function(){
     reset();
     var digitalnz_api_key = "9yXNTynMDb3TUQws7QuD";
-    var digitalnz_api_url = "http://api.digitalnz.org/v3/records.json?api_key=" + digitalnz_api_key + "&and[display_collection][]=Papers+Past";
-    var digitalnz_html_url = "http://digitalnz.org.nz/records?i[display_collection]=Papers+Past";
+    var digitalnz_api_url = "https://api.digitalnz.org/v3/records.json?api_key=" + digitalnz_api_key + "&and[display_collection][]=Papers+Past";
+    var digitalnz_html_url = "https://digitalnz.org.nz/records?i[display_collection]=Papers+Past";
     var trove_api_key = "6pi5hht0d2umqcro";
-    var trove_api_url = "http://api.trove.nla.gov.au/result?zone=newspaper";
-    var trove_html_url = "http://trove.nla.gov.au/newspaper/result?q=";
-    var trove_api_title_url = "http://api.trove.nla.gov.au/newspaper/title/";
-    var trove_html_title_url = "http://trove.nla.gov.au/ndp/del/title/";
-    var twitter_url ="http://platform.twitter.com/widgets/tweet_button.html";
+    var trove_api_url = "https://api.trove.nla.gov.au/v2/result?zone=newspaper";
+    var trove_html_url = "https://trove.nla.gov.au/newspaper/result?q=";
+    var trove_api_title_url = "https://api.trove.nla.gov.au/v2/newspaper/title/";
+    var trove_html_title_url = "https://trove.nla.gov.au/ndp/del/title/";
+    var twitter_url ="https://platform.twitter.com/widgets/tweet_button.html";
     var word_categories = {0: "< 100", 1: "100&ndash;1000", 3: "> 1000"};
     var query = {};
     var decade_start;
@@ -107,7 +107,7 @@ $(function(){
             }
         } else if ($("#query_url").val() !== "") {
             var url = $("#query_url").val();
-            if (url.match(/(^http:\/\/trove\.nla\.gov\.au\/newspaper\/result\?|^http:\/\/www\.digitalnz\.org\/records\?)/)) {
+            if (url.match(/(^https*:\/\/trove\.nla\.gov\.au\/newspaper\/result\?|^https*:\/\/www\.digitalnz\.org\/records\?)/)) {
                 queries.push(url);
             } else {
                 $("#status").empty().html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>That&rsquo;s not a valid url...</div>');
@@ -306,7 +306,7 @@ $(function(){
 
    function process_url_query() {
         var url_query = queries.shift();
-        if (url_query.match(/(^http:\/\/trove\.nla\.gov\.au\/newspaper\/result\?|^http:\/\/(?:www\.)?digitalnz\.org(?:\.nz)?\/records\?)/)) {
+        if (url_query.match(/(^https*:\/\/trove\.nla\.gov\.au\/newspaper\/result\?|^https*:\/\/(?:www\.)?digitalnz\.org(?:\.nz)?\/records\?)/)) {
             if (url_query.match(/trove/)) {
                 process_trove_query(url_query);
             } else if (url_query.match(/digitalnz/)) {
@@ -751,23 +751,3 @@ $(function(){
     });
     get_query();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
