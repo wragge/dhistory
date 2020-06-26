@@ -239,8 +239,8 @@ $(function(){
         query = query.replace(/&dateFrom=\d{4}-\d{2}-\d{2}/, '');
         query = query.replace('q=', 'keyword=');
         if (typeof query_date !== "undefined") {
-            query += '&date.from=' + query_date + '-01-01');
-            query += '&date.to=' + query_date + '-12-31');
+            query += '&date.from=' + query_date + '-01-01';
+            query += '&date.to=' + query_date + '-12-31';
         }
         return query
     }
