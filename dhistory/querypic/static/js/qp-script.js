@@ -620,13 +620,17 @@ $(function(){
                     }
             });
     }
-    function rewrite_trove_query(query) {
+    function rewrite_trove_query(query, query_date) {
         // https://trove.nla.gov.au/newspaper/result?requestHandler=%2FtextSearch&dateFrom=1860-01-01&dateTo=1879-12-31&q=%22victorian+rules%22+%22rules+football%22%7E5&fromyyyy=1866&toyyyy=1866
-        query = query.replace(/newspaper\/result?/, 'search/category/newspapers?');
-        query = query.replace(/requestHandler=%2FtextSearch/, '');
+        query = query.replace('newspaper/result?', 'search/category/newspapers?');
+        query = query.replace('requestHandler=%2FtextSearch', '');
         query = query.replace(/&dateFrom=\d{4}-\d{2}-\d{2}/, '');
-        query = query.replace(/&dateTo=\d{4}-\d{2}-\d{2}/, '');
-        query = query.replace(/&q=/, 'keywords=');
+        query = query.replace(/&dateFrom=\d{4}-\d{2}-\d{2}/, '');
+        query = query.replace('q=', 'keyword=');
+        if (typeof query_date !== "undefined") {
+            query += '&date.from=' + query_date + '-01-01';
+            query += '&date.to=' + query_date + '-12-31';
+        }
         return query
     }
     function show_trove_articles(results, query_date, series) {
@@ -639,7 +643,7 @@ $(function(){
             });
             $('#articles').append(articles);
         }
-        $('#articles').append('<div class="more"><p><a class="btn" target="_blank" href="' + rewrite_trove_query(dataSources.sources[series.index].web_query) + '&date.from=' + query_date + '&date.to=' + query_date + '">&gt; View more in Trove</a></p></div>');
+        $('#articles').append('<div class="more"><p><a class="btn" target="_blank" href="' + rewrite_trove_query(dataSources.sources[series.index].web_query, query_date) + '">&gt; View more in Trove</a></p></div>');
     }
     function show_digitalnz_articles(results, query_date, series) {
         if (results.search.results.length > 0) {
@@ -732,7 +736,8 @@ $(function(){
                 });
             }
             if (source.country[0] == "Australia") {
-                var $show_trove = $('<p><a target="_blank" href="' + source.query + '" class="btn btn-mini">Show in Trove &laquo;</a></p>');
+                var updated_query = rewrite_trove_query(source.query);
+                var $show_trove = $('<p><a target="_blank" href="' + updated_query + '" class="btn btn-mini">Show in Trove &laquo;</a></p>');
                 $inner.append($show_trove);
             } else if (source.country[0] == "New Zealand") {
                 var $show_dnz = $('<p><a target="_blank" href="' + source.query + '" class="btn btn-mini">Show in DigitalNZ &laquo;</a></p>');
