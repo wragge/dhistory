@@ -237,7 +237,7 @@ $(function(){
         query = query.replace(/requestHandler=%2FtextSearch/, '');
         query = query.replace(/&dateFrom=\d{4}-\d{2}-\d{2}/, '');
         query = query.replace(/&dateTo=\d{4}-\d{2}-\d{2}/, '');
-        query = query.replace(/&q=/, 'keywords=');
+        query = query.replace(/&q=/, 'keyword=');
         return query
     }
     function show_trove_articles(results, query_date, series) {
