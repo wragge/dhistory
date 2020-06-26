@@ -107,7 +107,7 @@ $(function(){
             }
         } else if ($("#query_url").val() !== "") {
             var url = $("#query_url").val();
-            if (url.match(/(^https*:\/\/trove\.nla\.gov\.au\/newspaper\/result\?|^https*:\/\/www\.digitalnz\.org\/records\?)/)) {
+            if (url.match(/(^https*:\/\/trove\.nla\.gov\.au\/search\/category\/newspapers\?|^https*:\/\/www\.digitalnz\.org\/records\?)/)) {
                 queries.push(url);
             } else {
                 $("#status").empty().html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>That&rsquo;s not a valid url...</div>');
@@ -306,7 +306,7 @@ $(function(){
 
    function process_url_query() {
         var url_query = queries.shift();
-        if (url_query.match(/(^https*:\/\/trove\.nla\.gov\.au\/newspaper\/result\?|^https*:\/\/(?:www\.)?digitalnz\.org(?:\.nz)?\/records\?)/)) {
+        if (url_query.match(/(^https*:\/\/trove\.nla\.gov\.au\/search\/category\/newspapers\?|^https*:\/\/(?:www\.)?digitalnz\.org(?:\.nz)?\/records\?)/)) {
             if (url_query.match(/trove/)) {
                 process_trove_query(url_query);
             } else if (url_query.match(/digitalnz/)) {
@@ -325,31 +325,24 @@ $(function(){
         var keywords = [];
         var facets = [];
         var limits = {};
-        if (trove_params['q']) {
+        if (trove_params['keyword']) {
             keywords.push(trove_params['q']);
         }
-        if (trove_params['exactPhrase']) {
-            keywords.push('"' + trove_params['exactPhrase'] + '"');
+        if (trove_params['keyword.phrase']) {
+            keywords.push('"' + trove_params['keyword.phrase'] + '"');
         }
-        if (trove_params['anyWords']) {
-            keywords.push('(' + trove_params['anyWords'].split(' ').join('+OR+') + ')');
+        if (trove_params['keyword.any']) {
+            keywords.push('(' + trove_params['keyword.any'].split(' ').join('+OR+') + ')');
         }
-        if (trove_params['notWords']) {
-            keywords.push('NOT+(' + trove_params['notWords'].split(' ').join('+OR+') + ')');
+        if (trove_params['keyword.not']) {
+            keywords.push('NOT+(' + trove_params['keyword.not'].split(' ').join('+OR+') + ')');
         }
-        if (trove_params['fromyyyy'] || trove_params['toyyyy']) {
-            if (trove_params['fromyyyy']) {
-                year_start = trove_params['fromyyyy'];
+        if (trove_params['date.from'] || trove_params['date.to']) {
+            if (trove_params['date.from']) {
+                year_start = trove_params['date.from'].substr(0, 4);
             }
-            if (trove_params['toyyyy']) {
-                year_end = trove_params['toyyyy'];
-            }
-        } else if (trove_params['dateFrom'] || trove_params['dateTo']) {
-            if (trove_params['dateFrom']) {
-                year_start = trove_params['dateFrom'].substr(0, 4);
-            }
-            if (trove_params['dateTo']) {
-                year_end = trove_params['dateTo'].substr(0, 4);
+            if (trove_params['date.to']) {
+                year_end = trove_params['date.to'].substr(0, 4);
             }
         } else if (trove_params['l-decade']) {
             var decade = parseInt(trove_params['l-decade'], 10);
