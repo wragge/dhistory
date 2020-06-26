@@ -72,7 +72,7 @@ $(function(){
     var digitalnz_html_url = "https://digitalnz.org.nz/records?i[display_collection]=Papers+Past";
     var trove_api_key = "6pi5hht0d2umqcro";
     var trove_api_url = "https://api.trove.nla.gov.au/v2/result?zone=newspaper";
-    var trove_html_url = "https://trove.nla.gov.au/newspaper/result?q=";
+    var trove_html_url = "https://trove.nla.gov.au/search/category/newspapers?keyword=";
     var trove_api_title_url = "https://api.trove.nla.gov.au/v2/newspaper/title/";
     var trove_html_title_url = "https://trove.nla.gov.au/ndp/del/title/";
     var twitter_url ="https://platform.twitter.com/widgets/tweet_button.html";
