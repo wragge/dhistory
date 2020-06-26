@@ -235,8 +235,8 @@ $(function(){
         // https://trove.nla.gov.au/newspaper/result?requestHandler=%2FtextSearch&dateFrom=1860-01-01&dateTo=1879-12-31&q=%22victorian+rules%22+%22rules+football%22%7E5&fromyyyy=1866&toyyyy=1866
         query = query.replace(/newspaper\/result?/, 'search/category/newspapers?');
         query = query.replace(/requestHandler=%2FtextSearch/, '');
-        query = query.replace(/&dateFrom=\d{4}-\d{2}-\d{2}/, '');
-        query = query.replace(/&dateTo=\d{4}-\d{2}-\d{2}/, '');
+        query = query.replace(/&dateFrom/, '&date.from');
+        query = query.replace(/&dateTo/, '&date.to');
         query = query.replace(/&q=/, 'keyword=');
         return query
     }
@@ -250,7 +250,7 @@ $(function(){
             });
             $('#articles').append(articles);
         }
-        $('#articles').append('<div class="more"><p><a class="btn" href="' + rewrite_trove_query(dataSources.sources[series.index].web_query) + '&date.from=' + query_date + '&date.to=' + query_date + '">View more in Trove &raquo;</a></p></div>');
+        $('#articles').append('<div class="more"><p><a class="btn" href="' + rewrite_trove_query(dataSources.sources[series.index].web_query) + '">View more in Trove &raquo;</a></p></div>');
 
     }
     function show_digitalnz_articles(results, query_date, series) {
@@ -315,11 +315,12 @@ $(function(){
                 });
             }
             if (source.country[0] == "Australia") {
-                var $show_trove = $('<p><a href="' + source.query + '" class="btn btn-mini">Show in Trove &raquo;</a></p>');
+                var updated_query = rewrite_trove_query(source.query);
+                var $show_trove = $('<p><a href="' + updated_query + '" class="btn btn-mini">Show in Trove &raquo;</a></p>');
                 $inner.append($show_trove);
-                var $show_trove_qp = $('<p><a href="/querypic/create/?trove_query=' + encodeURIComponent(source.query) + '" class="btn btn-mini">Create new QP &raquo;</a></p>');
+                var $show_trove_qp = $('<p><a href="/querypic/create/?trove_query=' + encodeURIComponent(updated_query) + '" class="btn btn-mini">Create new QP &raquo;</a></p>');
                 $inner.append($show_trove_qp);
-                query_urls.push("trove_query=" + encodeURIComponent(source.query));
+                query_urls.push("trove_query=" + encodeURIComponent(updated_query));
             } else if (source.country[0] == "New Zealand") {
                 var $show_dnz = $('<p><a href="' + source.query + '" class="btn btn-mini">Show in DigitalNZ &raquo;</a></p>');
                 $inner.append($show_dnz);
