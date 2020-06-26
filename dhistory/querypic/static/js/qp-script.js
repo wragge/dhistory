@@ -326,7 +326,7 @@ $(function(){
         var facets = [];
         var limits = {};
         if (trove_params['keyword']) {
-            keywords.push(trove_params['q']);
+            keywords.push(trove_params['keyword']);
         }
         if (trove_params['keyword.phrase']) {
             keywords.push('"' + trove_params['keyword.phrase'] + '"');
