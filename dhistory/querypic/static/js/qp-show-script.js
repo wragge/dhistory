@@ -231,13 +231,17 @@ $(function(){
             }
         });
     }
-    function rewrite_trove_query(query) {
+    function rewrite_trove_query(query, date) {
         // https://trove.nla.gov.au/newspaper/result?requestHandler=%2FtextSearch&dateFrom=1860-01-01&dateTo=1879-12-31&q=%22victorian+rules%22+%22rules+football%22%7E5&fromyyyy=1866&toyyyy=1866
         query = query.replace('newspaper/result?', 'search/category/newspapers?');
         query = query.replace('requestHandler=%2FtextSearch', '');
         query = query.replace('&dateFrom', '&date.from');
         query = query.replace('&dateTo', '&date.to');
         query = query.replace('&q=', '&keyword=');
+        if (typeof date !== "undefined") {
+            query = query.replace(/date\.from=\d{4}-\d{2}-\d{}/, 'date.from=' + date + '01-01');
+            query = query.replace(/date\.to=\d{4}-\d{2}-\d{}/, 'date.to=' + date + '12-31');
+        }
         return query
     }
     function show_trove_articles(results, query_date, series) {
@@ -250,7 +254,7 @@ $(function(){
             });
             $('#articles').append(articles);
         }
-        $('#articles').append('<div class="more"><p><a class="btn" href="' + rewrite_trove_query(dataSources.sources[series.index].web_query) + '">View more in Trove &raquo;</a></p></div>');
+        $('#articles').append('<div class="more"><p><a class="btn" href="' + rewrite_trove_query(dataSources.sources[series.index].web_query, query_date) + '">View more in Trove &raquo;</a></p></div>');
 
     }
     function show_digitalnz_articles(results, query_date, series) {
